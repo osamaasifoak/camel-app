@@ -4,7 +4,7 @@ mixin _NowPlayingScreenWidgets on _NowPlayingScreenProps{
 
   Widget loadingIndicator() {
     return const CustomScrollView(
-      slivers: const [
+      slivers: [
         SliverToBoxAdapter(
           child: SizedBox(height: 10,)
         ),

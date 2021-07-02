@@ -7,7 +7,26 @@ abstract class _MovieDetailScreenProps extends State<MovieDetailScreen>{
 
   late final MovieDetailCubit movieDetailCubit;
   late final FavMoviesCubit favMoviesCubit;
-  late final bool fromFavList;
+  bool? _fromFavList;
+
+  void extractArguments() {
+    final arguments = ModalRoute.of(context)?.settings.arguments;
+
+    if (arguments is num?) {
+      movieDetailCubit.loadMovieDetail(arguments);
+      _fromFavList = false;
+    } else if (arguments is Set) {
+      movieDetailCubit.loadMovieDetail(arguments.first as num?);
+      _fromFavList = arguments.last as bool;
+    } else {
+      _fromFavList = false;
+      navigationService.showSnackBar(
+        message: 'Failed to load movie detail. Please try again.',
+      );
+
+      Future.delayed(Duration(milliseconds: 250), Navigator.of(context).pop);
+    }
+  }
 
   @override
   void initState() {
@@ -19,28 +38,15 @@ abstract class _MovieDetailScreenProps extends State<MovieDetailScreen>{
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final arguments = ModalRoute.of(context)?.settings.arguments;
-
-    if (arguments is num?) {
-      movieDetailCubit.loadMovieDetail(arguments);
-      fromFavList = false;
-    } else if (arguments is Set) {
-      movieDetailCubit.loadMovieDetail(arguments.first as num?);
-      fromFavList = arguments.last as bool;
-    } else {
-      fromFavList = false;
-      navigationService.showSnackBar(
-        message: 'Failed to load movie detail. Please try again.',
-      );
-
-      Future.delayed(Duration(milliseconds: 250), Navigator.of(context).pop);
+    if(_fromFavList == null) {
+      extractArguments();
     }
   }
 
   @override
   void dispose() {
     movieDetailCubit.unloadMovieDetail();
-    if (fromFavList) favMoviesCubit.loadFavMovies();
+    if (_fromFavList ?? false) favMoviesCubit.loadFavMovies();
     super.dispose();
   }
 

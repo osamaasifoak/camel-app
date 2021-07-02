@@ -1,12 +1,12 @@
 import 'package:bloc/bloc.dart';
-import 'package:camelmovies/core/helpers/error_handler.dart';
-import 'package:camelmovies/core/services/navigation_service/navigation_service.dart';
 import 'package:equatable/equatable.dart';
 import 'package:get_it/get_it.dart';
 
+import '/core/helpers/error_handler.dart';
 import '/core/models/movie/movie_detail.dart';
 import '/core/repositories/movies_repo.dart';
 import '/core/services/localdb_service/localdb_service.dart';
+import '/core/services/navigation_service/navigation_service.dart';
 
 part 'moviedetail_state.dart';
 
@@ -69,6 +69,7 @@ class MovieDetailCubit extends Cubit<MovieDetailState> {
               isFav: true,
             ),
           );
+
       }else{
 
         final delfav = await _localDbService.deleteFav(state.movieDetail.id);
@@ -79,6 +80,7 @@ class MovieDetailCubit extends Cubit<MovieDetailState> {
               isFav: false,
             ),
           );
+
       }
     }catch(e, st) {
       

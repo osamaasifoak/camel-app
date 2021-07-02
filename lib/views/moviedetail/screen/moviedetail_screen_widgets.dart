@@ -67,7 +67,7 @@ mixin _MovieDetailScreenWidgets on _MovieDetailScreenProps{
       background: CachedNetworkImage(
         fit: BoxFit.fill,
         imageUrl: movieDetailCubit.state.movieDetail.imgUrlPosterOriginal,
-        errorWidget: (context, url, error) => Container(
+        errorWidget: (_, __, ___) => Container(
           height: screenHeight / 1.5,
           child: Icon(
             Icons.error_outline,
@@ -88,7 +88,7 @@ mixin _MovieDetailScreenWidgets on _MovieDetailScreenProps{
         overflow: TextOverflow.fade,
         maxLines: 3,
         text: TextSpan(
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
             fontFamily: 'Nunito Sans',
@@ -99,7 +99,7 @@ mixin _MovieDetailScreenWidgets on _MovieDetailScreenProps{
               text: movieDetailCubit.state.movieDetail.title,
             ),
             TextSpan(
-              text: ' (' + movieDetailCubit.state.movieDetail.year! + ')',
+              text: ' (${movieDetailCubit.state.movieDetail.year ?? 'XXXX'})',
               style: TextStyle(color: Colors.grey[700]),
             ),
           ],
@@ -171,15 +171,15 @@ mixin _MovieDetailScreenWidgets on _MovieDetailScreenProps{
 
   Container movieTags() {
     return Container(
-      height: movieDetailCubit.state.movieDetail.genres!.length > 0 ? 60 : 0,
+      height: (movieDetailCubit.state.movieDetail.genres?.isNotEmpty ?? false) ? 60 : 0,
       child: ListView.builder(
         padding: const EdgeInsets.all(5),
         scrollDirection: Axis.horizontal,
-        itemCount: movieDetailCubit.state.movieDetail.genres!.length,
-        itemBuilder: (context, i) {
+        itemCount: movieDetailCubit.state.movieDetail.genres?.length ?? 0,
+        itemBuilder: (_, i) {
           return MovieTagCard(
               genreName:
-                  movieDetailCubit.state.movieDetail.genres![i].genreName ??
+                  movieDetailCubit.state.movieDetail.genres?[i].genreName ??
                       'Genre');
         },
       ),

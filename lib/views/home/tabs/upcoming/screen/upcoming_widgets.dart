@@ -4,7 +4,7 @@ mixin _UpcomingScreenWidgets on _UpcomingScreenProps {
 
   Widget loadingIndicator(){
     return const CustomScrollView(
-      slivers: const [
+      slivers: [
         SliverToBoxAdapter(
             child: SizedBox(
           height: 10,
@@ -31,9 +31,8 @@ mixin _UpcomingScreenWidgets on _UpcomingScreenProps {
         cacheExtent: 200,
         slivers: [
           const SliverToBoxAdapter(
-              child: SizedBox(
-            height: 10,
-          )),
+            child: SizedBox(height: 10,)
+          ),
           SliverFixedExtentList(
             itemExtent: 120,
             delegate: SliverChildBuilderDelegate(

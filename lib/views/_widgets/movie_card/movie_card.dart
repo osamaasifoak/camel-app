@@ -12,39 +12,18 @@ class MovieCard extends StatelessWidget{
   
   @override
   Widget build(BuildContext context) {
-    // var rating = movie.rating! / 10;
-    // if(rating <= 0.05) rating = 0.05;
-    // var ratingBoxWidth = (MediaQuery.of(context).size.width / 5) * rating;
-    // var ratingBoxHeight = 20.0;
-    // var ratingBoxColor = Color.lerp(
-    //   Colors.amber[800], 
-    //   Colors.greenAccent[700],
-    //   rating
-    // );    
     return Container(
       margin: const EdgeInsets.only(left: 15, right: 15, top: 10),
       padding: const EdgeInsets.all(0),
       child: ElevatedButton(
-        style: ButtonStyle(
-          shadowColor: MaterialStateProperty.all<Color>(Colors.grey[50]!.withOpacity(0.3)),          
-          elevation: MaterialStateProperty.all<double>(4.0),
-          backgroundColor: MaterialStateProperty.all<Color?>(Colors.grey[50]),
-          foregroundColor: MaterialStateProperty.all<Color>(Colors.black87),
-          overlayColor: MaterialStateProperty.resolveWith<Color?>(
-            (states) {
-              if (states.contains(MaterialState.hovered))
-                return Colors.grey[200];                
-              if (states.contains(MaterialState.pressed) ||
-                  states.contains(MaterialState.focused) )
-                return Colors.grey[300];
-              return null;
-            }
-          ),
-          padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.zero),
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
+        style: ElevatedButton.styleFrom(
+          shadowColor: Colors.grey[50]?.withOpacity(0.3),
+          elevation: 4.0,
+          primary: Colors.grey[50],
+          onPrimary: Colors.black87,
+          padding: const EdgeInsets.all(0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10)
           ),
         ),
         onPressed: onCardPressed,
@@ -60,6 +39,7 @@ class MovieCard extends StatelessWidget{
                 color: Colors.white70,
                 child: movie.imgUrlPoster != null 
                 ? CachedNetworkImage(
+                    cacheKey: movie.id.toString(),
                     fit: BoxFit.cover,
                     imageUrl: movie.imgUrlPosterThumb,
                     fadeInDuration: const Duration(milliseconds: 500),
@@ -67,7 +47,7 @@ class MovieCard extends StatelessWidget{
                     filterQuality: FilterQuality.none,
                     memCacheHeight: 240,
                     memCacheWidth: 160,
-                    errorWidget: (context, url, error) =>
+                    errorWidget: (_, __, ___) =>
                       Center(
                         child: Icon(
                           Icons.error_outline,
@@ -86,7 +66,7 @@ class MovieCard extends StatelessWidget{
               )
               
             ),
-            SizedBox(width: 10,), //separator
+            const SizedBox(width: 10,), //separator
             //movie title
             Flexible(
               flex: 1,
@@ -95,10 +75,10 @@ class MovieCard extends StatelessWidget{
                 crossAxisAlignment: CrossAxisAlignment.start,        
                 children: [
                   Text(
-                    movie.title! + ' (' + movie.year! + ')',
+                    movie.title! + ' (${movie.year ?? 'XXXX'})',
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Nunito Sans'
@@ -108,12 +88,6 @@ class MovieCard extends StatelessWidget{
                   Row(
                     children: [
                       //star + rating
-                      // Container(
-                      //   width: ratingBoxWidth,
-                      //   height: ratingBoxHeight,
-                      //   color: ratingBoxColor,
-                      //   margin: const EdgeInsets.only(right: 5)                   
-                      // ),
                       Icon(
                         Icons.star,
                         size: 16,
@@ -121,7 +95,7 @@ class MovieCard extends StatelessWidget{
                       ),
                       RichText(
                         text: TextSpan(
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.black87,
                           ),
                           children: [
@@ -129,8 +103,8 @@ class MovieCard extends StatelessWidget{
                               text: (movie.rating?.toStringAsFixed(1) ?? '0.0'),
                             ),
                             TextSpan(
-                              text: ' (' + movie.voteCount.toString() + ' votes)',
-                              style: TextStyle(
+                              text: ' (${movie.voteCount.toString()} votes)',
+                              style: const TextStyle(
                                 color: Colors.grey
                               ),
                             ),
@@ -142,7 +116,7 @@ class MovieCard extends StatelessWidget{
                 ],
               ),
             ), 
-            SizedBox(width: 10,), //separator
+            const SizedBox(width: 10,), //separator
           ],
         ),
       ),

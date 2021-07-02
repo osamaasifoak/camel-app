@@ -17,7 +17,8 @@ class MovieTagCard extends StatelessWidget{
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Padding(
+      child: Container(
+        alignment: Alignment.center,
         padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
         child: Text(
           genreName,

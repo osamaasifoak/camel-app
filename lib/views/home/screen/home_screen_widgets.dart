@@ -23,9 +23,9 @@ mixin _HomeScreenWidgets on _HomeScreenProps {
           child: TabBarView(
             controller: tabController,
             physics: const NeverScrollableScrollPhysics(),
-            children: [
-              const NowPlayingScreen(),
-              const UpcomingScreen(),
+            children: const [
+              NowPlayingScreen(),
+              UpcomingScreen(),
             ],
           ),
         ),
@@ -35,7 +35,7 @@ mixin _HomeScreenWidgets on _HomeScreenProps {
 
   Widget favIcon() {
     return IconButton(
-      icon: Icon(Icons.favorite_border),
+      icon: const Icon(Icons.favorite_border),
       color: Colors.grey[900],
       onPressed: loadFavMovies,
     );
