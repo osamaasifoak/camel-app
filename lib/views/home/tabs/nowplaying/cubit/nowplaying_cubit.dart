@@ -42,6 +42,7 @@ class NowPlayingCubit extends Cubit<NowPlayingState> {
         final page = state.page + 1;
         final npMoreMovies = await _moviesRepo.getNowPlaying(page: page);
         state.movies.addAll(npMoreMovies);
+        // await Future.delayed(Duration(seconds: 1));
         emit(state.update(
           status: NowPlayingStatus.loaded,
           page: page,

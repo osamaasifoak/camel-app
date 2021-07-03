@@ -14,14 +14,13 @@ abstract class _UpcomingScreenProps extends State<UpcomingScreen> with Automatic
   void initState() {
     super.initState();
     upcomingCubit = context.read<UpcomingCubit>();
-    scrollController = ScrollController()
+    scrollController = widget.scrollController ?? ScrollController()
       ..addListener(() {
 
         if(
 
-            scrollController.offset >= scrollController.position.maxScrollExtent - 60 &&
+            scrollController.offset >= scrollController.position.maxScrollExtent - 80 &&
             scrollController.position.userScrollDirection == ScrollDirection.reverse &&
-            !scrollController.position.outOfRange &&
             upcomingCubit.state.status != UpcomingStatus.loadingMore &&
             upcomingCubit.state.status != UpcomingStatus.loading
 

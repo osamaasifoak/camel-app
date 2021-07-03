@@ -13,7 +13,8 @@ part 'upcoming_props.dart';
 part 'upcoming_widgets.dart';
 
 class UpcomingScreen extends StatefulWidget{
-  const UpcomingScreen();
+  final ScrollController? scrollController;
+  const UpcomingScreen({this.scrollController});
   @override
   _UpcomingScreenState createState() => _UpcomingScreenState();  
 }

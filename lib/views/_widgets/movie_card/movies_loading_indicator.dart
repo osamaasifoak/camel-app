@@ -27,7 +27,7 @@ class MoviesLoadingIndicator extends StatelessWidget{
 
   Card _card(double halfScreenWidth, double quarterScreenWidth) {
     return Card(
-      margin: const EdgeInsets.fromLTRB(15, 10, 15, 0),
+      margin: const EdgeInsets.fromLTRB(15, 0, 15, 10),
       elevation: 4.0,
       shadowColor: Colors.grey[50]?.withOpacity(0.3),
       color: Colors.grey[50],

@@ -13,7 +13,8 @@ part 'nowplaying_props.dart';
 part 'nowplaying_widgets.dart';
 
 class NowPlayingScreen extends StatefulWidget {
-  const NowPlayingScreen();
+  final ScrollController? scrollController;
+  const NowPlayingScreen({this.scrollController});
   @override
   _NowPlayingScreenState createState() => _NowPlayingScreenState();
 }
@@ -26,15 +27,12 @@ class _NowPlayingScreenState extends _NowPlayingScreenProps
     return BlocConsumer<NowPlayingCubit, NowPlayingState>(
       listener: (_, state) {
         if (state.status == NowPlayingStatus.error) {
+
           navigationService.showSnackBar(
             message: state.errorMessage,
           );
+          
         }
-        // if(state.scrollToTopRequested && _scrollController.offset > 0)
-        //   _scrollController.animateTo(
-        //     0,
-        //     duration: Duration(milliseconds: 500),
-        //     curve: Curves.ease);
       },
       builder: (_, state) {
         switch (state.status) {

@@ -7,16 +7,20 @@ import 'package:camelmovies/core/models/movie/movie.dart';
 class MovieCard extends StatelessWidget{
   final Movie movie;
   final VoidCallback? onCardPressed;
+  final ButtonStyle? style;
   
-  const MovieCard({Key? key, required this.movie, required this.onCardPressed}) : super(key: key);
+  const MovieCard({
+    Key? key, 
+    required this.movie, 
+    required this.onCardPressed,
+    this.style}) : super(key: key);
   
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(left: 15, right: 15, top: 10),
-      padding: const EdgeInsets.all(0),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
       child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
+        style: style ?? ElevatedButton.styleFrom(
           shadowColor: Colors.grey[50]?.withOpacity(0.3),
           elevation: 4.0,
           primary: Colors.grey[50],

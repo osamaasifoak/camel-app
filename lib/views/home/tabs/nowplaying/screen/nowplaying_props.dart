@@ -14,13 +14,12 @@ abstract class _NowPlayingScreenProps extends State<NowPlayingScreen> with Autom
   void initState() {
     super.initState();
     nowPlayingCubit = context.read<NowPlayingCubit>();
-    scrollController = ScrollController()
+    scrollController = widget.scrollController ?? ScrollController()
       ..addListener(() {
 
         if (
-            scrollController.offset >= scrollController.position.maxScrollExtent - 60 &&
+            scrollController.offset >= scrollController.position.maxScrollExtent - 80 &&
             scrollController.position.userScrollDirection == ScrollDirection.reverse &&
-            !scrollController.position.outOfRange &&
             nowPlayingCubit.state.status != NowPlayingStatus.loadingMore &&
             nowPlayingCubit.state.status != NowPlayingStatus.loading
 
