@@ -2,7 +2,6 @@ part of '_nowplaying_screen.dart';
 
 abstract class _NowPlayingScreenProps extends State<NowPlayingScreen> with AutomaticKeepAliveClientMixin {
   final navigationService = GetIt.I<NavigationService>();
-  // final nowPlayingMoviesListKey = PageStorageKey<int>(0);
 
   late final ScrollController scrollController;
   late final NowPlayingCubit nowPlayingCubit;
@@ -16,7 +15,7 @@ abstract class _NowPlayingScreenProps extends State<NowPlayingScreen> with Autom
     nowPlayingCubit = context.read<NowPlayingCubit>();
     scrollController = widget.scrollController ?? ScrollController()
       ..addListener(() {
-
+        /// when user scrolls to the bottom of the list, load more movies.
         if (
             scrollController.offset >= scrollController.position.maxScrollExtent - 80 &&
             scrollController.position.userScrollDirection == ScrollDirection.reverse &&
@@ -35,7 +34,9 @@ abstract class _NowPlayingScreenProps extends State<NowPlayingScreen> with Autom
 
   @override
   void dispose() {
-    scrollController.dispose();
+    /// if widget.screenController is null, it means the ScreenController was created by this screen
+    /// and needed to be disposed. Otherwise it's not this screen's responsibility to dispose it.
+    if(widget.scrollController == null) scrollController.dispose();
     super.dispose();
   }
 }

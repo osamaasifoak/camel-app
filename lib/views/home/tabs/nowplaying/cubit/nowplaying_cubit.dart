@@ -27,7 +27,7 @@ class NowPlayingCubit extends Cubit<NowPlayingState> {
       ));
 
     }else{
-
+      if(state.movies.isNotEmpty) state.movies.clear();
       emit(state.update(
         movies: [],
         status: NowPlayingStatus.loading,
@@ -35,6 +35,7 @@ class NowPlayingCubit extends Cubit<NowPlayingState> {
       ));
 
     }
+    
     try{
 
       if(more){

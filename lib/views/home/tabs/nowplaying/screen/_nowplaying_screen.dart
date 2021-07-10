@@ -1,3 +1,4 @@
+import 'package:camelmovies/views/_widgets/error_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -39,6 +40,11 @@ class _NowPlayingScreenState extends _NowPlayingScreenProps
           case NowPlayingStatus.init:
           case NowPlayingStatus.loading:
             return loadingIndicator();
+          case NowPlayingStatus.error:
+            return ErrorScreen(
+              errorMessage: 'Oops.. An error occurred, please try again.', 
+              onRetry: nowPlayingCubit.loadMovies,
+            );
           default:
             return nowPlayingMovies();
         }

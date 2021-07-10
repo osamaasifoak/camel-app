@@ -1,11 +1,11 @@
 import 'package:bloc/bloc.dart';
-import 'package:camelmovies/core/helpers/error_handler.dart';
 import 'package:equatable/equatable.dart';
 import 'package:get_it/get_it.dart';
 
-import 'package:camelmovies/core/models/movie/movie.dart';
-import 'package:camelmovies/core/repositories/movies_repo.dart';
-import 'package:camelmovies/core/services/localdb_service/localdb_service.dart';
+import '/core/helpers/error_handler.dart';
+import '/core/models/movie/movie.dart';
+import '/core/repositories/movies_repo.dart';
+import '/core/services/localdb_service/localdb_service.dart';
 
 part 'favmovies_state.dart';
 
@@ -19,14 +19,17 @@ class FavMoviesCubit extends Cubit<FavMoviesState> {
         super(FavMoviesState.init());
 
   Future<void> loadFavMovies() async{
+
+    if(state.movies.isNotEmpty) state.movies.clear();
+
+    emit(state.update(
+      status: FavMoviesStatus.loading,
+    ));
+
     try{
-      emit(
-        state.update(
-          status: FavMoviesStatus.loading,
-        )
-      );
+      
       final localFavMovies = await _localDBRepo.getFavList();
-      final movies = localFavMovies != null ? await _moviesRepo.getMovieListById(localFavMovies) : <Movie>[];
+      final movies = await _moviesRepo.getMovieListById(localFavMovies);
       emit(
         state.update(
           movies: movies,

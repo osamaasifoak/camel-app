@@ -1,9 +1,9 @@
 
-import 'package:camelmovies/core/constants/app_apis.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'core/constants/app_apis.dart';
 import 'core/constants/app_routes.dart';
 import 'core/helpers/app_bloc_observer.dart';
 import 'core/repositories/movies_repo.dart';
@@ -25,7 +25,7 @@ void main() async{
   WidgetsFlutterBinding.ensureInitialized();
 
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent, // transparent status bar
+    statusBarColor: Colors.transparent,
   ));
 
   await AppApis().loadApiKey();
@@ -80,7 +80,7 @@ class App extends StatelessWidget {
           scaffoldMessengerKey: NavigationService.messengerKey,
           theme: ThemeData(
             primaryColor: Colors.grey[50],
-            accentColor: Colors.grey[900],
+            accentColor: Color(0xFF01579B), //Colors.grey[900],
             errorColor: const Color(0xffD50000),
             visualDensity: VisualDensity.adaptivePlatformDensity,
             textButtonTheme: TextButtonThemeData(

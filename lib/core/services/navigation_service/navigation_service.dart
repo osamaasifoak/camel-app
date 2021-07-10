@@ -157,7 +157,7 @@ class NavigationService {
       return messengerKey.currentState?.showSnackBar(SnackBar(
         content: message != null ? Text(message) : content!,
         duration: duration ?? const Duration(milliseconds: 2000),
-        backgroundColor: backgroundColor,
+        backgroundColor: backgroundColor ?? const Color(0xFF01579B),
         elevation: elevation,
         behavior: floating != null && floating
             ? SnackBarBehavior.floating
@@ -172,8 +172,7 @@ class NavigationService {
       ));
     } catch (e, st) {
       if(foundation.kDebugMode) {
-        dev.log(e.toString());
-        dev.log(st.toString());
+        dev.log(e.toString(), stackTrace: st);
       }
     }
   }
@@ -183,8 +182,7 @@ class NavigationService {
       return messengerKey.currentState?.hideCurrentSnackBar();
     } catch (e, st) {
       if(foundation.kDebugMode) {
-        dev.log(e.toString());
-        dev.log(st.toString());
+        dev.log(e.toString(), stackTrace: st);
       }
     }
   }
@@ -194,8 +192,7 @@ class NavigationService {
       return messengerKey.currentState?.removeCurrentSnackBar();
     } catch (e, st) {
       if(foundation.kDebugMode) {
-        dev.log(e.toString());
-        dev.log(st.toString());
+        dev.log(e.toString(), stackTrace: st);
       }
     }
   }
@@ -205,8 +202,7 @@ class NavigationService {
       return messengerKey.currentState?.clearSnackBars();
     } catch (e, st) {
       if(foundation.kDebugMode) {
-        dev.log(e.toString());
-        dev.log(st.toString());
+        dev.log(e.toString(), stackTrace: st);
       }
     }
   }
@@ -254,8 +250,7 @@ class NavigationService {
       }
     } catch (e, st) {
       if(foundation.kDebugMode) {
-        dev.log(e.toString());
-        dev.log(st.toString());
+        dev.log(e.toString(), stackTrace: st);
       }
     }
   }

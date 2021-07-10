@@ -1,3 +1,4 @@
+import 'package:camelmovies/views/_widgets/error_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,21 +28,25 @@ class _UpcomingScreenState extends _UpcomingScreenProps with _UpcomingScreenWidg
     return BlocConsumer<UpcomingCubit, UpcomingState>(
       listener: (_, state){
         if (state.status == UpcomingStatus.error) {
+
           navigationService.showSnackBar(
+
             message: state.errorMessage,
+
           );
-        }
-        // if(state.scrollToTopRequested && _scrollController!.offset > 0)
-        //   _scrollController!.animateTo(
-        //     0, 
-        //     duration: Duration(milliseconds: 500), 
-        //     curve: Curves.ease);  
+
+        }  
       },
       builder: (_, state){
         switch(state.status) {
           case UpcomingStatus.init:
           case UpcomingStatus.loading:
             return loadingIndicator();
+          case UpcomingStatus.error:
+            return ErrorScreen(
+              errorMessage: 'Oops.. An error occurred, please try again.',
+              onRetry: upcomingCubit.loadMovies,
+            );
           default:
             return upcomingMovies();
         }

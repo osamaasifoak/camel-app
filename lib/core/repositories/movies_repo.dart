@@ -87,7 +87,7 @@ class MoviesRepository {
     }else{
       throw ErrorHandler.transformStatusCodeToException(
         statusCode: response.statusCode, 
-        responseBody: response.body
+        responseBody: response.body,
       );
     }
   }

@@ -27,7 +27,8 @@ class UpcomingCubit extends Cubit<UpcomingState> {
       ));
 
     } else {
-
+      
+      if(state.movies.isNotEmpty) state.movies.clear();
       emit(state.update(
         movies: [],
         status: UpcomingStatus.loading,

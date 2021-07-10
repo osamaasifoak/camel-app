@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '/core/constants/app_routes.dart';
+
 import '/views/favmovies/cubit/favmovies_cubit.dart';
 import '/views/home/tabs/nowplaying/screen/_nowplaying_screen.dart';
 import '/views/home/tabs/upcoming/screen/_upcoming_screen.dart';
@@ -28,14 +29,15 @@ class _HomeScreenState extends _HomeScreenProps with _HomeScreenWidgets{
           style: TextStyle(
             fontFamily: 'Nunito Sans',
             fontWeight: FontWeight.bold,
-            color: Color(0xFF01579B) // Colors.blue[900],
+            color: Color(0xFF01579B), // Colors.blue[900],
           ),
         ),
         actions: [
           favIcon(),
         ],
         centerTitle: true,
-        elevation: 0.7,
+        elevation: 10.0,
+        shadowColor: Colors.white24,
       ),
       body: PageView(
         controller: pageController,
@@ -48,6 +50,7 @@ class _HomeScreenState extends _HomeScreenProps with _HomeScreenWidgets{
           items: bottomNavItems(),
           currentIndex: index,
           onTap: onBottomNavTapped,
+          selectedItemColor: const Color(0xFF01579B),
         ),
       ),
     );
