@@ -13,29 +13,23 @@ class SplashScreen extends StatefulWidget{
 
 class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin{
   late final AnimationController _animationController;
-  late final Animation _animation;
+  late final Animation<double> _animation;
 
   @override
   void initState() {
     super.initState();
     _animationController = AnimationController(
       vsync: this, 
-      duration: Duration(milliseconds: 2000),
-      
-    );
-    _animationController.repeat();
-    _animation = Tween(
+      duration: const Duration(milliseconds: 2000),
+    )..repeat();
+    _animation = Tween<double>(
       begin: 0.0,
       end: 6.0,
-    ).animate(_animationController)
-    ..addListener(() { 
-      setState(() {
-        
-      });
-    });
+    ).animate(_animationController);
+
     Future.delayed(
-      Duration(milliseconds: 2000),
-      () => Navigator.of(context).pop()
+      const Duration(milliseconds: 2000),
+      Navigator.of(context).pop,
     );
   }
 
@@ -50,31 +44,41 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
-        body: Center(
-          child: Container(
-            alignment: Alignment.center,
-            margin: EdgeInsets.zero,
-            padding: EdgeInsets.zero,
-            child:  ShaderMask(
-              child: Text(
-                'IS',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'Monoton',
-                  fontSize: 80,
-                  color: Colors.white
-                ),
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          backgroundColor: Colors.transparent,
+          shadowColor: Colors.transparent,
+          elevation: 0,
+        ),
+        extendBodyBehindAppBar: true,
+        body: Container(
+          alignment: Alignment.center,
+          margin: EdgeInsets.zero,
+          padding: EdgeInsets.zero,
+          child: ValueListenableBuilder<double>(
+            valueListenable: _animation,
+            child: Text(
+              'IS',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'Monoton',
+                fontSize: 80,
+                color: Colors.white
               ),
+            ),
+            builder: (_, animationValue, child) {
+              return ShaderMask(
+              child: child,
               shaderCallback: (rect) {
                 return RadialGradient(
                   center: Alignment.topLeft,
                   radius: 1.5,
                   stops: [
-                    _animation.value - 4.5,
-                    _animation.value - 3.5,
-                    _animation.value - 2.5,
-                    _animation.value - 1.25,
-                    _animation.value - 0.5,
+                    animationValue - 4.5,
+                    animationValue - 3.5,
+                    animationValue - 2.5,
+                    animationValue - 1.25,
+                    animationValue - 0.5,
                   ],
                   colors: [
                     Colors.blue[900]!,
@@ -88,7 +92,8 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                   ],
                 ).createShader(rect);
               },
-            ),
+            );
+            },
           ),
         ),
       ),
