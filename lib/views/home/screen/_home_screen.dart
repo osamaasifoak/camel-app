@@ -1,10 +1,8 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '/core/constants/app_routes.dart';
+import '/core/constants/app_router.dart';
 
-import '/views/favmovies/cubit/favmovies_cubit.dart';
 import '/views/home/tabs/nowplaying/screen/_nowplaying_screen.dart';
 import '/views/home/tabs/upcoming/screen/_upcoming_screen.dart';
 
@@ -12,7 +10,7 @@ part 'home_screen_props.dart';
 part 'home_screen_widgets.dart';
 
 class HomeScreen extends StatefulWidget{
-  const HomeScreen();
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
   _HomeScreenState createState() => _HomeScreenState();  
@@ -29,7 +27,7 @@ class _HomeScreenState extends _HomeScreenProps with _HomeScreenWidgets{
           style: TextStyle(
             fontFamily: 'Nunito Sans',
             fontWeight: FontWeight.bold,
-            color: Color(0xFF01579B), // Colors.blue[900],
+            color: Color(0xFF01579B),
           ),
         ),
         actions: [
@@ -49,7 +47,7 @@ class _HomeScreenState extends _HomeScreenProps with _HomeScreenWidgets{
         builder: (_, index, __) => BottomNavigationBar(
           items: bottomNavItems(),
           currentIndex: index,
-          onTap: onBottomNavTapped,
+          onTap: _onBottomNavTapped,
           selectedItemColor: const Color(0xFF01579B),
         ),
       ),

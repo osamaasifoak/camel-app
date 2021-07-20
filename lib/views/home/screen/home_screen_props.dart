@@ -8,12 +8,10 @@ abstract class _HomeScreenProps extends State<HomeScreen> with SingleTickerProvi
   final ScrollController upcomingScrollController = ScrollController();
   
   late final PageController pageController;
-  late final FavMoviesCubit favMoviesCubit;
 
   @override
   void initState() {
     super.initState();
-    favMoviesCubit = context.read<FavMoviesCubit>();
     pageController = PageController();
   }
 
@@ -23,13 +21,11 @@ abstract class _HomeScreenProps extends State<HomeScreen> with SingleTickerProvi
     nowPlayingScrollController.dispose();
     upcomingScrollController.dispose();
     pageController.dispose();
-    favMoviesCubit.close();
 
     super.dispose();
   }
 
-  void loadFavMovies() {
-    favMoviesCubit.loadFavMovies();
+  void _loadFavMovies() {
     Navigator.of(context).pushNamed(AppRoutes.favMovies);
   }
 
@@ -49,7 +45,7 @@ abstract class _HomeScreenProps extends State<HomeScreen> with SingleTickerProvi
     );
   }
 
-  void onBottomNavTapped(int index) {
+  void _onBottomNavTapped(int index) {
 
     if(selectedIndex.value == index) {
 
