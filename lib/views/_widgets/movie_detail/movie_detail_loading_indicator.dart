@@ -3,6 +3,9 @@ import 'package:camelmovies/views/_widgets/default_shimmer.dart';
 import 'package:flutter/material.dart';
 
 class MovieDetailLoadingIndicator extends StatelessWidget{
+  
+  const MovieDetailLoadingIndicator({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
 
