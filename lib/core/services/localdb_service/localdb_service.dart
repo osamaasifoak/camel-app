@@ -1,113 +1,189 @@
+import 'dart:async' show FutureOr;
+import 'dart:developer' as dev show log;
 
+import 'package:camelmovies/core/services/localdb_service/base_localdb_service.dart';
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as path show join;
 
-import 'package:camelmovies/core/models/movie/base_movie.dart';
+const String _dbFileName = 'userpref.db';
 
-class LocalDbService {
-  late final Future<Database> _database;
-  static const String _tableName = 'fav';
-  static const String _createTable = 'CREATE TABLE $_tableName(id INTEGER PRIMARY KEY)';
-  static const String _getCount = 'SELECT COUNT(*) FROM $_tableName';
-  
-  LocalDbService(){
-    init();
-  }
+class LocalDbService implements BaseLocalDbService {
 
-  init() async {
-    try{
-      _database = openDatabase(
-        path.join(await getDatabasesPath(), "userpref.db"),
-        onCreate: (db, ver) async{
-          return await db.execute(_createTable);
-        },
+  final String _favTable = 'fav';
+  @override
+  String get favTable => _favTable;
+
+  late final String _createFavTable = 'CREATE TABLE $_favTable(id INTEGER PRIMARY KEY)';
+
+  late final List<String> _createAllTables = [
+    _createFavTable,
+  ];
+
+  late final List<String> _tablesToBeCleared = [
+    _favTable,
+  ];
+
+  late final Database _database;
+
+  @override
+  FutureOr<bool> initDb([Database? database]) async {
+    if (database != null) {
+      _database = database;
+      return true;
+    }
+    try {
+      final dbPath = path.join(await getDatabasesPath(), _dbFileName);
+      _database = await openDatabase(
+        dbPath,
+        onCreate: _createTables,
         version: 1,
       );
-    }catch(e, st){
-      print(st);
+      if (kDebugMode) {
+        dev.log('Database initialized!');
+      }
+      return true;
+    } catch (e, st) {
+      if (kDebugMode) {
+        dev.log(
+          e.toString(),
+          stackTrace: st,
+        );
+      }
     }
+    return false;
   }
 
-  Future<int?> getFavCount() async{
-    int? count = 0;
-    try{
-      final Database db = await _database;
-      var rawCount = await db.rawQuery(_getCount);
-      count = Sqflite.firstIntValue(rawCount);
-    }catch(e, st){
-      print(e);
-      print(st);
+  void _createTables(Database db, int version) async {
+    final batch = db.batch();
+    for (final table in _createAllTables) {
+      batch.execute(table);
     }
-    return count;
+    await batch.commit(noResult: true);
   }
 
-  Future<List<BaseMovie>> getFavList() async {
-    try{
+  @override
+  Future<List<Object?>> batch(
+    void Function(Batch batch) batchesFn, {
+    bool noResult = true,
+    bool? exclusive,
+    bool? continueOnError,
+    Transaction? txn,
+  }) {
+    final batch = (txn ?? _database).batch();
 
-      final Database db = await _database;
-      final List<Map<String,dynamic>> list = await db.query(_tableName);
-      
-      return List.generate(list.length, (i) => BaseMovie.fromMap(list[i]));
-      
-    }catch(e, st){
-      print(st);
-    }
-    return [];
-  }
+    batchesFn(batch);
 
-
-  Future<bool> insertFav(num? id) async {
-    bool res = true;
-    try{
-      final Database db = await _database;
-      var movie = {
-        'id': id,
-      };
-      
-      await db.insert(
-        _tableName,
-        movie,
-        conflictAlgorithm: ConflictAlgorithm.replace,
+    if (kDebugMode) {
+      dev.log(
+        '----------\n'
+        '[LocalDbService.batch] called!\n'
+        'batches: ${batch.toString()}\n'
+        '----------\n',
       );
-    }catch(e, st){
-      print(st);
-      res = false;
     }
-    return res;
+
+    return batch.commit(
+      exclusive: exclusive,
+      noResult: noResult,
+      continueOnError: continueOnError,
+    );
   }
 
-  Future<bool> deleteFav(num? id) async {
-    bool res = true;
-    try{
-      final Database db = await _database;
-      await db.delete(
-        _tableName,
-        where: 'id = ?',
-        whereArgs: [id],
-      );
-    }catch(e, st){
-      print(st);
-      res = false;
+  @override
+  Future<void> clearDb() async {
+    final batch = _database.batch();
+    for (String tableName in _tablesToBeCleared) {
+      batch.delete(tableName);
     }
-    return res;
-  }
-  
-  Future<bool> isFav(num? id) async {
-    bool isfav = false;
-    try{
-      final Database db = await _database;
-      final List<Map<String,dynamic>> list = await db.query(
-        _tableName,
-        where: 'id = ?',
-        whereArgs: [id],
-        limit: 1,
-      );
-      //print(list);
-      if(list.length > 0) isfav = true;
-    }catch(e, st){
-      print(st);
-    }
-    return isfav;
+    await batch.commit(noResult: true);
   }
 
+  @override
+  Future<void> closeDb() => _database.close();
+
+  @override
+  Future<int> delete({
+    required String table,
+    String? where,
+    List<Object?>? whereArgs,
+    Transaction? txn,
+  }) {
+    return (txn ?? _database).delete(
+      table,
+      where: where,
+      whereArgs: whereArgs,
+    );
+  }
+
+  @override
+  Future<int> insert({
+    required String table,
+    required Map<String, Object?> values,
+    ConflictAlgorithm? conflictAlgorithm,
+    Transaction? txn,
+  }) {
+    return (txn ?? _database).insert(
+      table,
+      values,
+      conflictAlgorithm: conflictAlgorithm,
+    );
+  }
+
+  @override
+  Future<List<Map<String, Object?>>> select({
+    required String table,
+    bool? distinct,
+    List<String>? columns,
+    String? where,
+    List<Object?>? whereArgs,
+    String? groupBy,
+    String? having,
+    String? orderBy,
+    int? limit,
+    int? offset,
+    Transaction? txn,
+  }) {
+    return (txn ?? _database).query(
+      table,
+      distinct: distinct,
+      columns: columns,
+      where: where,
+      whereArgs: whereArgs,
+      groupBy: groupBy,
+      having: having,
+      orderBy: orderBy,
+      limit: limit,
+      offset: offset,
+    );
+  }
+
+  @override
+  Future<int> update({
+    required String table,
+    required Map<String, Object?> values,
+    String? where,
+    List<Object?>? whereArgs,
+    ConflictAlgorithm? conflictAlgorithm,
+    Transaction? txn,
+  }) {
+    return (txn ?? _database).update(
+      table,
+      values,
+      where: where,
+      whereArgs: whereArgs,
+      conflictAlgorithm: conflictAlgorithm,
+    );
+  }
+
+  @override
+  Future<T> transaction<T>(
+    Future<T> Function(Transaction txn) action, {
+    bool? exclusive,
+  }) {
+    return _database.transaction(
+      action,
+      exclusive: exclusive,
+    );
+  }
 }
