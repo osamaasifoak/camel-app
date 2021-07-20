@@ -4,139 +4,143 @@ import 'dart:ui' show ImageFilter;
 import 'package:flutter/foundation.dart' as foundation show kDebugMode;
 import 'package:flutter/material.dart';
 
+import 'base_navigation_service.dart';
+
 typedef PageBuilderFunction = Widget Function(
-    BuildContext context, Animation<double> a1, Animation<double> a2);
+  BuildContext context,
+  Animation<double> a1,
+  Animation<double> a2,
+);
 
 /// a class to simplify navigating between screens.
 /// it requires no `BuildContext` to navigate.
-class NavigationService {
-  /// the navigator key responsible for navigating between screens
-  static final GlobalKey<NavigatorState> navigatorKey =
-      GlobalKey<NavigatorState>();
+class NavigationService implements BaseNavigationService {
+  final _navigatorKey = GlobalKey<NavigatorState>();
+  @override
+  GlobalKey<NavigatorState> get navigatorKey => _navigatorKey;
 
-  /// the scaffold messenger key responsible for showing snackbar
-  static final GlobalKey<ScaffoldMessengerState> messengerKey =
-      GlobalKey<ScaffoldMessengerState>();
+  final _messengerKey = GlobalKey<ScaffoldMessengerState>();
+  @override
+  GlobalKey<ScaffoldMessengerState> get messengerKey => _messengerKey;
 
-  /* /// get current screen context, returns `null` if no widget built with [navigatorKey]
-  BuildContext? get currentContext => navigatorKey.currentContext; */
-
-  /// this is equivalent to
-  /// ```
-  /// await Navigator.of(contex).pushNamed('/routeName');
-  /// ```
-  Future<T?>? toNamed<T extends Object?>(String routeName,
-      {Object? arguments}) {
+  @override
+  Future<T?>? toNamed<T extends Object?>(
+    String routeName, {
+    Object? arguments,
+  }) {
     try {
-      return navigatorKey.currentState
-          ?.pushNamed<T>(routeName, arguments: arguments);
+      return navigatorKey.currentState?.pushNamed<T>(
+        routeName,
+        arguments: arguments,
+      );
     } catch (e, st) {
       if (foundation.kDebugMode) {
-        dev.log(e.toString());
-        dev.log(st.toString());
+        dev.log(
+          e.toString(),
+          stackTrace: st,
+        );
       }
     }
   }
 
-  /// this is equivalent to
-  /// ```dart
-  /// Navigator.of(contex).pop();
-  /// ```
+  @override
   void back<T extends Object?>([T? result]) {
     try {
       return navigatorKey.currentState?.pop(result);
     } catch (e, st) {
       if (foundation.kDebugMode) {
-        dev.log(e.toString());
-        dev.log(st.toString());
+        dev.log(
+          e.toString(),
+          stackTrace: st,
+        );
       }
     }
   }
 
-  /// this is equivalent to
-  /// ```dart
-  /// Navigator.of(context).popUntil(ModalRoute.withName('\routeName'));
-  /// ```
+  @override
   void backUntilNamed(String routeName) {
     try {
-      return navigatorKey.currentState
-          ?.popUntil(ModalRoute.withName(routeName));
+      return navigatorKey.currentState?.popUntil(
+        ModalRoute.withName(routeName),
+      );
     } catch (e, st) {
-      if(foundation.kDebugMode) {
-        dev.log(e.toString());
-        dev.log(st.toString());
+      if (foundation.kDebugMode) {
+        dev.log(
+          e.toString(),
+          stackTrace: st,
+        );
       }
     }
   }
 
-  /// this is equivalent to
-  /// ```dart
-  /// await Navigator.of(contex).pushNamedAndRemoveUntil('/routeName', ModalRoute.withName('/untilRouteName'), arguments: arguments);
-  /// ```
-  Future<T?>? offToNameUntil<T extends Object?>(String toRouteName,
-      {required String untilRouteName, Object? arguments}) {
+  @override
+  Future<T?>? offToNameUntil<T extends Object?>(
+    String toRouteName, {
+    required String untilRouteName,
+    Object? arguments,
+  }) {
     try {
       return navigatorKey.currentState?.pushNamedAndRemoveUntil<T>(
-          toRouteName, ModalRoute.withName(untilRouteName),
-          arguments: arguments);
+        toRouteName,
+        ModalRoute.withName(untilRouteName),
+        arguments: arguments,
+      );
     } catch (e, st) {
-      if(foundation.kDebugMode) {
-        dev.log(e.toString());
-        dev.log(st.toString());
+      if (foundation.kDebugMode) {
+        dev.log(
+          e.toString(),
+          stackTrace: st,
+        );
       }
     }
   }
 
-  /// this is equivalent to
-  /// ```dart
-  /// await Navigator.of(contex).pushNamedAndRemoveUntil('/routeName', (_) => false, arguments: arguments);
-  /// ```
-  Future<T?>? offAllToName<T extends Object?>(String routeName,
-      {Object? arguments}) {
+  @override
+  Future<T?>? offAllToName<T extends Object?>(
+    String routeName, {
+    Object? arguments,
+  }) {
     try {
       return navigatorKey.currentState?.pushNamedAndRemoveUntil<T>(
-          routeName, (_) => false,
-          arguments: arguments);
+        routeName,
+        (_) => false,
+        arguments: arguments,
+      );
     } catch (e, st) {
-      if(foundation.kDebugMode) {
-        dev.log(e.toString());
-        dev.log(st.toString());
+      if (foundation.kDebugMode) {
+        dev.log(
+          e.toString(),
+          stackTrace: st,
+        );
       }
     }
   }
 
-  /// this is equivalent to
-  /// ```dart
-  /// await Navigator.of(contex).pushReplacementNamed('/routeName');
-  /// ```
-  Future<T?>? offToName<T extends Object?, TO extends Object?>(String routeName,
-      {TO? result, Object? arguments}) {
+  @override
+  Future<T?>? offToName<T extends Object?, TO extends Object?>(
+    String routeName, {
+    TO? result,
+    Object? arguments,
+  }) {
     try {
-      return navigatorKey.currentState?.pushReplacementNamed<T, TO>(routeName,
-          result: result, arguments: arguments);
+      return navigatorKey.currentState?.pushReplacementNamed<T, TO>(
+        routeName,
+        result: result,
+        arguments: arguments,
+      );
     } catch (e, st) {
-      if(foundation.kDebugMode) {
-        dev.log(e.toString());
-        dev.log(st.toString());
+      if (foundation.kDebugMode) {
+        dev.log(e.toString(), stackTrace: st);
       }
     }
   }
 
-  /// a shortcut for showing snack bar.
-  ///
-  /// provide either a `String` [message] or a `Widget` [content].
-  /// one of them cannot be `null`.
-  ///
-  /// [duration] defaults to 2000 ms
-  ///
-  /// [floating] is used whether to show snackbar floating above all widgets
-  /// including [BottomNavigationBar] and [FloatingActionButton].
-  /// defaults to false: [SnackBarBehavior.fixed].
+  @override
   ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? showSnackBar({
     String? message,
     Widget? content,
     Duration? duration,
-    Color? backgroundColor,
+    Color backgroundColor = const Color(0xFF01579B),
     double? elevation,
     bool? floating,
     EdgeInsetsGeometry? margin,
@@ -157,7 +161,7 @@ class NavigationService {
       return messengerKey.currentState?.showSnackBar(SnackBar(
         content: message != null ? Text(message) : content!,
         duration: duration ?? const Duration(milliseconds: 2000),
-        backgroundColor: backgroundColor ?? const Color(0xFF01579B),
+        backgroundColor: backgroundColor,
         elevation: elevation,
         behavior: floating != null && floating
             ? SnackBarBehavior.floating
@@ -171,52 +175,23 @@ class NavigationService {
         onVisible: onVisible,
       ));
     } catch (e, st) {
-      if(foundation.kDebugMode) {
+      if (foundation.kDebugMode) {
         dev.log(e.toString(), stackTrace: st);
       }
     }
   }
 
-  void hideCurrentSnackBar() {
-    try {
-      return messengerKey.currentState?.hideCurrentSnackBar();
-    } catch (e, st) {
-      if(foundation.kDebugMode) {
-        dev.log(e.toString(), stackTrace: st);
-      }
-    }
-  }
-
-  void removeCurrentSnackBar() {
-    try {
-      return messengerKey.currentState?.removeCurrentSnackBar();
-    } catch (e, st) {
-      if(foundation.kDebugMode) {
-        dev.log(e.toString(), stackTrace: st);
-      }
-    }
-  }
-
-  void clearSnackBars() {
-    try {
-      return messengerKey.currentState?.clearSnackBars();
-    } catch (e, st) {
-      if(foundation.kDebugMode) {
-        dev.log(e.toString(), stackTrace: st);
-      }
-    }
-  }
-
-  /// [blurFactor] defaults to `null` which means no blur
-  Future<T?>? showDialogWithBlur<T extends Object?>(
-      {required PageBuilderFunction pageBuilder,
-      double? blurFactor,
-      bool barrierDismissible = false,
-      String? barrierLabel,
-      Color barrierColor = const Color(0x8A000000),
-      Duration transitionDuration = const Duration(milliseconds: 300),
-      bool useRootNavigator = true,
-      RouteSettings? routeSettings}) {
+  @override
+  Future<T?>? showDialogWithBlur<T extends Object?>({
+    required PageBuilderFunction pageBuilder,
+    double? blurFactor,
+    bool barrierDismissible = false,
+    String? barrierLabel,
+    Color barrierColor = const Color(0x8A000000),
+    Duration transitionDuration = const Duration(milliseconds: 300),
+    bool useRootNavigator = true,
+    RouteSettings? routeSettings,
+  }) {
     assert(
         !barrierDismissible || barrierLabel != null,
         'If you want to set [barrierDismissible] to true, '
@@ -232,24 +207,23 @@ class NavigationService {
           barrierLabel: barrierLabel,
           barrierColor: barrierColor,
           transitionDuration: transitionDuration,
-          transitionBuilder: 
-            blurFactor == null
+          transitionBuilder: blurFactor == null
               ? null
               : (_, a1, __, child) => BackdropFilter(
-                  filter: ImageFilter.blur(
-                      sigmaX: blurFactor * a1.value,
-                      sigmaY: blurFactor * a1.value),
-                  child: FadeTransition(
-                    child: child,
-                    opacity: a1,
+                    filter: ImageFilter.blur(
+                        sigmaX: blurFactor * a1.value,
+                        sigmaY: blurFactor * a1.value),
+                    child: FadeTransition(
+                      child: child,
+                      opacity: a1,
+                    ),
                   ),
-                ),
           useRootNavigator: useRootNavigator,
           routeSettings: routeSettings,
         );
       }
     } catch (e, st) {
-      if(foundation.kDebugMode) {
+      if (foundation.kDebugMode) {
         dev.log(e.toString(), stackTrace: st);
       }
     }
