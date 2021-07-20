@@ -1,21 +1,25 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 
 import '/core/constants/app_apis.dart';
-import '../helpers/error_handler.dart';
+import '/core/helpers/error_handler.dart';
 import '/core/models/movie/base_movie.dart';
 import '/core/models/movie/movie_detail.dart';
 import '/core/models/movie/movie.dart';
-import '/core/services/network_service/network_service.dart';
+import '/core/services/network_service/base_network_service.dart';
 
-class MoviesRepository {
+import 'base_movies_repo.dart';
 
-  final NetworkService _networkService = GetIt.I<NetworkService>();
+class MoviesRepository implements BaseMoviesRepository {
+  final BaseNetworkService _networkService;
 
-  final _defaultHeader = {
+  MoviesRepository({
+    required BaseNetworkService networkService,
+  }) : _networkService = networkService;
+
+  final _defaultHeader = const {
     HttpHeaders.contentTypeHeader: 'application/json',
   };
 
@@ -24,50 +28,62 @@ class MoviesRepository {
     AppApis().paramLanguage: AppApis().defaultLanguage,
   };
 
-  MoviesRepository();
-
+  @override
   Future<List<Movie>> getMovieListById(List<BaseMovie> movieIds) async {
     final List<Movie> movies = [];
 
-    for(var movie in movieIds){
-      final uri = Uri.https(AppApis().baseUrl, AppApis().epMovieDetail + movie.id.toString(), _defaultParam);
+    for (final movie in movieIds) {
+      final uri = Uri.https(
+        AppApis().baseUrl,
+        AppApis().epMovieDetail + movie.id.toString(),
+        _defaultParam,
+      );
       final response = await _networkService.get(
-        uri,        
+        uri,
         headers: {
           ..._defaultHeader,
           HttpHeaders.connectionHeader: 'keep-alive',
         },
       );
-      if(response.statusCode == 200){
+      if (response.statusCode == 200) {
         movies.add(Movie.fromJson(response.body));
-      }else{
-        throw ErrorHandler.transformStatusCodeToException(statusCode: response.statusCode, responseBody: response.body);
+      } else {
+        throw ErrorHandler.transformStatusCodeToException(
+          statusCode: response.statusCode,
+          responseBody: response.body,
+        );
       }
     }
     return movies;
   }
 
+  @override
   Future<MovieDetail> getMovieDetail(num? id) async {
-    final uri = Uri.https(AppApis().baseUrl, AppApis().epMovieDetail + id.toString(), _defaultParam);
+    final uri = Uri.https(
+      AppApis().baseUrl,
+      AppApis().epMovieDetail + id.toString(),
+      _defaultParam,
+    );
     final response = await _networkService.get(
-      uri,        
+      uri,
       headers: _defaultHeader,
     );
-    if(response.statusCode == 200){
+    if (response.statusCode == 200) {
       String body = response.body;
       return MovieDetail.fromJson(body);
-    }else{
+    } else {
       throw ErrorHandler.transformStatusCodeToException(
-        statusCode: response.statusCode, 
-        responseBody: response.body
+        statusCode: response.statusCode,
+        responseBody: response.body,
       );
     }
   }
-  
+
+  @override
   Future<List<Movie>> getNowPlaying({int page = 1}) async {
     final now = DateTime.now();
     final date = DateFormat('yyyy-MM-dd').format(now);
-    
+
     final param = {
       ..._defaultParam,
       AppApis().paramNowPlaying: date,
@@ -80,18 +96,21 @@ class MoviesRepository {
       uri,
       headers: _defaultHeader,
     );
-    if(response.statusCode == 200){
-      final Map<String, dynamic> map = json.decode(response.body) as Map<String, dynamic>;
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> map =
+          json.decode(response.body) as Map<String, dynamic>;
       final List<Map<String, dynamic>> results = List.from(map['results']);
       return List.generate(results.length, (i) => Movie.fromMap(results[i]));
-    }else{
+    } else {
       throw ErrorHandler.transformStatusCodeToException(
-        statusCode: response.statusCode, 
+        statusCode: response.statusCode,
         responseBody: response.body,
       );
     }
   }
 
+  @override
   Future<List<Movie>> getUpcoming({int page = 1}) async {
     final now = DateTime.now().add(Duration(days: 1));
     final date = DateFormat('yyyy-MM-dd').format(now);
@@ -105,19 +124,21 @@ class MoviesRepository {
       uri,
       headers: _defaultHeader,
     );
-    if(response.statusCode == 200){
+    if (response.statusCode == 200) {
       final Map<String, dynamic> map = json.decode(response.body);
-      final List<Map<String, dynamic>> results = List<Map<String, dynamic>>.from(map['results']);
+      final List<Map<String, dynamic>> results =
+          List<Map<String, dynamic>>.from(map['results']);
       return List.generate(results.length, (i) => Movie.fromMap(results[i]));
-    }else{
+    } else {
       throw ErrorHandler.transformStatusCodeToException(
-        statusCode: response.statusCode, 
-        responseBody: response.body
+        statusCode: response.statusCode,
+        responseBody: response.body,
       );
     }
   }
 
-  Future<List<Movie>> searchMovie(String keyword, {int page = 1}) async{
+  @override
+  Future<List<Movie>> searchMovie(String keyword, {int page = 1}) async {
     final param = {
       ..._defaultParam,
       AppApis().paramSearch: keyword,
@@ -130,14 +151,14 @@ class MoviesRepository {
       headers: _defaultHeader,
     );
 
-    if(response.statusCode == 200){
-      final Map<String, dynamic> map = json.decode(response.body);
-      final List<Map<String, dynamic>> results = map['results'] as List<Map<String, dynamic>>;
-      return List.generate(results.length, (i) => Movie.fromMap(results[i]));
-    }else{
+    if (response.statusCode == 200) {
+      final jsonMap = json.decode(response.body) as Map<String, dynamic>;
+      final searchResult = jsonMap['results'] as List<Map<String, dynamic>>;
+      return List.from(searchResult.map((movie) => Movie.fromMap(movie)));
+    } else {
       throw ErrorHandler.transformStatusCodeToException(
-        statusCode: response.statusCode, 
-        responseBody: response.body
+        statusCode: response.statusCode,
+        responseBody: response.body,
       );
     }
   }
