@@ -1,46 +1,46 @@
 part of '_nowplaying_screen.dart';
 
-mixin _NowPlayingScreenWidgets on _NowPlayingScreenProps{
-
+mixin _NowPlayingScreenWidgets on _NowPlayingScreenProps {
   Widget loadingIndicator() {
     return const CustomScrollView(
       slivers: [
         SliverToBoxAdapter(
-          child: SizedBox(height: 10,)
+          child: SizedBox(height: 20),
         ),
         MoviesLoadingIndicator(
           itemExtent: 120,
           itemCount: 8,
         ),
         SliverToBoxAdapter(
-          child: SizedBox(height: 20,),
+          child: SizedBox(
+            height: 20,
+          ),
         ),
       ],
     );
   }
 
-  Widget nowPlayingMovies(){
-
+  Widget nowPlayingMovies() {
     final movieCardStyle = ElevatedButton.styleFrom(
       shadowColor: Colors.grey[50]?.withOpacity(0.3),
       elevation: 4.0,
       primary: Colors.grey[50],
       onPrimary: Colors.black87,
       padding: const EdgeInsets.all(0),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10)
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     );
 
     void onCardPressed(num? movieId) {
-      Navigator.of(context)
-        .pushNamed(AppRoutes.movieDetail, arguments: movieId);
+      Navigator.of(context).pushNamed(
+        AppRoutes.movieDetail,
+        arguments: movieId,
+      );
     }
 
     return RefreshIndicator(
-      onRefresh: nowPlayingCubit.loadMovies,
+      onRefresh: _nowPlayingCubit.loadMovies,
       child: CustomScrollView(
-        controller: scrollController,
+        controller: _scrollController,
         cacheExtent: 200,
         slivers: [
           SliverPadding(
@@ -49,15 +49,14 @@ mixin _NowPlayingScreenWidgets on _NowPlayingScreenProps{
               itemExtent: 120,
               delegate: SliverChildBuilderDelegate(
                 (_, index) {
-                  final movie = nowPlayingCubit.state.movies[index];
+                  final movie = _nowPlayingCubit.state.movies[index];
                   return MovieCard(
                     movie: movie,
                     style: movieCardStyle,
                     onCardPressed: () => onCardPressed(movie.id),
                   );
                 },
-                childCount: nowPlayingCubit.state.movies.length,
-                // addAutomaticKeepAlives: false,
+                childCount: _nowPlayingCubit.state.movies.length,
               ),
             ),
           ),
@@ -73,12 +72,14 @@ mixin _NowPlayingScreenWidgets on _NowPlayingScreenProps{
   }
 
   Widget bottomLoadingIndicator() {
-    switch (nowPlayingCubit.state.status) {
+    switch (_nowPlayingCubit.state.status) {
       case NowPlayingStatus.loadingMore:
         return const MoviesLoadingIndicator(itemExtent: 120);
       default:
         return const SliverToBoxAdapter(
-          child: SizedBox(height: 10,),
+          child: SizedBox(
+            height: 10,
+          ),
         );
     }
   }

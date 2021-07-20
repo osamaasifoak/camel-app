@@ -1,14 +1,12 @@
 part of '_upcoming_screen.dart';
 
 mixin _UpcomingScreenWidgets on _UpcomingScreenProps {
-
-  Widget loadingIndicator(){
+  Widget loadingIndicator() {
     return const CustomScrollView(
       slivers: [
         SliverToBoxAdapter(
-            child: SizedBox(
-          height: 10,
-        )),
+          child: SizedBox(height: 20),
+        ),
         MoviesLoadingIndicator(
           itemExtent: 120,
           itemCount: 8,
@@ -33,14 +31,16 @@ mixin _UpcomingScreenWidgets on _UpcomingScreenProps {
     );
 
     void onCardPressed(num? movieId) {
-      Navigator.of(context)
-          .pushNamed(AppRoutes.movieDetail, arguments: movieId);
+      Navigator.of(context).pushNamed(
+        AppRoutes.movieDetail,
+        arguments: movieId,
+      );
     }
 
     return RefreshIndicator(
-      onRefresh: upcomingCubit.loadMovies,
+      onRefresh: _upcomingCubit.loadMovies,
       child: CustomScrollView(
-        controller: scrollController,
+        controller: _scrollController,
         cacheExtent: 200,
         slivers: [
           SliverPadding(
@@ -49,31 +49,35 @@ mixin _UpcomingScreenWidgets on _UpcomingScreenProps {
               itemExtent: 120,
               delegate: SliverChildBuilderDelegate(
                 (_, index) {
-                  final movie = upcomingCubit.state.movies[index];
+                  final movie = _upcomingCubit.state.movies[index];
                   return MovieCard(
                     movie: movie,
                     style: movieCardStyle,
                     onCardPressed: () => onCardPressed(movie.id),
                   );
                 },
-                childCount: upcomingCubit.state.movies.length,
-                // addAutomaticKeepAlives: false,
+                childCount: _upcomingCubit.state.movies.length,
               ),
             ),
           ),
           bottomLoadingIndicator(),
-          const SliverToBoxAdapter(child: SizedBox(height: 20,),),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 20),
+          ),
         ],
       ),
     );
   }
 
   Widget bottomLoadingIndicator() {
-    switch (upcomingCubit.state.status) {
+    switch (_upcomingCubit.state.status) {
       case UpcomingStatus.loadingMore:
         return const MoviesLoadingIndicator(itemExtent: 120);
       default:
-        return const SliverToBoxAdapter(child: SizedBox(height: 10,),
+        return const SliverToBoxAdapter(
+          child: SizedBox(
+            height: 10,
+          ),
         );
     }
   }

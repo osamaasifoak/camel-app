@@ -1,11 +1,11 @@
-import 'package:camelmovies/views/_widgets/error_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
-import '/core/constants/app_routes.dart';
-import '/core/services/navigation_service/navigation_service.dart';
+import '/core/constants/app_router.dart';
+import '/core/services/navigation_service/base_navigation_service.dart';
+import '/views/_widgets/error_screen.dart';
 import '/views/_widgets/movie_card/movie_card.dart';
 import '/views/_widgets/movie_card/movies_loading_indicator.dart';
 import '/views/home/tabs/nowplaying/cubit/nowplaying_cubit.dart';
@@ -29,7 +29,7 @@ class _NowPlayingScreenState extends _NowPlayingScreenProps
       listener: (_, state) {
         if (state.status == NowPlayingStatus.error) {
 
-          navigationService.showSnackBar(
+          _navigationService.showSnackBar(
             message: state.errorMessage,
           );
           
@@ -43,7 +43,7 @@ class _NowPlayingScreenState extends _NowPlayingScreenProps
           case NowPlayingStatus.error:
             return ErrorScreen(
               errorMessage: 'Oops.. An error occurred, please try again.', 
-              onRetry: nowPlayingCubit.loadMovies,
+              onRetry: _nowPlayingCubit.loadMovies,
             );
           default:
             return nowPlayingMovies();

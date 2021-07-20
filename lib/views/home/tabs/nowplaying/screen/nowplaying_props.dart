@@ -1,10 +1,10 @@
 part of '_nowplaying_screen.dart';
 
 abstract class _NowPlayingScreenProps extends State<NowPlayingScreen> with AutomaticKeepAliveClientMixin {
-  final navigationService = GetIt.I<NavigationService>();
+  final _navigationService = GetIt.I<BaseNavigationService>();
 
-  late final ScrollController scrollController;
-  late final NowPlayingCubit nowPlayingCubit;
+  late final ScrollController _scrollController;
+  late final NowPlayingCubit _nowPlayingCubit;
 
   @override
   bool get wantKeepAlive => true;
@@ -12,31 +12,31 @@ abstract class _NowPlayingScreenProps extends State<NowPlayingScreen> with Autom
   @override
   void initState() {
     super.initState();
-    nowPlayingCubit = context.read<NowPlayingCubit>();
-    scrollController = widget.scrollController ?? ScrollController()
+    _nowPlayingCubit = context.read<NowPlayingCubit>();
+    _scrollController = widget.scrollController ?? ScrollController()
       ..addListener(() {
         /// when user scrolls to the bottom of the list, load more movies.
         if (
-            scrollController.offset >= scrollController.position.maxScrollExtent - 80 &&
-            scrollController.position.userScrollDirection == ScrollDirection.reverse &&
-            nowPlayingCubit.state.status != NowPlayingStatus.loadingMore &&
-            nowPlayingCubit.state.status != NowPlayingStatus.loading
+            _scrollController.offset >= _scrollController.position.maxScrollExtent - 80 &&
+            _scrollController.position.userScrollDirection == ScrollDirection.reverse &&
+            _nowPlayingCubit.state.status != NowPlayingStatus.loadingMore &&
+            _nowPlayingCubit.state.status != NowPlayingStatus.loading
 
             ) {
 
-          nowPlayingCubit.loadMovies(more: true);
+          _nowPlayingCubit.loadMovies(more: true);
 
         }
 
       });
-    nowPlayingCubit.loadMovies();
+    _nowPlayingCubit.loadMovies();
   }
 
   @override
   void dispose() {
     /// if widget.screenController is null, it means the ScreenController was created by this screen
     /// and needed to be disposed. Otherwise it's not this screen's responsibility to dispose it.
-    if(widget.scrollController == null) scrollController.dispose();
+    if(widget.scrollController == null) _scrollController.dispose();
     super.dispose();
   }
 }
