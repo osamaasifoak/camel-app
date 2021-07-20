@@ -49,8 +49,10 @@ class MovieCard extends StatelessWidget{
                     fadeInDuration: const Duration(milliseconds: 500),
                     fadeOutDuration: const Duration(milliseconds: 500),
                     filterQuality: FilterQuality.none,
-                    memCacheHeight: 240,
-                    memCacheWidth: 160,
+                    maxWidthDiskCache: 120,
+                    maxHeightDiskCache: 180,
+                    memCacheWidth: 120,
+                    memCacheHeight: 180,
                     errorWidget: (_, __, ___) =>
                       Center(
                         child: Icon(
@@ -85,8 +87,7 @@ class MovieCard extends StatelessWidget{
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      fontFamily: 'Nunito Sans'
-                      ),
+                    ),
                   ),
                   const SizedBox(height: 2,),
                   Row(
