@@ -1,7 +1,6 @@
 part of '_favmovies_screen.dart';
 
 mixin _FavMoviesScreenWidgets on _FavMoviesScreenProps {
-
   Widget loadingIndicator() {
     return const CustomScrollView(
       slivers: const [
@@ -29,30 +28,33 @@ mixin _FavMoviesScreenWidgets on _FavMoviesScreenProps {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     );
 
-    void onCardPressed(num? movieId) {
-      Navigator.of(context)
-          .pushNamed(AppRoutes.movieDetail, arguments: {movieId, true});
+    void onCardPressed(num? movieId) async {
+      await Navigator.of(context).pushNamed(
+        AppRoutes.movieDetail,
+        arguments: movieId,
+      );
+      _favMoviesCubit.loadFavMovies();
     }
+
     return RefreshIndicator(
-      onRefresh: favMoviesCubit.loadFavMovies,
+      onRefresh: _favMoviesCubit.loadFavMovies,
       child: CustomScrollView(
         cacheExtent: 200,
         slivers: [
-          
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(15, 20, 15, 0),
             sliver: SliverFixedExtentList(
               itemExtent: 120,
               delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  final movie = favMoviesCubit.state.movies[index];
+                (_, index) {
+                  final movie = (_favMoviesCubit.state as FavMoviesLoaded).movies[index];
                   return MovieCard(
                     movie: movie,
                     style: movieCardStyle,
                     onCardPressed: () => onCardPressed(movie.id),
                   );
                 },
-                childCount: favMoviesCubit.state.movies.length,
+                childCount: (_favMoviesCubit.state as FavMoviesLoaded).movies.length,
                 addAutomaticKeepAlives: false,
               ),
             ),

@@ -1,13 +1,14 @@
 part of '_favmovies_screen.dart';
 
 abstract class _FavMoviesScreenProps extends State<FavMoviesScreen> {
-  final navigationService = GetIt.I<NavigationService>();
 
-  late final FavMoviesCubit favMoviesCubit;
+  final _navigationService = GetIt.I<BaseNavigationService>();
+
+  final _favMoviesCubit = FavMoviesCubit();
 
   @override
-  void initState() {
+  void initState() { 
     super.initState();
-    favMoviesCubit = context.read<FavMoviesCubit>();
+    _favMoviesCubit.loadFavMovies();
   }
 }
