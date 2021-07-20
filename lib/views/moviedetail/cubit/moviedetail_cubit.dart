@@ -1,42 +1,36 @@
+import 'dart:async' show FutureOr;
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:get_it/get_it.dart';
 
 import '/core/helpers/error_handler.dart';
 import '/core/models/movie/movie_detail.dart';
-import '/core/repositories/movies_repo.dart';
-import '/core/services/localdb_service/localdb_service.dart';
-import '/core/services/navigation_service/navigation_service.dart';
+import '/core/repositories/favmovies_repo/base_favmovies_repo.dart';
+import '/core/repositories/movies_repo/base_movies_repo.dart';
 
 part 'moviedetail_state.dart';
 
 class MovieDetailCubit extends Cubit<MovieDetailState> {
-  final MoviesRepository _moviesRepo;
-  final LocalDbService _localDbService = GetIt.I<LocalDbService>();
+  final _moviesRepo = GetIt.I<BaseMoviesRepository>();
+  final _favMoviesRepo = GetIt.I<BaseFavMoviesRepository>();
 
-  MovieDetailCubit({
-    required MoviesRepository moviesRepo,
-  }) :  _moviesRepo = moviesRepo,
-        super(MovieDetailState.init());
+  MovieDetailCubit(): super(const MovieDetailLoading());
 
-  Future<void> loadMovieDetail(num? movieId) async {
-    if(state.status == MovieDetailStatus.loading) return;
-    
-    emit(
-      state.update(
-        status: MovieDetailStatus.loading,
-      ),
-    );
+  Future<void> loadMovieDetail({required num? movieId, required FutureOr<void> Function() onFail}) async {
+    if(movieId == null) {
+      _catchError('Failed to load movie detail. Please try again.');
+      return;
+    }
 
     try{
       
       final movieDetail = await _moviesRepo.getMovieDetail(movieId);
-      final isFav = await _localDbService.isFav(movieDetail.id);
+      final isFav = await _favMoviesRepo.isFav(movieDetail.id);
 
       emit(
-        state.update(
+        MovieDetailLoaded(
           movieDetail: movieDetail,
-          status: MovieDetailStatus.loaded,
           isFav: isFav,
         ),
       );
@@ -50,38 +44,26 @@ class MovieDetailCubit extends Cubit<MovieDetailState> {
         onCatch: _catchError,
       );
 
-      Future.delayed(
-        Duration(milliseconds: 250),
-        GetIt.I<NavigationService>().back,
-      );
+      onFail();
+
     }
   }
 
   Future<void> setFav([bool fav = true]) async{
     try{
+
       if(fav){
 
-        final setfav = await _localDbService.insertFav(state.movieDetail.id);
-        
-        if(setfav)
-          emit(
-            state.update(
-              isFav: true,
-            ),
-          );
+        await _favMoviesRepo.insertFav((state as MovieDetailLoaded).movieDetail.id);
 
       }else{
 
-        final delfav = await _localDbService.deleteFav(state.movieDetail.id);
-        
-        if(delfav)
-          emit(
-            state.update(
-              isFav: false,
-            ),
-          );
+        await _favMoviesRepo.deleteFav((state as MovieDetailLoaded).movieDetail.id);
 
       }
+
+      emit((state as MovieDetailLoaded).updateFav(fav));
+
     }catch(e, st) {
       
       ErrorHandler.catchIt(
@@ -94,20 +76,7 @@ class MovieDetailCubit extends Cubit<MovieDetailState> {
     }
   }
 
-  void unloadMovieDetail(){
-    emit(
-      state.update(
-        movieDetail: null,
-        isFav: false,
-        status: MovieDetailStatus.unloaded,
-      )
-    );
-  }
-
   void _catchError(String message) {
-    emit(state.update(
-      status: MovieDetailStatus.error,
-      errorMessage: message,
-    ));
+    emit(MovieDetailError(message));
   }
 }

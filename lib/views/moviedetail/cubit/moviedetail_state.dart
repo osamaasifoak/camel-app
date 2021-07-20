@@ -1,49 +1,43 @@
 part of 'moviedetail_cubit.dart';
 
-enum MovieDetailStatus {
-  init,
-  loading,
-  loaded,
-  unloaded,
-  error,
+abstract class MovieDetailState extends Equatable {
+
+  const MovieDetailState();
+
+  @override
+  List<Object?> get props => const [];
+
 }
 
-class MovieDetailState extends Equatable {
-  final MovieDetailStatus status;
+class MovieDetailLoading extends MovieDetailState{
+  const MovieDetailLoading();
+}
+
+class MovieDetailError extends MovieDetailState{
+  final String errorMessage;
+  const MovieDetailError(this.errorMessage);
+
+  @override
+  List<Object?> get props => [errorMessage];
+}
+
+class MovieDetailLoaded extends MovieDetailState {
   final MovieDetail movieDetail;
   final bool isFav;
-  final String? errorMessage;
 
-  const MovieDetailState({
+  const MovieDetailLoaded({
     required this.movieDetail,
     required this.isFav,
-    required this.status,
-    this.errorMessage,
   });
 
-  factory MovieDetailState.init(){
-    return MovieDetailState(
-      status: MovieDetailStatus.init,
-      movieDetail: MovieDetail(), 
-      isFav: false,
-    );
-  }
-
-  MovieDetailState update({
-    MovieDetail? movieDetail,
-    bool? isFav,
-    MovieDetailStatus? status,
-    String? errorMessage,
-  }) {
-    return MovieDetailState(
-      movieDetail: movieDetail ?? this.movieDetail,
-      isFav: isFav ?? this.isFav,
-      status: status ?? this.status,
-      errorMessage: errorMessage,
+  MovieDetailLoaded updateFav(bool isFav) {
+    return MovieDetailLoaded(
+      movieDetail: movieDetail,
+      isFav: isFav,
     );
   }
 
   @override
-  List<Object> get props => [movieDetail, isFav, status,];
+  List<Object> get props => [movieDetail, isFav];
 }
 
