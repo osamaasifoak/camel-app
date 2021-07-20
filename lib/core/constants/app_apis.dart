@@ -44,43 +44,45 @@ import 'package:flutter/services.dart' show rootBundle;
 ///});
 ///```
 class AppApis {
-
   factory AppApis() => _singleton;
 
   static final AppApis _singleton = AppApis._internal();
-  
+
   AppApis._internal();
 
   late final String _cachedApiKey;
 
   Future<void> loadApiKey() async {
-    _cachedApiKey = await rootBundle.loadString('assets/apikey.txt', cache: false);
+    _cachedApiKey = await rootBundle.loadString(
+      'assets/apikey.txt',
+      cache: false,
+    );
   }
 
   String get apiKey => _cachedApiKey;
 
-  String get baseUrl => 'api.themoviedb.org';
+  final String baseUrl = 'api.themoviedb.org';
 
-  String get epDiscover => '/3/discover/movie';
-  String get epMovieDetail => '/3/movie/';
-  String get epSearch => '/3/search/movie';
+  final String epDiscover = '/3/discover/movie';
+  final String epMovieDetail = '/3/movie/';
+  final String epSearch = '/3/search/movie';
 
-  String get baseImageUrl => 'https://image.tmdb.org';
-  String get epThumbImage => '/t/p/w500';
-  String get epOriginalImage => '/t/p/original';
+  final String baseImageUrl = 'https://image.tmdb.org';
+  final String epThumbImage = '/t/p/w500';
+  final String epOriginalImage = '/t/p/original';
 
-  String get paramApiKey => 'api_key';
-  String get paramLanguage => 'language';
-  String get defaultLanguage => 'en-US';
-
-  ///YYYY-MM-DD
-  String get paramNowPlaying => 'release_date.lte';
+  final String paramApiKey = 'api_key';
+  final String paramLanguage = 'language';
+  final String defaultLanguage = 'en-US';
 
   ///YYYY-MM-DD
-  String get paramUpcoming => 'primary_release_date.gte';
+  final String paramNowPlaying = 'release_date.lte';
+
+  ///YYYY-MM-DD
+  final String paramUpcoming = 'primary_release_date.gte';
 
   ///YYYY
-  String get paramYear => 'year';
-  String get paramPage => 'page';
-  String get paramSearch => 'query';
+  final String paramYear = 'year';
+  final String paramPage = 'page';
+  final String paramSearch = 'query';
 }
