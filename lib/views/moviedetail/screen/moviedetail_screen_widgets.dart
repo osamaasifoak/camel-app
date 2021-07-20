@@ -12,7 +12,7 @@ mixin _MovieDetailScreenWidgets on _MovieDetailScreenProps{
           elevation: 0.7,
           shadowColor: Colors.grey[100],
           backgroundColor: Colors.grey[50],
-          expandedHeight: screenHeight / 1.5,
+          expandedHeight: MediaQuery.of(context).size.height * 0.67,
           flexibleSpace: appBarBgImage(),
         ),
         SliverToBoxAdapter(
@@ -23,7 +23,7 @@ mixin _MovieDetailScreenWidgets on _MovieDetailScreenProps{
 
               movieTags(),
 
-              const SizedBox(height: 5), //separator
+              const SizedBox(height: 5),
 
               movieBackdropImage(),
 
@@ -31,7 +31,7 @@ mixin _MovieDetailScreenWidgets on _MovieDetailScreenProps{
 
               movieOverview(),
 
-              const SizedBox(height: 40), //bottom separator
+              const SizedBox(height: 40),
             ],
           ),
         ),
@@ -40,7 +40,7 @@ mixin _MovieDetailScreenWidgets on _MovieDetailScreenProps{
   }
 
   Widget favIcon() {
-    switch (movieDetailCubit.state.isFav) {
+    switch ((_movieDetailCubit.state as MovieDetailLoaded).isFav) {
       case true:
 
         ///if is already favorited by user
@@ -48,7 +48,7 @@ mixin _MovieDetailScreenWidgets on _MovieDetailScreenProps{
         return IconButton(
           icon: Icon(Icons.favorite),
           color: Colors.pinkAccent[400],
-          onPressed: () => movieDetailCubit.setFav(false),
+          onPressed: () => _movieDetailCubit.setFav(false),
         );
       default:
         //if not
@@ -56,7 +56,7 @@ mixin _MovieDetailScreenWidgets on _MovieDetailScreenProps{
         return IconButton(
           icon: Icon(Icons.favorite_border),
           color: Colors.pinkAccent[400],
-          onPressed: movieDetailCubit.setFav,
+          onPressed: _movieDetailCubit.setFav,
         );
     }
   }
@@ -66,9 +66,10 @@ mixin _MovieDetailScreenWidgets on _MovieDetailScreenProps{
       ///Taken from image poster
       background: CachedNetworkImage(
         fit: BoxFit.fill,
-        imageUrl: movieDetailCubit.state.movieDetail.imgUrlPosterOriginal,
+        imageUrl: (_movieDetailCubit.state as MovieDetailLoaded).movieDetail.imgUrlPosterOriginal,
+        filterQuality: FilterQuality.high,
         errorWidget: (_, __, ___) => Container(
-          height: screenHeight / 1.5,
+          height: MediaQuery.of(context).size.height * 0.67,
           child: Icon(
             Icons.error_outline,
             size: 30,
@@ -96,10 +97,10 @@ mixin _MovieDetailScreenWidgets on _MovieDetailScreenProps{
           ),
           children: [
             TextSpan(
-              text: movieDetailCubit.state.movieDetail.title,
+              text: (_movieDetailCubit.state as MovieDetailLoaded).movieDetail.title,
             ),
             TextSpan(
-              text: ' (${movieDetailCubit.state.movieDetail.year ?? 'XXXX'})',
+              text: ' (${(_movieDetailCubit.state as MovieDetailLoaded).movieDetail.year ?? 'XXXX'})',
               style: TextStyle(color: Colors.grey[700]),
             ),
           ],
@@ -112,7 +113,7 @@ mixin _MovieDetailScreenWidgets on _MovieDetailScreenProps{
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Text(
-        movieDetailCubit.state.movieDetail.overview!,
+        (_movieDetailCubit.state as MovieDetailLoaded).movieDetail.overview!,
         style: const TextStyle(
           letterSpacing: 0.5,
           wordSpacing: 1.5,
@@ -132,16 +133,16 @@ mixin _MovieDetailScreenWidgets on _MovieDetailScreenProps{
           ),
           children: [
             TextSpan(
-              text: movieDetailCubit.state.movieDetail.runtime.toString() +
+              text: (_movieDetailCubit.state as MovieDetailLoaded).movieDetail.runtime.toString() +
                   ' min.  |  ',
             ),
             TextSpan(
               text:
-                  movieDetailCubit.state.movieDetail.rating.toString() + '/10',
+                  (_movieDetailCubit.state as MovieDetailLoaded).movieDetail.rating.toString() + '/10',
             ),
             TextSpan(
               text: ' (' +
-                  movieDetailCubit.state.movieDetail.voteCount.toString() +
+                  (_movieDetailCubit.state as MovieDetailLoaded).movieDetail.voteCount.toString() +
                   ' votes)',
               style: TextStyle(
                 color: Colors.grey,
@@ -161,7 +162,8 @@ mixin _MovieDetailScreenWidgets on _MovieDetailScreenProps{
         borderRadius: BorderRadius.circular(40),
         child: CachedNetworkImage(
           fit: BoxFit.fill,
-          imageUrl: movieDetailCubit.state.movieDetail.imgUrlBackdropOriginal,
+          imageUrl: (_movieDetailCubit.state as MovieDetailLoaded).movieDetail.imgUrlBackdropOriginal,
+          filterQuality: FilterQuality.high,
           fadeInDuration: const Duration(milliseconds: 500),
           fadeOutDuration: const Duration(milliseconds: 500),
         ),
@@ -171,15 +173,15 @@ mixin _MovieDetailScreenWidgets on _MovieDetailScreenProps{
 
   Container movieTags() {
     return Container(
-      height: (movieDetailCubit.state.movieDetail.genres?.isNotEmpty ?? false) ? 60 : 0,
+      height: ((_movieDetailCubit.state as MovieDetailLoaded).movieDetail.genres?.isNotEmpty ?? false) ? 60 : 0,
       child: ListView.builder(
         padding: const EdgeInsets.all(5),
         scrollDirection: Axis.horizontal,
-        itemCount: movieDetailCubit.state.movieDetail.genres?.length ?? 0,
+        itemCount: (_movieDetailCubit.state as MovieDetailLoaded).movieDetail.genres?.length ?? 0,
         itemBuilder: (_, i) {
           return MovieTagCard(
               genreName:
-                  movieDetailCubit.state.movieDetail.genres?[i].genreName ??
+                  (_movieDetailCubit.state as MovieDetailLoaded).movieDetail.genres?[i].genreName ??
                       'Genre');
         },
       ),
