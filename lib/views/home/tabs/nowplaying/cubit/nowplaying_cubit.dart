@@ -1,18 +1,17 @@
 import 'package:bloc/bloc.dart';
-import 'package:camelmovies/core/helpers/error_handler.dart';
-import 'package:camelmovies/core/models/movie/movie.dart';
-import 'package:camelmovies/core/repositories/movies_repo.dart';
 import 'package:equatable/equatable.dart';
+import 'package:get_it/get_it.dart';
+
+import '/core/helpers/error_handler.dart';
+import '/core/models/movie/movie.dart';
+import '/core/repositories/movies_repo/base_movies_repo.dart';
 
 part 'nowplaying_state.dart';
 
 class NowPlayingCubit extends Cubit<NowPlayingState> {
-  final MoviesRepository _moviesRepo;
+  final _moviesRepo = GetIt.I<BaseMoviesRepository>();
 
-  NowPlayingCubit({
-    required MoviesRepository moviesRepo
-  }) :  _moviesRepo = moviesRepo,
-        super(NowPlayingState.init());
+  NowPlayingCubit() : super(NowPlayingState.init());
 
   Future<void> loadMovies({bool more = false}) async {
     if(
@@ -43,7 +42,7 @@ class NowPlayingCubit extends Cubit<NowPlayingState> {
         final page = state.page + 1;
         final npMoreMovies = await _moviesRepo.getNowPlaying(page: page);
         state.movies.addAll(npMoreMovies);
-        // await Future.delayed(Duration(seconds: 1));
+
         emit(state.update(
           status: NowPlayingStatus.loaded,
           page: page,

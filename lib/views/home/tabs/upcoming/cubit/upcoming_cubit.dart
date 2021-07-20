@@ -1,19 +1,17 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:get_it/get_it.dart';
 
 import '/core/helpers/error_handler.dart';
 import '/core/models/movie/movie.dart';
-import '/core/repositories/movies_repo.dart';
+import '/core/repositories/movies_repo/base_movies_repo.dart';
 
 part 'upcoming_state.dart';
 
 class UpcomingCubit extends Cubit<UpcomingState> {
-  final MoviesRepository _moviesRepo;
+  final _moviesRepo = GetIt.I<BaseMoviesRepository>();
 
-  UpcomingCubit({
-    required MoviesRepository moviesRepo,
-  }) :  _moviesRepo = moviesRepo, 
-        super(UpcomingState.init());
+  UpcomingCubit(): super(UpcomingState.init());
 
   Future<void> loadMovies({bool more = false}) async {
 
