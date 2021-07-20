@@ -4,39 +4,29 @@ import 'package:get_it/get_it.dart';
 
 import '/core/helpers/error_handler.dart';
 import '/core/models/movie/movie.dart';
-import '/core/repositories/movies_repo.dart';
-import '/core/services/localdb_service/localdb_service.dart';
+import '/core/repositories/favmovies_repo/base_favmovies_repo.dart';
+import '/core/repositories/movies_repo/base_movies_repo.dart';
 
 part 'favmovies_state.dart';
 
 class FavMoviesCubit extends Cubit<FavMoviesState> {
-  final MoviesRepository _moviesRepo;
-  final LocalDbService _localDBRepo = GetIt.I<LocalDbService>();
+  final _moviesRepo = GetIt.I<BaseMoviesRepository>();
+  final _favMoviesRepo = GetIt.I<BaseFavMoviesRepository>();
 
-  FavMoviesCubit({
-    required MoviesRepository moviesRepo,
-  }) :  _moviesRepo = moviesRepo,
-        super(FavMoviesState.init());
+  FavMoviesCubit() : super(const FavMoviesLoading());
 
   Future<void> loadFavMovies() async{
 
-    if(state.movies.isNotEmpty) state.movies.clear();
+    if(state is FavMoviesLoaded) (state as FavMoviesLoaded).movies.clear();
 
-    emit(state.update(
-      status: FavMoviesStatus.loading,
-    ));
+    emit(const FavMoviesLoading());
 
     try{
       
-      final localFavMovies = await _localDBRepo.getFavList();
+      final localFavMovies = await _favMoviesRepo.getFavList();
       final movies = await _moviesRepo.getMovieListById(localFavMovies);
-      emit(
-        state.update(
-          movies: movies,
-          status: FavMoviesStatus.loaded,
-          favCount: movies.length,
-        )
-      ); 
+      emit(FavMoviesLoaded(movies: movies));
+
     }catch(e, st){
       ErrorHandler.catchIt(
         error: e,
@@ -47,11 +37,6 @@ class FavMoviesCubit extends Cubit<FavMoviesState> {
     }
   }
 
-  void _catchError(String message) {
-    emit(state.update(
-      status: FavMoviesStatus.error,
-      errorMessage: message,
-    ));
-  }
+  void _catchError(String message) => emit(FavMoviesError(message));
 
 }
