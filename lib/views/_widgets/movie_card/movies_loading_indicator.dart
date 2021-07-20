@@ -1,5 +1,25 @@
-import 'package:camelmovies/views/_widgets/default_shimmer.dart';
 import 'package:flutter/material.dart';
+
+import '/views/_widgets/default_shimmer.dart';
+
+final _cardShadowColor = Colors.grey[50]?.withOpacity(0.3);
+
+final _cardShape = RoundedRectangleBorder(
+  borderRadius: BorderRadius.circular(10),
+);
+
+final _shimmeringItemImageContainer = DefaultShimmer(
+  child: Container(
+    width: 80, 
+    height: 120, 
+    color: Colors.white,
+  ),
+);
+
+final _shimmeringItemDetailDecoration = BoxDecoration(
+  color: Colors.white, 
+  borderRadius: BorderRadius.circular(7.5),
+);
 
 class MoviesLoadingIndicator extends StatelessWidget{
   final double itemExtent;
@@ -13,14 +33,14 @@ class MoviesLoadingIndicator extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    final double halfScreenWidth = MediaQuery.of(context).size.width / 2;
-    final double quarterScreenWidth = halfScreenWidth / 2;
+    final double halfScreenWidth = MediaQuery.of(context).size.width * 0.5;
+    final double quarterScreenWidth = halfScreenWidth * 0.5;
 
     return SliverFixedExtentList(
         itemExtent: itemExtent,
         delegate: SliverChildBuilderDelegate(
         (_, __) => _card(halfScreenWidth, quarterScreenWidth),
-        childCount: itemCount, 
+        childCount: itemCount,
       ),   
     );    
   }
@@ -29,22 +49,14 @@ class MoviesLoadingIndicator extends StatelessWidget{
     return Card(
       margin: const EdgeInsets.fromLTRB(15, 0, 15, 10),
       elevation: 4.0,
-      shadowColor: Colors.grey[50]?.withOpacity(0.3),
+      shadowColor: _cardShadowColor,
       color: Colors.grey[50],
       clipBehavior: Clip.hardEdge,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
+      shape: _cardShape,
       child: Row(
         children: [
-          DefaultShimmer(
-            child: Container(
-              width: 80, 
-              height: 120, 
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(width: 10,),
+          _shimmeringItemImageContainer,
+          const SizedBox(width: 10),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,   
@@ -52,16 +64,16 @@ class MoviesLoadingIndicator extends StatelessWidget{
               DefaultShimmer(
                 child: Container(
                   width: halfScreenWidth,
-                  height: 15, 
-                  color: Colors.white, 
+                  height: 20, 
                   margin: const EdgeInsets.only(bottom: 5),
+                  decoration: _shimmeringItemDetailDecoration,
                 ), 
               ),
               DefaultShimmer(
                 child: Container(
                   width: quarterScreenWidth, 
-                  height: 20, 
-                  color: Colors.white,
+                  height: 17.5, 
+                  decoration: _shimmeringItemDetailDecoration,
                 ), 
               ),
             ],
