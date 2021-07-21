@@ -1,4 +1,4 @@
-import 'dart:async' show FutureOr;
+import 'dart:async' show Completer, FutureOr;
 import 'dart:developer' as dev show log;
 
 import 'package:camelmovies/core/services/localdb_service/base_localdb_service.dart';
@@ -24,21 +24,22 @@ class LocalDbService implements BaseLocalDbService {
     _favTable,
   ];
 
-  late final Database _database;
+  final _database = Completer<Database>();
 
   @override
   FutureOr<bool> initDb([Database? database]) async {
     if (database != null) {
-      _database = database;
+      _database.complete(database);
       return true;
     }
     try {
       final dbPath = path.join(await getDatabasesPath(), _dbFileName);
-      _database = await openDatabase(
+      final openedDb = await openDatabase(
         dbPath,
         onCreate: _createTables,
         version: 1,
       );
+      _database.complete(openedDb);
       if (kDebugMode) {
         dev.log('Database initialized!');
       }
@@ -69,8 +70,8 @@ class LocalDbService implements BaseLocalDbService {
     bool? exclusive,
     bool? continueOnError,
     Transaction? txn,
-  }) {
-    final batch = (txn ?? _database).batch();
+  }) async {
+    final batch = (txn ?? await _database.future).batch();
 
     batchesFn(batch);
 
@@ -92,7 +93,7 @@ class LocalDbService implements BaseLocalDbService {
 
   @override
   Future<void> clearDb() async {
-    final batch = _database.batch();
+    final batch = (await _database.future).batch();
     for (String tableName in _tablesToBeCleared) {
       batch.delete(tableName);
     }
@@ -100,7 +101,7 @@ class LocalDbService implements BaseLocalDbService {
   }
 
   @override
-  Future<void> closeDb() => _database.close();
+  Future<void> closeDb() => _database.future.then((db) => db.close());
 
   @override
   Future<int> delete({
@@ -108,8 +109,8 @@ class LocalDbService implements BaseLocalDbService {
     String? where,
     List<Object?>? whereArgs,
     Transaction? txn,
-  }) {
-    return (txn ?? _database).delete(
+  }) async {
+    return (txn ?? await _database.future).delete(
       table,
       where: where,
       whereArgs: whereArgs,
@@ -122,8 +123,8 @@ class LocalDbService implements BaseLocalDbService {
     required Map<String, Object?> values,
     ConflictAlgorithm? conflictAlgorithm,
     Transaction? txn,
-  }) {
-    return (txn ?? _database).insert(
+  }) async {
+    return (txn ?? await _database.future).insert(
       table,
       values,
       conflictAlgorithm: conflictAlgorithm,
@@ -143,8 +144,8 @@ class LocalDbService implements BaseLocalDbService {
     int? limit,
     int? offset,
     Transaction? txn,
-  }) {
-    return (txn ?? _database).query(
+  }) async {
+    return (txn ?? await _database.future).query(
       table,
       distinct: distinct,
       columns: columns,
@@ -166,8 +167,8 @@ class LocalDbService implements BaseLocalDbService {
     List<Object?>? whereArgs,
     ConflictAlgorithm? conflictAlgorithm,
     Transaction? txn,
-  }) {
-    return (txn ?? _database).update(
+  }) async {
+    return (txn ?? await _database.future).update(
       table,
       values,
       where: where,
@@ -180,8 +181,8 @@ class LocalDbService implements BaseLocalDbService {
   Future<T> transaction<T>(
     Future<T> Function(Transaction txn) action, {
     bool? exclusive,
-  }) {
-    return _database.transaction(
+  }) async {
+    return (await _database.future).transaction(
       action,
       exclusive: exclusive,
     );
