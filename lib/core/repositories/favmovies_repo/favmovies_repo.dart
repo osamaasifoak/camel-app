@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:camelmovies/core/services/localdb_service/base_localdb_service.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -6,18 +8,32 @@ import '/core/models/movie/base_movie.dart';
 import 'base_favmovies_repo.dart';
 
 class FavMoviesRepository implements BaseFavMoviesRepository {
+
   final BaseLocalDbService _localDbService;
 
-  const FavMoviesRepository({
-    required BaseLocalDbService localDbService,
-  }) : _localDbService = localDbService;
+  final StreamController<int> _favCountController;
 
+  FavMoviesRepository({
+    required BaseLocalDbService localDbService,
+    StreamController<int>? favCountStream
+  }) : _localDbService = localDbService,
+        _favCountController = favCountStream ?? StreamController();
+
+  @override
+  StreamController<int> get favCountController => _favCountController;
+
+  @override
   Future<int> getFavCount() async {
     final favCount = await _localDbService.select(
       table: _localDbService.favTable,
       columns: ['COUNT(*)'],
     );
     return Sqflite.firstIntValue(favCount) ?? 0;
+  }
+
+  @override
+  Future<void> close() async {
+    await _favCountController.sink.close();
   }
 
   Future<List<BaseMovie>> getFavList() async {
@@ -40,6 +56,9 @@ class FavMoviesRepository implements BaseFavMoviesRepository {
       values: movie,
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+
+    final favCount = await getFavCount();
+    _favCountController.add(favCount);
   }
 
   Future<void> deleteFav(num? id) async {
@@ -50,6 +69,8 @@ class FavMoviesRepository implements BaseFavMoviesRepository {
       where: 'id = ?',
       whereArgs: [id],
     );
+    final favCount = await getFavCount();
+    _favCountController.add(favCount);
   }
 
   Future<bool> isFav(num? id) async {
