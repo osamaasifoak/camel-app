@@ -2,35 +2,41 @@ part of '_home_screen.dart';
 
 abstract class _HomeScreenProps extends State<HomeScreen> with SingleTickerProviderStateMixin {
   
-  final ValueNotifier<int> selectedIndex = ValueNotifier(0);
+  final _selectedIndex = ValueNotifier(0);
   
-  final ScrollController nowPlayingScrollController = ScrollController();
-  final ScrollController upcomingScrollController = ScrollController();
+  final _nowPlayingScrollController = ScrollController();
+  final _upcomingScrollController = ScrollController();
   
-  late final PageController pageController;
+  final _favMoviesRepo = GetIt.I<BaseFavMoviesRepository>();
+
+  final _pageController = PageController();
 
   @override
   void initState() {
     super.initState();
-    pageController = PageController();
+    _favMoviesRepo.getFavCount().then(_favMoviesRepo.favCountController.add);
   }
 
   @override
   void dispose() { 
-    selectedIndex.dispose();
-    nowPlayingScrollController.dispose();
-    upcomingScrollController.dispose();
-    pageController.dispose();
+    _selectedIndex.dispose();
+    _nowPlayingScrollController.dispose();
+    _upcomingScrollController.dispose();
+    _pageController.dispose();
+    _favMoviesRepo.close();
+
+    GetIt.I<BaseNetworkService>().close();
+    GetIt.I<BaseLocalDbService>().closeDb();
 
     super.dispose();
   }
 
-  void _loadFavMovies() {
+  void _loadFavMovies() async {
     Navigator.of(context).pushNamed(AppRoutes.favMovies);
   }
 
   void _scrollNowPlaying() {
-    nowPlayingScrollController.animateTo(
+    _nowPlayingScrollController.animateTo(
       0.0, 
       duration: Duration(milliseconds: 500), 
       curve: Curves.fastLinearToSlowEaseIn,
@@ -38,7 +44,7 @@ abstract class _HomeScreenProps extends State<HomeScreen> with SingleTickerProvi
   }
 
   void _scrollUpcoming() {
-    upcomingScrollController.animateTo(
+    _upcomingScrollController.animateTo(
       0,
       duration: Duration(milliseconds: 500),
       curve: Curves.fastLinearToSlowEaseIn,
@@ -47,13 +53,13 @@ abstract class _HomeScreenProps extends State<HomeScreen> with SingleTickerProvi
 
   void _onBottomNavTapped(int index) {
 
-    if(selectedIndex.value == index) {
+    if(_selectedIndex.value == index) {
 
-      if(index == 0 && nowPlayingScrollController.offset > 0.0) {
+      if(index == 0 && _nowPlayingScrollController.offset > 0.0) {
         
         _scrollNowPlaying();
 
-      }else if(index == 1 && upcomingScrollController.offset > 0.0) {
+      }else if(index == 1 && _upcomingScrollController.offset > 0.0) {
 
         _scrollUpcoming();
 
@@ -62,8 +68,8 @@ abstract class _HomeScreenProps extends State<HomeScreen> with SingleTickerProvi
       return;
     }
 
-    selectedIndex.value = index;
-    pageController.animateToPage(
+    _selectedIndex.value = index;
+    _pageController.animateToPage(
       index,
       duration: Duration(milliseconds: 500),
       curve: Curves.fastLinearToSlowEaseIn,
