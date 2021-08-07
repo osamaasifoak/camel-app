@@ -1,13 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 
 import '/core/constants/app_apis.dart';
 import '/core/helpers/error_handler.dart';
 import '/core/models/movie/base_movie.dart';
-import '/core/models/movie/movie_detail.dart';
 import '/core/models/movie/movie.dart';
+import '/core/models/movie/movie_detail.dart';
 import '/core/services/network_service/base_network_service.dart';
 
 import 'base_movies_repo.dart';
@@ -16,14 +17,14 @@ class MoviesRepository implements BaseMoviesRepository {
   final BaseNetworkService _networkService;
 
   MoviesRepository({
-    required BaseNetworkService networkService,
-  }) : _networkService = networkService;
+    BaseNetworkService? networkService,
+  }) : _networkService = networkService ?? GetIt.I<BaseNetworkService>();
 
   final _defaultHeader = const {
     HttpHeaders.contentTypeHeader: 'application/json',
   };
 
-  final _defaultParam = {
+  late final _defaultParam = {
     AppApis().paramApiKey: AppApis().apiKey,
     AppApis().paramLanguage: AppApis().defaultLanguage,
   };
@@ -40,10 +41,7 @@ class MoviesRepository implements BaseMoviesRepository {
       );
       final response = await _networkService.get(
         uri,
-        headers: {
-          ..._defaultHeader,
-          HttpHeaders.connectionHeader: 'keep-alive',
-        },
+        headers: _defaultHeader,
       );
       if (response.statusCode == 200) {
         movies.add(Movie.fromJson(response.body));
@@ -69,8 +67,7 @@ class MoviesRepository implements BaseMoviesRepository {
       headers: _defaultHeader,
     );
     if (response.statusCode == 200) {
-      String body = response.body;
-      return MovieDetail.fromJson(body);
+      return MovieDetail.fromJson(response.body);
     } else {
       throw ErrorHandler.transformStatusCodeToException(
         statusCode: response.statusCode,
@@ -98,10 +95,9 @@ class MoviesRepository implements BaseMoviesRepository {
     );
 
     if (response.statusCode == 200) {
-      final Map<String, dynamic> map =
-          json.decode(response.body) as Map<String, dynamic>;
-      final List<Map<String, dynamic>> results = List.from(map['results']);
-      return List.generate(results.length, (i) => Movie.fromMap(results[i]));
+      final map = json.decode(response.body) as Map<String, dynamic>;
+      final results = map['results'] as List;
+      return results.map((r) => Movie.fromMap(r as Map<String, dynamic>)).toList();
     } else {
       throw ErrorHandler.transformStatusCodeToException(
         statusCode: response.statusCode,
@@ -112,7 +108,7 @@ class MoviesRepository implements BaseMoviesRepository {
 
   @override
   Future<List<Movie>> getUpcoming({int page = 1}) async {
-    final now = DateTime.now().add(Duration(days: 1));
+    final now = DateTime.now().add(const Duration(days: 1));
     final date = DateFormat('yyyy-MM-dd').format(now);
     final param = {
       ..._defaultParam,
@@ -125,10 +121,9 @@ class MoviesRepository implements BaseMoviesRepository {
       headers: _defaultHeader,
     );
     if (response.statusCode == 200) {
-      final Map<String, dynamic> map = json.decode(response.body);
-      final List<Map<String, dynamic>> results =
-          List<Map<String, dynamic>>.from(map['results']);
-      return List.generate(results.length, (i) => Movie.fromMap(results[i]));
+      final map = json.decode(response.body) as Map<String, dynamic>;
+      final results = map['results'] as List;
+      return results.map((r) => Movie.fromMap(r as Map<String, dynamic>)).toList();
     } else {
       throw ErrorHandler.transformStatusCodeToException(
         statusCode: response.statusCode,
@@ -153,8 +148,8 @@ class MoviesRepository implements BaseMoviesRepository {
 
     if (response.statusCode == 200) {
       final jsonMap = json.decode(response.body) as Map<String, dynamic>;
-      final searchResult = jsonMap['results'] as List<Map<String, dynamic>>;
-      return List.from(searchResult.map((movie) => Movie.fromMap(movie)));
+      final searchResult = jsonMap['results'] as List;
+      return searchResult.map((movie) => Movie.fromMap(movie as Map<String, dynamic>)).toList();
     } else {
       throw ErrorHandler.transformStatusCodeToException(
         statusCode: response.statusCode,

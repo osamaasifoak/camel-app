@@ -1,6 +1,6 @@
 import '/core/models/movie/base_movie.dart';
-import '/core/models/movie/movie_detail.dart';
 import '/core/models/movie/movie.dart';
+import '/core/models/movie/movie_detail.dart';
 
 abstract class BaseMoviesRepository {
   Future<List<Movie>> getMovieListById(List<BaseMovie> movieIds);
