@@ -9,10 +9,10 @@ import 'core/services/navigation_service/base_navigation_service.dart';
 
 import 'singletons.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
   ));
 
@@ -39,20 +39,6 @@ class App extends StatelessWidget {
         errorColor: const Color(0xFFD50000),
         visualDensity: VisualDensity.adaptivePlatformDensity,
         fontFamily: 'Nunito Sans',
-        // textButtonTheme: TextButtonThemeData(
-        //   style: TextButton.styleFrom(
-        //     primary: const Color(0xff40C4FF),
-        //     shape: RoundedRectangleBorder(
-        //       borderRadius: BorderRadius.circular(10),
-        //     ),
-        //   ),
-        // ),
-        // elevatedButtonTheme: ElevatedButtonThemeData(
-        //   style: ElevatedButton.styleFrom(
-        //     onPrimary: Colors.white,
-        //     primary: const Color(0xff40C4FF),
-        //   ),
-        // ),
       ),
       initialRoute: AppRoutes.splash,
       onGenerateRoute: AppRouter.onGenerateRoute,
