@@ -14,6 +14,7 @@ typedef PageBuilderFunction = Widget Function(
 
 /// a class to simplify navigating between screens.
 /// it requires no `BuildContext` to navigate.
+@Deprecated('Bad design (anti-pattern)')
 class NavigationService implements BaseNavigationService {
   final _navigatorKey = GlobalKey<NavigatorState>();
   @override
@@ -163,9 +164,7 @@ class NavigationService implements BaseNavigationService {
         duration: duration ?? const Duration(milliseconds: 2000),
         backgroundColor: backgroundColor,
         elevation: elevation,
-        behavior: floating != null && floating
-            ? SnackBarBehavior.floating
-            : SnackBarBehavior.fixed,
+        behavior: floating != null && floating ? SnackBarBehavior.floating : SnackBarBehavior.fixed,
         margin: margin,
         padding: padding,
         width: width,
@@ -210,9 +209,7 @@ class NavigationService implements BaseNavigationService {
           transitionBuilder: blurFactor == null
               ? null
               : (_, a1, __, child) => BackdropFilter(
-                    filter: ImageFilter.blur(
-                        sigmaX: blurFactor * a1.value,
-                        sigmaY: blurFactor * a1.value),
+                    filter: ImageFilter.blur(sigmaX: blurFactor * a1.value, sigmaY: blurFactor * a1.value),
                     child: FadeTransition(
                       child: child,
                       opacity: a1,
