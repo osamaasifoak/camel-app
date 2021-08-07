@@ -52,8 +52,8 @@ class AppApis {
 
   late final String _cachedApiKey;
 
-  Future<void> loadApiKey() async {
-    _cachedApiKey = await rootBundle.loadString(
+  Future<void> loadApiKey({String? apiKey}) async {
+    _cachedApiKey = apiKey ?? await rootBundle.loadString(
       'assets/apikey.txt',
       cache: false,
     );
