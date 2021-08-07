@@ -1,16 +1,16 @@
 import 'dart:convert' show json;
 
 class MovieGenre {
-  final num? id;
-  final String? genreName;
+  final int id;
+  final String genreName;
   
   const MovieGenre({
-    this.id,
-    this.genreName,
+    required this.id,
+    required this.genreName,
   });
 
   MovieGenre copyWith({
-    num? id,
+    int? id,
     String? genreName,
   }) {
     return MovieGenre(
@@ -28,14 +28,14 @@ class MovieGenre {
 
   factory MovieGenre.fromMap(Map<String, dynamic> map) {
     return MovieGenre(
-      id: map['id'],
-      genreName: map['name'],
+      id: map['id'] as int,
+      genreName: map['name'] as String,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory MovieGenre.fromJson(String source) => MovieGenre.fromMap(json.decode(source));
+  factory MovieGenre.fromJson(String source) => MovieGenre.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() => 'MovieGenre(id: $id, genreName: $genreName)';
