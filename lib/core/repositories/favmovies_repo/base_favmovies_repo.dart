@@ -1,14 +1,21 @@
-
 import 'dart:async';
+
+import 'package:rxdart/rxdart.dart' show BehaviorSubject;
 
 import '/core/models/movie/base_movie.dart';
 
-abstract class BaseFavMoviesRepository{
-  StreamController<int> get favCountController;
+abstract class BaseFavMoviesRepository {
+  BehaviorSubject<int> get favCountController;
   Future<int> getFavCount();
-  Future<List<BaseMovie>> getFavList();
-  Future<void> insertFav(num? id);
-  Future<void> deleteFav(num? id);
-  Future<bool> isFav(num? id);
+  /// [page] starts from 0
+  /// 
+  /// [perPage] max items to be returned
+  Future<List<BaseMovie>> getFavList({
+    int page = 0,
+    int perPage = 10,
+  });
+  Future<void> insertFav(int id);
+  Future<void> deleteFav(int id);
+  Future<bool> isFav(int id);
   Future<void> close();
 }

@@ -1,26 +1,25 @@
 import 'dart:async';
 
-import 'package:camelmovies/core/services/localdb_service/base_localdb_service.dart';
+import 'package:get_it/get_it.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '/core/models/movie/base_movie.dart';
+import '/core/services/localdb_service/base_localdb_service.dart';
 
 import 'base_favmovies_repo.dart';
 
 class FavMoviesRepository implements BaseFavMoviesRepository {
+  FavMoviesRepository({
+    BaseLocalDbService? localDbService,
+    BehaviorSubject<int>? favCountController,
+  })  : _localDbService = localDbService ?? GetIt.I<BaseLocalDbService>(),
+        favCountController = favCountController ?? BehaviorSubject<int>();
 
   final BaseLocalDbService _localDbService;
 
-  final StreamController<int> _favCountController;
-
-  FavMoviesRepository({
-    required BaseLocalDbService localDbService,
-    StreamController<int>? favCountStream
-  }) : _localDbService = localDbService,
-        _favCountController = favCountStream ?? StreamController();
-
   @override
-  StreamController<int> get favCountController => _favCountController;
+  final BehaviorSubject<int> favCountController;
 
   @override
   Future<int> getFavCount() async {
@@ -32,21 +31,26 @@ class FavMoviesRepository implements BaseFavMoviesRepository {
   }
 
   @override
-  Future<void> close() async {
-    await _favCountController.sink.close();
-  }
+  Future<void> close() => favCountController.close();
 
-  Future<List<BaseMovie>> getFavList() async {
+  @override
+  Future<List<BaseMovie>> getFavList({
+    int page = 0,
+    int perPage = 10,
+  }) async {
+    assert(page >= 0);
     final List<Map<String, Object?>> favList = await _localDbService.select(
       table: _localDbService.favTable,
+      offset: page * perPage,
+      limit: perPage,
     );
 
     return List<BaseMovie>.from(favList.map((fav) => BaseMovie.fromMap(fav)));
   }
 
-  Future<void> insertFav(num? id) async {
-    if(id == null) return;
-    
+  @override
+  Future<void> insertFav(int id) async {
+
     final movie = {
       'id': id,
     };
@@ -57,24 +61,23 @@ class FavMoviesRepository implements BaseFavMoviesRepository {
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
 
-    final favCount = await getFavCount();
-    _favCountController.add(favCount);
+    getFavCount().then(favCountController.add);
   }
 
-  Future<void> deleteFav(num? id) async {
-    if (id == null) return;
+  @override
+  Future<void> deleteFav(int id) async {
 
     await _localDbService.delete(
       table: _localDbService.favTable,
       where: 'id = ?',
       whereArgs: [id],
     );
-    final favCount = await getFavCount();
-    _favCountController.add(favCount);
+
+    getFavCount().then(favCountController.add);
   }
 
-  Future<bool> isFav(num? id) async {
-    if (id == null) return false;
+  @override
+  Future<bool> isFav(int id) async {
 
     final List<Map<String, Object?>> findFav = await _localDbService.select(
       table: _localDbService.favTable,
