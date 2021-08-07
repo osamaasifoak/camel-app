@@ -1,7 +1,7 @@
 
 import 'dart:convert' show json;
 
-import 'package:camelmovies/core/constants/app_apis.dart';
+import '/core/constants/app_apis.dart';
 
 import 'base_movie.dart';
 
@@ -9,13 +9,13 @@ class Movie extends BaseMovie {
   
   final String? title; //title
   final String? releaseDate; //release_date
-  final num? rating; //vote_average
-  final num? voteCount; //vote_count
+  final double? rating; //vote_average
+  final int? voteCount; //vote_count
   final String? imgUrlPoster; //poster_path
   final String? year;
   
   const Movie({
-    num? id,
+    required int id,
     this.title,
     this.releaseDate,
     this.rating,
@@ -28,7 +28,7 @@ class Movie extends BaseMovie {
     if (imgUrlPoster != null) {
       return AppApis().baseImageUrl + AppApis().epOriginalImage + imgUrlPoster!;
     } else {
-      return AppApis().baseImageUrl + AppApis().epOriginalImage + '/null';
+      return '${AppApis().baseImageUrl}${AppApis().epOriginalImage}/null';
     }
   }
 
@@ -36,17 +36,17 @@ class Movie extends BaseMovie {
     if (imgUrlPoster != null) {
       return AppApis().baseImageUrl + AppApis().epThumbImage + imgUrlPoster!;
     } else {
-      return AppApis().baseImageUrl + AppApis().epThumbImage + '/null';
+      return '${AppApis().baseImageUrl}${AppApis().epThumbImage}/null';
     }
   }
 
   @override
   Movie copyWith({
-    num? id,
+    int? id,
     String? title,
     String? releaseDate,
-    num? rating, 
-    num? voteCount,
+    double? rating, 
+    int? voteCount,
     String? imgUrlPoster,
     String? year,
   }) {
@@ -64,7 +64,7 @@ class Movie extends BaseMovie {
   @override
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
+      ...super.toMap(),
       'title': title,
       'release_date': releaseDate,
       'vote_average': rating,
@@ -77,13 +77,13 @@ class Movie extends BaseMovie {
   @override
   factory Movie.fromMap(Map<String, dynamic> map) {
     return Movie(
-      id: map['id'],
-      title: map['title'].toString(),
-      releaseDate: map['release_date'].toString(),
-      rating: map['vote_average'],
-      voteCount: map['vote_count'],
-      imgUrlPoster: map['poster_path'],
-      year: DateTime.parse(map['release_date']).year.toString(),
+      id: map['id'] as int,
+      title: map['title'] as String,
+      releaseDate: map['release_date'] as String,
+      rating: map['vote_average'] as double,
+      voteCount: map['vote_count'] as int,
+      imgUrlPoster: map['poster_path'] as String?,
+      year: DateTime.parse(map['release_date'] as String).year.toString(),
     );
   }
 
@@ -91,7 +91,7 @@ class Movie extends BaseMovie {
   String toJson() => json.encode(toMap());
 
   @override
-  factory Movie.fromJson(String source) => Movie.fromMap(json.decode(source));
+  factory Movie.fromJson(String source) => Movie.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
