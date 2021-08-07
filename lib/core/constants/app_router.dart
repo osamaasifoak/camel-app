@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '/views/_widgets/error_screen.dart';
+
 import '../../../screens.dart';
+import '/views/_widgets/error_screen.dart';
 
 class AppRoutes {
   static const String home = '/';
@@ -20,7 +21,11 @@ class AppRouter {
         case AppRoutes.splash:
           return const SplashScreen();
         case AppRoutes.movieDetail:
-          return MovieDetailScreen(movieId: settings.arguments as num?);
+          final movieId = settings.arguments;
+          if(movieId is int) {
+            return MovieDetailScreen(movieId: movieId);
+          }
+          throw ArgumentError(movieId);
         case AppRoutes.favMovies:
           return const FavMoviesScreen();
         default:
@@ -34,14 +39,14 @@ Widget _pageNotFoundScreen(BuildContext context) => Scaffold(
   appBar: AppBar(
     leading: IconButton(
       onPressed: Navigator.of(context).pop,
-      icon: Icon(
+      icon: const Icon(
         Icons.arrow_back_ios_new,
       ),
     ),
   ),
   body: Center(
     child: ErrorScreen(
-      errorMessage: 'Oopss... The page you\'re looking for does not exist',
+      errorMessage: "Oopss... The page you're looking for does not exist",
       onRetry: Navigator.of(context).pop,
     ),
   ),
