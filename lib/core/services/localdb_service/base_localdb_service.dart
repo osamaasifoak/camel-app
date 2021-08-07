@@ -1,13 +1,10 @@
 
-import 'dart:async' show FutureOr;
-
 import 'package:sqflite/sqflite.dart';
 
 abstract class BaseLocalDbService {
 
   String get favTable;
 
-  FutureOr<bool> initDb([Database? database]);
   Future<void> clearDb();
   Future<void> closeDb();
 

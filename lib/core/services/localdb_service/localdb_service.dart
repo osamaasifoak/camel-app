@@ -1,39 +1,43 @@
-import 'dart:async' show Completer, FutureOr;
+import 'dart:async' show Completer;
 import 'dart:developer' as dev show log;
 
-import 'package:camelmovies/core/services/localdb_service/base_localdb_service.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as path show join;
 
+import '/core/services/localdb_service/base_localdb_service.dart';
+
 const String _dbFileName = 'userpref.db';
 
 class LocalDbService implements BaseLocalDbService {
-
-  final String _favTable = 'fav';
   @override
-  String get favTable => _favTable;
+  final String favTable = 'fav';
 
-  late final String _createFavTable = 'CREATE TABLE $_favTable(id INTEGER PRIMARY KEY)';
+  late final String _createFavTable = 'CREATE TABLE $favTable(id INTEGER PRIMARY KEY)';
 
   late final List<String> _createAllTables = [
     _createFavTable,
   ];
 
   late final List<String> _tablesToBeCleared = [
-    _favTable,
+    favTable,
   ];
 
   final _database = Completer<Database>();
 
-  @override
-  FutureOr<bool> initDb([Database? database]) async {
+  LocalDbService({Database? database}) {
+    _initDb(database: database);
+  }
+
+  Future<void> _initDb({Database? database}) async {
     if (database != null) {
       _database.complete(database);
-      return true;
     }
     try {
-      final dbPath = path.join(await getDatabasesPath(), _dbFileName);
+      final dbPath = path.join(
+        await getDatabasesPath(),
+        _dbFileName,
+      );
       final openedDb = await openDatabase(
         dbPath,
         onCreate: _createTables,
@@ -43,7 +47,6 @@ class LocalDbService implements BaseLocalDbService {
       if (kDebugMode) {
         dev.log('Database initialized!');
       }
-      return true;
     } catch (e, st) {
       if (kDebugMode) {
         dev.log(
@@ -52,14 +55,11 @@ class LocalDbService implements BaseLocalDbService {
         );
       }
     }
-    return false;
   }
 
-  void _createTables(Database db, int version) async {
+  Future<void> _createTables(Database db, int version) async {
     final batch = db.batch();
-    for (final table in _createAllTables) {
-      batch.execute(table);
-    }
+    _createAllTables.forEach(batch.execute);
     await batch.commit(noResult: true);
   }
 
@@ -94,9 +94,7 @@ class LocalDbService implements BaseLocalDbService {
   @override
   Future<void> clearDb() async {
     final batch = (await _database.future).batch();
-    for (String tableName in _tablesToBeCleared) {
-      batch.delete(tableName);
-    }
+    _tablesToBeCleared.forEach(batch.delete);
     await batch.commit(noResult: true);
   }
 
