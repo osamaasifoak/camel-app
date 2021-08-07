@@ -1,14 +1,14 @@
 import 'dart:convert' show json;
 
 class BaseMovie {
-  final num? id; //id
+  final int id; //id
 
   const BaseMovie({
-    this.id,
+    required this.id,
   });
 
   BaseMovie copyWith({
-    num? id,
+    int? id,
   }) {
     return BaseMovie(
       id: id ?? this.id,
@@ -23,14 +23,14 @@ class BaseMovie {
 
   factory BaseMovie.fromMap(Map<String, dynamic> map) {
     return BaseMovie(
-      id: map['id'],
+      id: map['id'] as int,
     );
   }
 
   String toJson() => json.encode(toMap());
 
   factory BaseMovie.fromJson(String source) =>
-      BaseMovie.fromMap(json.decode(source));
+      BaseMovie.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() => 'BaseMovie(id: $id)';
