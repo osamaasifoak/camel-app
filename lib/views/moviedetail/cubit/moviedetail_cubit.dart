@@ -49,7 +49,7 @@ class MovieDetailCubit extends Cubit<MovieDetailState> {
     }
   }
 
-  Future<void> setFav([bool fav = true]) async{
+  Future<void> setFav({bool fav = true}) async{
     try{
 
       if(fav){
@@ -62,7 +62,7 @@ class MovieDetailCubit extends Cubit<MovieDetailState> {
 
       }
 
-      emit((state as MovieDetailLoaded).updateFav(fav));
+      emit((state as MovieDetailLoaded).updateFav(isFav: fav));
 
     }catch(e, st) {
       

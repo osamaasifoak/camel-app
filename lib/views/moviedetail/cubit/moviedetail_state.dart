@@ -30,7 +30,7 @@ class MovieDetailLoaded extends MovieDetailState {
     required this.isFav,
   });
 
-  MovieDetailLoaded updateFav(bool isFav) {
+  MovieDetailLoaded updateFav({required bool isFav}) {
     return MovieDetailLoaded(
       movieDetail: movieDetail,
       isFav: isFav,
