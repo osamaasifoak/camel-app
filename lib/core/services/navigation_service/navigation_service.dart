@@ -157,7 +157,7 @@ class NavigationService implements BaseNavigationService {
         'You have to choose between showing a text message or '
         'showing a content which is a widget. If you only want '
         'to show a text message, provide some `String` to the [message], '
-        'and don\'t provide a `Widget` to the [content]. And vice versa.');
+        "and don't provide a `Widget` to the [content]. And vice versa.");
     try {
       return messengerKey.currentState?.showSnackBar(SnackBar(
         content: message != null ? Text(message) : content!,
@@ -211,8 +211,8 @@ class NavigationService implements BaseNavigationService {
               : (_, a1, __, child) => BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: blurFactor * a1.value, sigmaY: blurFactor * a1.value),
                     child: FadeTransition(
-                      child: child,
                       opacity: a1,
+                      child: child,
                     ),
                   ),
           useRootNavigator: useRootNavigator,
