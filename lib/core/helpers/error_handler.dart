@@ -14,8 +14,11 @@ class ErrorHandler {
     StackTrace? stackTrace,
     String? customUnknownErrorMessage,
   }) {
-    if(foundation.kDebugMode){
-      dev.log('[ErrorHandler] caught an error caused by the following: ', stackTrace: stackTrace);
+    if (foundation.kDebugMode) {
+      dev.log(
+        '[ErrorHandler] caught an error:\n\n$error\n\ncaused by the following:',
+        stackTrace: stackTrace,
+      );
     }
     if (error is TimeoutException) {
       onCatch(AppErrorMessages.timeOutError);
