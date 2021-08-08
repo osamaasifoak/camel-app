@@ -1,7 +1,6 @@
 part of '_upcoming_screen.dart';
 
 abstract class _UpcomingScreenProps extends State<UpcomingScreen> with AutomaticKeepAliveClientMixin {
-  final _navigationService = GetIt.I<BaseNavigationService>();
 
   late final ScrollController _scrollController;
   late final UpcomingCubit _upcomingCubit;
