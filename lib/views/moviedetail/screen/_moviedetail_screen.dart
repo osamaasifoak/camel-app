@@ -12,7 +12,7 @@ part 'moviedetail_screen_props.dart';
 part 'moviedetail_screen_widgets.dart';
 
 class MovieDetailScreen extends StatefulWidget {
-  final num? movieId;
+  final int movieId;
   const MovieDetailScreen({
     required this.movieId,
   });
@@ -30,7 +30,7 @@ class _MovieDetailScreenState extends _MovieDetailScreenProps
         bloc: _movieDetailCubit,
         listener: (_, state) {
           if (state is MovieDetailError) {
-            _navigationService.showSnackBar(
+            GetIt.I<BaseNavigationService>().showSnackBar(
               message: state.errorMessage,
             );
           }
@@ -38,7 +38,7 @@ class _MovieDetailScreenState extends _MovieDetailScreenProps
         builder: (_, state) {
           switch (state.runtimeType) {
             case MovieDetailLoaded:
-              return movieDetail();
+              return movieDetail;
             default:
               return const MovieDetailLoadingIndicator();
           }
