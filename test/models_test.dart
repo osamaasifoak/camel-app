@@ -34,7 +34,7 @@ Future<void> main() async{
       moviesRepo.getNowPlaying().then((movieList) {
         expect(movieList, isA<List<Movie>>());
         expect(movieList.length, equals(20));
-        randomMovie = movieList[Random().nextInt(20)];
+        randomMovie = movieList[Random().nextInt(19)];
       }),
       completes,
     );
