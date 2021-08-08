@@ -1,9 +1,10 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show ScrollDirection;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
-import '/core/constants/app_router.dart';
+import '/core/constants/app_routes.dart';
 import '/core/services/navigation_service/base_navigation_service.dart';
 import '/views/_widgets/error_screen.dart';
 import '/views/_widgets/movie_card/movie_card.dart';
@@ -33,25 +34,26 @@ class _FavMoviesScreenState extends _FavMoviesScreenProps
       body: BlocConsumer<FavMoviesCubit, FavMoviesState>(
         bloc: _favMoviesCubit,
         listener: (_, state) {
-          if (state is FavMoviesError) {
-            _navigationService.showSnackBar(
+          if (state.hasError) {
+            GetIt.I<BaseNavigationService>().showSnackBar(
               message: state.errorMessage,
             );
           }
         },
         builder: (_, state) {
-          switch (state.runtimeType) {
-            case FavMoviesLoading:
-              return loadingIndicator();
-            case FavMoviesError:
-              return Center(
-                child: ErrorScreen(
-                  errorMessage: (state as FavMoviesError).errorMessage,
-                  onRetry: () => _favMoviesCubit.loadFavMovies(),
-                ),
-              );
+          switch (state.status) {
+            case FavMoviesStatus.loading:
+              return loadingIndicator;
             default:
-              return favMovies();
+              if(state.hasError && state.movies.isEmpty) {
+                return Center(
+                  child: ErrorScreen(
+                    errorMessage: state.errorMessage!,
+                    onRetry: _favMoviesCubit.loadFavMovies,
+                  ),
+                );
+              }
+              return favMoviesList;
           }
         },
       ),
