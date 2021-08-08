@@ -15,33 +15,39 @@ class UpcomingState extends Equatable {
   final String? errorMessage;
 
   const UpcomingState({
-    required this.movies,   
+    required this.movies,
     required this.status,
     required this.page,
-    this.errorMessage
+    this.errorMessage,
   });
+
+  bool get isLoading => status == UpcomingStatus.loading;
+  bool get isLoadingMore => status == UpcomingStatus.loadingMore;
+  bool get isBusy => isLoading || isLoadingMore;
+
+  bool get hasError => status == UpcomingStatus.error;
   
   factory UpcomingState.init() {
     return const UpcomingState(
-      movies: [],      
-      status: UpcomingStatus.init,      
+      movies: [],
+      status: UpcomingStatus.init,
       page: 1,
     );
   }
 
   UpcomingState update({
-    List<Movie>? movies,    
-    UpcomingStatus? status,    
+    List<Movie>? movies,
+    UpcomingStatus? status,
     int? page,
     String? errorMessage,
   }) {
     return UpcomingState(
-      movies: movies ?? this.movies,     
-      status: status ?? this.status,  
+      movies: movies ?? this.movies,
+      status: status ?? this.status,
       page: page ?? this.page,
       errorMessage: errorMessage,
     );
-  } 
+  }
 
   @override
   List<Object> get props => [movies, status, page];

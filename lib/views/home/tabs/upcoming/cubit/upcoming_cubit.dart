@@ -15,52 +15,30 @@ class UpcomingCubit extends Cubit<UpcomingState> {
 
   Future<void> loadMovies({bool more = false}) async {
 
-    if (state.status == UpcomingStatus.loading ||
-        state.status == UpcomingStatus.loadingMore) return;
+    if (state.isBusy) return;
 
-    if (more) {
+    emit(state.update(
+      status: more ? UpcomingStatus.loadingMore : UpcomingStatus.loading,
+      page: more ? state.page : 1,
+    ));
 
-      emit(state.update(
-        status: UpcomingStatus.loadingMore,
-      ));
-
-    } else {
-      
-      if(state.movies.isNotEmpty) state.movies.clear();
-      emit(state.update(
-        movies: [],
-        status: UpcomingStatus.loading,
-        page: 1,
-      ));
-
-    }
     try {
 
-      if (more) {
+      final nextPage = more ? state.page + 1 : 1;
+      final movies = await _moviesRepo.getUpcoming(page: nextPage);
 
-        final page = state.page + 1;
-        final ucMoreMovies = await _moviesRepo.getUpcoming(page: page);
-        state.movies.addAll(ucMoreMovies);
-        emit(state.update(
-          status: UpcomingStatus.loaded,
-          page: page,
-        ));
+      emit(state.update(
+        movies: state.movies + movies,
+        status: UpcomingStatus.loaded,
+        page: nextPage,
+      ));
 
-      } else {
-
-        final ucMovies = await _moviesRepo.getUpcoming();
-        emit(state.update(
-          movies: ucMovies,
-          status: UpcomingStatus.loaded,
-        ));
-
-      }
     } catch (e, st) {
 
       ErrorHandler.catchIt(
         error: e,
         stackTrace: st,
-        customUnknownErrorMessage: 'Failed to fetch movies. Please try again.',
+        customUnknownErrorMessage: 'Failed to fetch upcoming movies. Please try again.',
         onCatch: _catchError,
       );
 
