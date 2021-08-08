@@ -14,59 +14,31 @@ class NowPlayingCubit extends Cubit<NowPlayingState> {
   NowPlayingCubit() : super(NowPlayingState.init());
 
   Future<void> loadMovies({bool more = false}) async {
-    if(
-      state.status == NowPlayingStatus.loading ||
-      state.status == NowPlayingStatus.loadingMore
-    ) return;
+    if (state.isBusy) return;
 
-    if(more) {
+    emit(state.update(
+      status: more ? NowPlayingStatus.loadingMore : NowPlayingStatus.loading,
+      page: more ? state.page : 1,
+    ));
 
-      emit(state.update(
-        status: NowPlayingStatus.loadingMore,
-      ));
+    try {
 
-    }else{
-      if(state.movies.isNotEmpty) state.movies.clear();
-      emit(state.update(
-        movies: [],
-        status: NowPlayingStatus.loading,
-        page: 1,
-      ));
-
-    }
-    
-    try{
-
-      if(more){
-
-        final page = state.page + 1;
-        final npMoreMovies = await _moviesRepo.getNowPlaying(page: page);
-        state.movies.addAll(npMoreMovies);
+        final nextPage = more ? state.page + 1 : 1;
+        final movies = await _moviesRepo.getNowPlaying(page: nextPage);
 
         emit(state.update(
+          movies: state.movies + movies,
           status: NowPlayingStatus.loaded,
-          page: page,
+          page: nextPage,
         ));
 
-      }else{
-
-        final npMovies = await _moviesRepo.getNowPlaying();
-        emit(state.update(
-          movies: npMovies,
-          status: NowPlayingStatus.loaded,
-        ));
-
-      }
-
-    }catch(e, st){
-
+    } catch (e, st) {
       ErrorHandler.catchIt(
         error: e,
         stackTrace: st,
-        customUnknownErrorMessage: 'Failed to fetch movies. Please try again.',
+        customUnknownErrorMessage: 'Failed to fetch now playing movies. Please try again.',
         onCatch: _catchError,
       );
-
     }
   }
 
@@ -76,5 +48,4 @@ class NowPlayingCubit extends Cubit<NowPlayingState> {
       errorMessage: message,
     ));
   }
-  
 }

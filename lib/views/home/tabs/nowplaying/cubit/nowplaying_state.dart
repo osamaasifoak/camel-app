@@ -21,6 +21,12 @@ class NowPlayingState extends Equatable {
     this.errorMessage,
   });
 
+  bool get isLoading => status == NowPlayingStatus.loading;
+  bool get isLoadingMore => status == NowPlayingStatus.loadingMore;
+  bool get isBusy => isLoading || isLoadingMore;
+
+  bool get hasError => status == NowPlayingStatus.error;
+
   factory NowPlayingState.init() {
     return const NowPlayingState(
       movies: [],      
