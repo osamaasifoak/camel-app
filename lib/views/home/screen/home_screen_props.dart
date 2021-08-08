@@ -31,14 +31,14 @@ abstract class _HomeScreenProps extends State<HomeScreen> with SingleTickerProvi
     super.dispose();
   }
 
-  void _loadFavMovies() async {
+  void _loadFavMovies() {
     Navigator.of(context).pushNamed(AppRoutes.favMovies);
   }
 
   void _scrollNowPlaying() {
     _nowPlayingScrollController.animateTo(
       0.0, 
-      duration: Duration(milliseconds: 500), 
+      duration: const Duration(milliseconds: 500), 
       curve: Curves.fastLinearToSlowEaseIn,
     );
   }
@@ -46,7 +46,7 @@ abstract class _HomeScreenProps extends State<HomeScreen> with SingleTickerProvi
   void _scrollUpcoming() {
     _upcomingScrollController.animateTo(
       0,
-      duration: Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 500),
       curve: Curves.fastLinearToSlowEaseIn,
     );
   }
@@ -71,7 +71,7 @@ abstract class _HomeScreenProps extends State<HomeScreen> with SingleTickerProvi
     _selectedIndex.value = index;
     _pageController.animateToPage(
       index,
-      duration: Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 500),
       curve: Curves.fastLinearToSlowEaseIn,
     );
   }

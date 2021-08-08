@@ -1,41 +1,37 @@
 part of '_home_screen.dart';
 
 mixin _HomeScreenWidgets on _HomeScreenProps {
-  List<Widget> moviePages() => [
-        BlocProvider<NowPlayingCubit>(
-          create: (_) => NowPlayingCubit(),
-          child: NowPlayingScreen(
-            scrollController: _nowPlayingScrollController,
-          ),
-        ),
-        BlocProvider<UpcomingCubit>(
-          create: (_) => UpcomingCubit(),
-          child: UpcomingScreen(
-            scrollController: _upcomingScrollController,
-          ),
-        ),
-      ];
+  List<Widget> get moviePages => [
+    BlocProvider(
+      create: (_) => NowPlayingCubit(),
+      child: NowPlayingScreen(scrollController: _nowPlayingScrollController),
+    ),
+    BlocProvider(
+      create: (_) => UpcomingCubit(),
+      child: UpcomingScreen(scrollController: _upcomingScrollController),
+    ),
+  ];
 
-  List<BottomNavigationBarItem> bottomNavItems() => const [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.smart_display_outlined),
-          activeIcon: Icon(Icons.smart_display),
-          label: 'Now Playing',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.upcoming_outlined),
-          activeIcon: Icon(Icons.upcoming),
-          label: 'Upcoming',
-        ),
-      ];
+  List<BottomNavigationBarItem> get bottomNavItems => const [
+    BottomNavigationBarItem(
+      icon: Icon(Icons.smart_display_outlined),
+      activeIcon: Icon(Icons.smart_display),
+      label: 'Now Playing',
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.upcoming_outlined),
+      activeIcon: Icon(Icons.upcoming),
+      label: 'Upcoming',
+    ),
+  ];
 
-  Widget favIcon() {
+  Widget get favIcon {
     return IconButton(
       iconSize: 27,
       padding: const EdgeInsets.all(4),
       icon: Stack(
         children: [
-          Icon(Icons.favorite_border),
+          const Icon(Icons.favorite_border),
           StreamBuilder<int>(
             initialData: 0,
             stream: _favMoviesRepo.favCountController.stream,
@@ -44,8 +40,8 @@ mixin _HomeScreenWidgets on _HomeScreenProps {
                 right: 0,
                 bottom: 0,
                 child: Container(
-                  padding: const EdgeInsets.all(1),
-                  constraints: BoxConstraints(
+                  padding: const EdgeInsets.all(2),
+                  constraints: const BoxConstraints(
                     minHeight: 12,
                     minWidth: 13,
                   ),
