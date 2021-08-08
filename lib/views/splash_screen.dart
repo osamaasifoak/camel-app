@@ -1,17 +1,13 @@
-
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 
-class SplashScreen extends StatefulWidget{
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({Key? key}) : super(key: key);
 
-  const SplashScreen();
-
-  @override 
+  @override
   _SplashScreenState createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin{
+class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
   late final AnimationController _animationController;
   late final Animation<double> _animation;
 
@@ -19,18 +15,14 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   void initState() {
     super.initState();
     _animationController = AnimationController(
-      vsync: this, 
-      duration: const Duration(milliseconds: 2000),
-    )..repeat();
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    )..forward().then(Navigator.of(context).pop);
+
     _animation = Tween<double>(
       begin: 0.0,
       end: 6.0,
     ).animate(_animationController);
-
-    Future.delayed(
-      const Duration(milliseconds: 2000),
-      Navigator.of(context).pop,
-    );
   }
 
   @override
@@ -57,47 +49,43 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
           padding: EdgeInsets.zero,
           child: ValueListenableBuilder<double>(
             valueListenable: _animation,
-            child: Text(
-              'IS',
+            builder: (_, animationValue, child) {
+              return ShaderMask(
+                shaderCallback: (rect) {
+                  return RadialGradient(
+                    center: Alignment.topLeft,
+                    radius: 3,
+                    stops: [
+                      animationValue - 4.5,
+                      animationValue - 3.5,
+                      animationValue - 2.5,
+                      animationValue - 1.25,
+                      animationValue - 0.15,
+                    ],
+                    colors: const [
+                      Color(0xFF0D47A1),
+                      Color(0xFF311B92),
+                      Color(0xFFB388FF),
+                      Color(0xFF80D8FF),
+                      Color(0xFF0D47A1),
+                    ],
+                  ).createShader(rect);
+                },
+                child: child,
+              );
+            },
+            child: const Text(
+              'camel',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: 'Monoton',
                 fontSize: 80,
-                color: Colors.white
+                color: Colors.white,
               ),
             ),
-            builder: (_, animationValue, child) {
-              return ShaderMask(
-              child: child,
-              shaderCallback: (rect) {
-                return RadialGradient(
-                  center: Alignment.topLeft,
-                  radius: 1.5,
-                  stops: [
-                    animationValue - 4.5,
-                    animationValue - 3.5,
-                    animationValue - 2.5,
-                    animationValue - 1.25,
-                    animationValue - 0.5,
-                  ],
-                  colors: [
-                    Colors.blue[900]!,
-                    
-                    Colors.deepPurple[900]!,
-                    Colors.deepPurpleAccent[100]!,
-                    
-                    Colors.lightBlueAccent,
-                    Colors.blue[900]!,
-                    
-                  ],
-                ).createShader(rect);
-              },
-            );
-            },
           ),
         ),
       ),
-    );  
+    );
   }
-
 }
