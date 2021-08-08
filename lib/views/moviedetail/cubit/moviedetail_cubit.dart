@@ -12,19 +12,21 @@ import '/core/repositories/movies_repo/base_movies_repo.dart';
 part 'moviedetail_state.dart';
 
 class MovieDetailCubit extends Cubit<MovieDetailState> {
-  final _moviesRepo = GetIt.I<BaseMoviesRepository>();
-  final _favMoviesRepo = GetIt.I<BaseFavMoviesRepository>();
+  final BaseMoviesRepository _moviesRepo;
+  final BaseFavMoviesRepository _favMoviesRepo;
 
-  MovieDetailCubit(): super(const MovieDetailLoading());
+  MovieDetailCubit({
+    BaseMoviesRepository? moviesRepo,
+    BaseFavMoviesRepository? favMoviesRepo,
+  }) :  _moviesRepo = moviesRepo ?? GetIt.I<BaseMoviesRepository>(),
+        _favMoviesRepo = favMoviesRepo ?? GetIt.I<BaseFavMoviesRepository>(),
+        super(const MovieDetailLoading());
 
-  Future<void> loadMovieDetail({required num? movieId, required FutureOr<void> Function() onFail}) async {
-    if(movieId == null) {
-      _catchError('Failed to load movie detail. Please try again.');
-      return;
-    }
-
-    try{
-      
+  Future<void> loadMovieDetail({
+    required int movieId,
+    required FutureOr<void> Function() onFail,
+  }) async {
+    try {
       final movieDetail = await _moviesRepo.getMovieDetail(movieId);
       final isFav = await _favMoviesRepo.isFav(movieDetail.id);
 
@@ -34,9 +36,7 @@ class MovieDetailCubit extends Cubit<MovieDetailState> {
           isFav: isFav,
         ),
       );
-
-    }catch(e, st){
-
+    } catch (e, st) {
       ErrorHandler.catchIt(
         error: e,
         stackTrace: st,
@@ -45,34 +45,27 @@ class MovieDetailCubit extends Cubit<MovieDetailState> {
       );
 
       onFail();
-
     }
   }
 
-  Future<void> setFav({bool fav = true}) async{
-    try{
-
-      if(fav){
-
-        await _favMoviesRepo.insertFav((state as MovieDetailLoaded).movieDetail.id);
-
-      }else{
-
-        await _favMoviesRepo.deleteFav((state as MovieDetailLoaded).movieDetail.id);
-
+  Future<void> setFav({bool fav = true}) async {
+    if(state is! MovieDetailLoaded) return;
+    final currentState = state as MovieDetailLoaded;
+    try {
+      if (fav) {
+        await _favMoviesRepo.insertFav(currentState.movieDetail.id);
+      } else {
+        await _favMoviesRepo.deleteFav(currentState.movieDetail.id);
       }
 
-      emit((state as MovieDetailLoaded).updateFav(isFav: fav));
-
-    }catch(e, st) {
-      
+      emit(currentState.updateFav(isFav: fav));
+    } catch (e, st) {
       ErrorHandler.catchIt(
         error: e,
         stackTrace: st,
         customUnknownErrorMessage: 'Failed to save favourite movie. Please try again.',
         onCatch: _catchError,
       );
-
     }
   }
 
