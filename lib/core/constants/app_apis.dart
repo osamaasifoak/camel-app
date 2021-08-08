@@ -1,48 +1,134 @@
 import 'package:flutter/services.dart' show rootBundle;
 
-///Movie Detail:
+enum MovieEndpoint {
+  // discover,
+  details,
+  search,
+  nowPlaying,
+  upcoming,
+  popular,
+}
+
+extension MovieEndpointName on MovieEndpoint {
+  String get name {
+    switch (index) {
+      // case 0:
+      //   return '/3/discover/movie';
+      case 0:
+        return '/3/movie/';
+      case 1:
+        return '/3/search/movie';
+      case 2:
+        return '/3/movie/now_playing';
+      case 3:
+        return '/3/movie/upcoming';
+      case 4:
+        return '/3/movie/popular';
+      default:
+        throw IndexError(
+          index,
+          MovieEndpoint.values.length,
+        );
+    }
+  }
+}
+
+enum TVEndpoint {
+  onTheAir,
+  popular,
+  details,
+}
+
+extension TVEndpointName on TVEndpoint {
+  String get name {
+    switch (index) {
+      case 0:
+        return '/3/tv/on_the_air';
+      case 1:
+        return '/3/tv/popular';
+      case 2:
+        return '/3/tv/';
+      default:
+        throw IndexError(
+          index,
+          TVEndpoint.values.length,
+        );
+    }
+  }
+}
+
+/// (Movie)
+/// Details:
 ///
-///https://api.themoviedb.org/3/movie/[MovieID]?api_key=[apiKey]&language=en-US
+/// https://api.themoviedb.org/3/movie/[id]?api_key=[apiKey]&language=en-US
 ///
-///```dart
-///example:
-///Uri.https(AppApis().baseUrl, AppApis().epMovieDetail + [id], {
-/// AppApis().paramApiKey: AppApis().apiKey,
-/// AppApis().paramLanguage: AppApis().defaultLanguage,
-///});
-///```
+/// example:
 ///
-///Discover:
+/// ```dart
+/// final uri = AppApis().endpointOf(
+///   MovieEndpoint.details,
+///   id: 'id',
+/// );
+/// ```
 ///
-///https://api.themoviedb.org/3/discover/movie?api_key=[apiKey]&language=en-US
+/// (Movie)
+/// Search:
 ///
-///example:
+/// https://api.themoviedb.org/3/search/movie?api_key=[apiKey]&language=en-US&page=[page]
 ///
-///```dart
-///Uri.https(AppApis().baseUrl, AppApis().epDiscover, {
-/// AppApis().paramApiKey: AppApis().apiKey,
-/// AppApis().paramLanguage: AppApis().defaultLanguage,
-/// AppApis().paramNowPlaying: [yyyy-MM-dd],
-/// AppApis().paramYear: [yyyy],
-/// AppApis().paramPage: [page],
-///});
-///```
+/// example:
 ///
+/// ```dart
+/// final uri = AppApis().endpointOf(
+///   MovieEndpoint.search,
+///   page: 1,
+///   keyword: 'keyword',
+/// );
+/// ```
 ///
-///Search:
+/// (Movie)
+/// Now Playing / Upcoming / Popular:
 ///
-///https://api.themoviedb.org/3/search/movie?api_key=[apiKey]&language=en-US
+/// https://api.themoviedb.org/3/movie/now_playing_or_upcoming_or_popular?api_key=[apiKey]&language=en-US&page=[page]
 ///
-///example:
+/// example:
 ///
-///```dart
-///Uri.https(AppApis().baseUrl, AppApis().epSearch, {
-/// AppApis().paramApiKey: AppApis().apiKey,
-/// AppApis().paramLanguage: AppApis().defaultLanguage,
-/// AppApis().paramSearch: [keyword],
-/// AppApis().paramPage: [page],
-///});
-///```
+/// ```dart
+/// final uri = AppApis().endpointOf(
+///   MovieEndpoint.nowPlaying,
+///   page: 1,
+/// );
+/// ```
+///
+/// (TV)
+/// Details:
+///
+/// https://api.themoviedb.org/3/tv/[id]?api_key=[apiKey]&language=en-US
+///
+/// example:
+///
+/// ```dart
+/// final uri = AppApis().endpointOf(
+///   TVEndpoint.details,
+///   id: 'id',
+/// );
+/// ```
+///
+/// (TV)
+/// On The Air / Popular:
+///
+/// https://api.themoviedb.org/3/tv/on_the_air__or__popular?api_key=[apiKey]&language=en-US&page=[page]
+///
+/// example:
+///
+/// ```dart
+/// final uri = AppApis().endpointOf(
+///   TVEndpoint.onTheAir,
+///   page: 1,
+/// );
+/// ```
+const String kDefaultLanguage = 'en-US';
+
 class AppApis {
   factory AppApis() => _singleton;
 
@@ -50,39 +136,146 @@ class AppApis {
 
   AppApis._internal();
 
-  late final String _cachedApiKey;
-
-  Future<void> loadApiKey({String? apiKey}) async {
-    _cachedApiKey = apiKey ?? await rootBundle.loadString(
-      'assets/apikey.txt',
-      cache: false,
-    );
-  }
-
-  String get apiKey => _cachedApiKey;
-
-  final String baseUrl = 'api.themoviedb.org';
-
-  final String epDiscover = '/3/discover/movie';
-  final String epMovieDetail = '/3/movie/';
-  final String epSearch = '/3/search/movie';
-
   final String baseImageUrl = 'https://image.tmdb.org';
   final String epThumbImage = '/t/p/w500';
   final String epOriginalImage = '/t/p/original';
 
-  final String paramApiKey = 'api_key';
-  final String paramLanguage = 'language';
-  final String defaultLanguage = 'en-US';
+  final String _baseUrl = 'api.themoviedb.org';
 
-  ///YYYY-MM-DD
-  final String paramNowPlaying = 'release_date.lte';
+  final String _paramApiKey = 'api_key';
+  final String _paramLanguage = 'language';
 
-  ///YYYY-MM-DD
-  final String paramUpcoming = 'primary_release_date.gte';
+  final String _paramPage = 'page';
+  final String _paramSearch = 'query';
 
-  ///YYYY
-  final String paramYear = 'year';
-  final String paramPage = 'page';
-  final String paramSearch = 'query';
+  late final String _cachedApiKey;
+
+  Future<void> loadApiKey({String? apiKey}) async {
+    _cachedApiKey = apiKey ??
+        await rootBundle.loadString(
+          'assets/apikey.txt',
+          cache: false,
+        );
+  }
+
+  /// [endpoint] get either [MovieEndpoint] or [TVEndpoint] endpoint
+  ///
+  /// [page] is used for:
+  /// * [MovieEndpoint.nowPlaying]
+  /// * [MovieEndpoint.upcoming]
+  /// * [MovieEndpoint.popular]
+  /// * [MovieEndpoint.search]
+  ///
+  /// [id] can be `movieId` or `tvId` depends on [endpoint]
+  /// and is used for [MovieEndpoint.details]
+  ///
+  /// [keyword] is used for [MovieEndpoint.search]
+  ///
+  /// [language] pass an ISO 639-1 value to display translated data for the fields that support it.
+  /// defaults to [kDefaultLanguage] `en-US`
+  Uri endpointOf<MOVIE extends MovieEndpoint, TV extends TVEndpoint>(
+    Object endpoint, {
+    int? page,
+    String? id,
+    String? keyword,
+    String language = kDefaultLanguage,
+  }) {
+    if (endpoint is MOVIE) {
+      return _movieEndpointOf(
+        endpoint,
+        language: language,
+        page: page,
+        keyword: keyword,
+        movieId: id,
+      );
+    } else if (endpoint is TV) {
+      return _tvEndpointOf(
+        endpoint,
+        language: language,
+        page: page,
+        keyword: keyword,
+        tvId: id,
+      );
+    }
+
+    throw ArgumentError('You have to choose between Movie or TV endpoint');
+  }
+
+  Uri _movieEndpointOf(
+    MovieEndpoint endpoint, {
+    required String language,
+    int? page,
+    String? keyword,
+    String? movieId,
+  }) {
+    final String endpointName;
+    final params = {
+      _paramApiKey: _cachedApiKey,
+      _paramLanguage: language,
+    };
+    switch (endpoint) {
+      case MovieEndpoint.nowPlaying:
+      case MovieEndpoint.upcoming:
+      case MovieEndpoint.popular:
+      case MovieEndpoint.search:
+        assert(
+          movieId == null,
+          "Don't set [movieId] if not needed",
+        );
+        params[_paramPage] = page!.toString();
+        if (endpoint == MovieEndpoint.search) {
+          params[_paramSearch] = keyword!;
+        }
+        endpointName = endpoint.name;
+        break;
+      case MovieEndpoint.details:
+        assert(
+          page == null && keyword == null,
+          "Don't set [page] and [keyword] if not needed",
+        );
+        endpointName = endpoint.name + movieId!;
+        break;
+    }
+    return Uri.https(
+      _baseUrl,
+      endpointName,
+      params,
+    );
+  }
+
+  Uri _tvEndpointOf(
+    TVEndpoint endpoint, {
+    required String language,
+    int? page,
+    String? keyword,
+    String? tvId,
+  }) {
+    final String endpointName;
+    final params = {
+      _paramApiKey: _cachedApiKey,
+      _paramLanguage: language,
+    };
+    switch (endpoint) {
+      case TVEndpoint.popular:
+      case TVEndpoint.onTheAir:
+        assert(
+          tvId == null,
+          "Don't set [movieId] if not needed",
+        );
+        params[_paramPage] = page!.toString();
+        endpointName = endpoint.name;
+        break;
+      case TVEndpoint.details:
+        assert(
+          page == null && keyword == null,
+          "Don't set [page] and [keyword] if not needed",
+        );
+        endpointName = endpoint.name + tvId!;
+    }
+    return Uri.https(
+      _baseUrl,
+      endpointName,
+      params,
+    );
+  }
 }
