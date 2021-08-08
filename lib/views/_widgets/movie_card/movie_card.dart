@@ -17,6 +17,13 @@ class MovieCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final errorImage = Center(
+      child: Icon(
+        Icons.error_outline,
+        size: 24,
+        color: Theme.of(context).errorColor,
+      ),
+    );
     final leadingImage = Flexible(
       flex: 0,
       child: Container(
@@ -27,28 +34,15 @@ class MovieCard extends StatelessWidget {
             ? CachedNetworkImage(
                 cacheKey: movie.id.toString(),
                 fit: BoxFit.cover,
-                imageUrl: movie.imgUrlPosterThumb,
-                fadeInDuration: const Duration(milliseconds: 500),
+                imageUrl: movie.imgUrlPosterThumb!,
                 fadeOutDuration: const Duration(milliseconds: 500),
                 maxWidthDiskCache: 200,
                 maxHeightDiskCache: 300,
                 memCacheWidth: 200,
                 memCacheHeight: 300,
-                errorWidget: (_, __, ___) => Center(
-                  child: Icon(
-                    Icons.error_outline,
-                    size: 24,
-                    color: Theme.of(context).errorColor,
-                  ),
-                ),
+                errorWidget: (_, __, ___) => errorImage,
               )
-            : Center(
-                child: Icon(
-                  Icons.error_outline,
-                  size: 24,
-                  color: Theme.of(context).errorColor,
-                ),
-              ),
+            : errorImage,
       ),
     );
 
@@ -65,7 +59,7 @@ class MovieCard extends StatelessWidget {
         );
 
     final movieTitleAndYear = Text(
-      movie.title! + ' (${movie.year ?? 'XXXX'})',
+      '${movie.title!}${' (${movie.year ?? 'XXXX'})'}',
       maxLines: 2,
       overflow: TextOverflow.ellipsis,
       style: const TextStyle(
@@ -87,7 +81,7 @@ class MovieCard extends StatelessWidget {
         ),
         children: [
           TextSpan(
-            text: (movie.rating?.toStringAsFixed(1) ?? '0.0'),
+            text: movie.rating?.toStringAsFixed(1) ?? '0.0',
           ),
           TextSpan(
             text: ' (${movie.voteCount.toString()} votes)',
@@ -98,7 +92,6 @@ class MovieCard extends StatelessWidget {
     );
 
     final movieBriefDetails = Flexible(
-      flex: 1,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
