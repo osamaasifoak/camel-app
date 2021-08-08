@@ -33,19 +33,15 @@ class MovieDetail extends Movie {
           year: year,
         );
 
-  String get imgUrlBackdropOriginal {
+  String? get imgUrlBackdropOriginal {
     if (imgUrlBackdrop != null) {
       return AppApis().baseImageUrl + AppApis().epOriginalImage + imgUrlBackdrop!;
-    } else {
-      return '${AppApis().baseImageUrl}${AppApis().epOriginalImage}/null';
     }
   }
 
-  String get imgUrlBackdropThumb {
+  String? get imgUrlBackdropThumb {
     if (imgUrlBackdrop != null) {
       return AppApis().baseImageUrl + AppApis().epThumbImage + imgUrlBackdrop!;
-    } else {
-      return '${AppApis().baseImageUrl}${AppApis().epThumbImage}/null';
     }
   }
 
@@ -101,7 +97,7 @@ class MovieDetail extends Movie {
       title: map['title'] as String,
       releaseDate: map['release_date'] as String,
       overview: map['overview'] as String,
-      rating: map['vote_average'] as double,
+      rating: (map['vote_average'] as num).toDouble(),
       voteCount: map['vote_count'] as int,
       imgUrlPoster: map['poster_path'] as String?,
       imgUrlBackdrop: map['backdrop_path'] as String?,
