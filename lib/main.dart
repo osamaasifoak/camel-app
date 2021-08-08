@@ -4,7 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 
 import 'core/constants/app_apis.dart';
-import 'core/constants/app_router.dart';
+import 'core/constants/app_routes.dart';
+import 'core/helpers/screen_router.dart';
 import 'core/services/navigation_service/base_navigation_service.dart';
 
 import 'singletons.dart';
@@ -41,7 +42,7 @@ class App extends StatelessWidget {
         fontFamily: 'Nunito Sans',
       ),
       initialRoute: AppRoutes.splash,
-      onGenerateRoute: AppRouter.onGenerateRoute,
+      onGenerateRoute: ScreenRouter.onGenerateRoute,
     );
   }
 }
