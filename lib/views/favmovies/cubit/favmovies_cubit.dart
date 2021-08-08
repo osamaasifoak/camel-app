@@ -10,24 +10,55 @@ import '/core/repositories/movies_repo/base_movies_repo.dart';
 part 'favmovies_state.dart';
 
 class FavMoviesCubit extends Cubit<FavMoviesState> {
-  final _moviesRepo = GetIt.I<BaseMoviesRepository>();
-  final _favMoviesRepo = GetIt.I<BaseFavMoviesRepository>();
+  final BaseMoviesRepository _moviesRepo;
+  final BaseFavMoviesRepository _favMoviesRepo;
 
-  FavMoviesCubit() : super(const FavMoviesLoading());
+  FavMoviesCubit({
+    BaseMoviesRepository? moviesRepo,
+    BaseFavMoviesRepository? favMoviesRepo,
+  })  : _moviesRepo = moviesRepo ?? GetIt.I<BaseMoviesRepository>(),
+        _favMoviesRepo = favMoviesRepo ?? GetIt.I<BaseFavMoviesRepository>(),
+        super(FavMoviesState.init());
 
-  Future<void> loadFavMovies() async{
+  Future<void> loadFavMovies({bool more = false}) async {
+    if (state.isBusy || (more && state.isAtEndOfPage)) return;
 
-    if(state is FavMoviesLoaded) (state as FavMoviesLoaded).movies.clear();
+    emit(more ? state.loadingMore() : state.loading());
 
-    emit(const FavMoviesLoading());
+    try {
+      final int nextPage = more ? state.currentPage + 1 : 0;
 
-    try{
-      
-      final localFavMovies = await _favMoviesRepo.getFavList();
-      final movies = await _moviesRepo.getMovieListById(localFavMovies);
-      emit(FavMoviesLoaded(movies: movies));
+      final localFavMovies = await _favMoviesRepo.getFavList(page: nextPage);
+      if (localFavMovies.isEmpty) {
+        emit(state.loaded(
+          movies: state.movies,
+          isAtEndOfPage: true,
+        ));
+      } else {
+        // we're gonna load the movies half by half
+        // because loading all at once, especially more than 5
+        // takes a bit too long
+        final int firstHalf = localFavMovies.length ~/ 2;
+        final int secondHalf = localFavMovies.length - firstHalf;
 
-    }catch(e, st){
+        final firstHalfMovies = await _moviesRepo.getMovieListById(
+          localFavMovies.take(firstHalf).toList(growable: false),
+        );
+
+        emit(state.loadingMore(
+          movies: state.movies + firstHalfMovies,
+        ));
+
+        final secondHalfMovies = await _moviesRepo.getMovieListById(
+          localFavMovies.take(secondHalf).toList(growable: false),
+        );
+
+        emit(state.loaded(
+          movies: state.movies + secondHalfMovies,
+          newPage: nextPage,
+        ));
+      }
+    } catch (e, st) {
       ErrorHandler.catchIt(
         error: e,
         stackTrace: st,
@@ -37,6 +68,5 @@ class FavMoviesCubit extends Cubit<FavMoviesState> {
     }
   }
 
-  void _catchError(String message) => emit(FavMoviesError(message));
-
+  void _catchError(String errorMessage) => emit(state.error(errorMessage: errorMessage));
 }
