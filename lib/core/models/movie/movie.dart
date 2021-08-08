@@ -24,19 +24,15 @@ class Movie extends BaseMovie {
     this.year,
   }) : super(id: id,);
 
-  String get imgUrlPosterOriginal {
+  String? get imgUrlPosterOriginal {
     if (imgUrlPoster != null) {
       return AppApis().baseImageUrl + AppApis().epOriginalImage + imgUrlPoster!;
-    } else {
-      return '${AppApis().baseImageUrl}${AppApis().epOriginalImage}/null';
     }
   }
 
-  String get imgUrlPosterThumb {
+  String? get imgUrlPosterThumb {
     if (imgUrlPoster != null) {
       return AppApis().baseImageUrl + AppApis().epThumbImage + imgUrlPoster!;
-    } else {
-      return '${AppApis().baseImageUrl}${AppApis().epThumbImage}/null';
     }
   }
 
@@ -80,7 +76,7 @@ class Movie extends BaseMovie {
       id: map['id'] as int,
       title: map['title'] as String,
       releaseDate: map['release_date'] as String,
-      rating: map['vote_average'] as double,
+      rating: (map['vote_average'] as num).toDouble(),
       voteCount: map['vote_count'] as int,
       imgUrlPoster: map['poster_path'] as String?,
       year: DateTime.parse(map['release_date'] as String).year.toString(),
