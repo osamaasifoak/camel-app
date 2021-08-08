@@ -3,7 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
-import '/core/constants/app_router.dart';
+import '../../../../../core/constants/app_routes.dart';
 import '/core/services/navigation_service/base_navigation_service.dart';
 import '/views/_widgets/error_screen.dart';
 import '/views/_widgets/movie_card/movie_card.dart';
@@ -29,7 +29,7 @@ class _NowPlayingScreenState extends _NowPlayingScreenProps
       listener: (_, state) {
         if (state.status == NowPlayingStatus.error) {
 
-          _navigationService.showSnackBar(
+          GetIt.I<BaseNavigationService>().showSnackBar(
             message: state.errorMessage,
           );
           
@@ -40,12 +40,13 @@ class _NowPlayingScreenState extends _NowPlayingScreenProps
           case NowPlayingStatus.init:
           case NowPlayingStatus.loading:
             return loadingIndicator();
-          case NowPlayingStatus.error:
-            return ErrorScreen(
-              errorMessage: 'Oops.. An error occurred, please try again.', 
-              onRetry: _nowPlayingCubit.loadMovies,
-            );
           default:
+            if(state.hasError && state.movies.isEmpty) {
+              return ErrorScreen(
+                errorMessage: 'Oops.. An error occurred, please try again.',
+                onRetry: _nowPlayingCubit.loadMovies,
+              );
+            }
             return nowPlayingMovies();
         }
       },

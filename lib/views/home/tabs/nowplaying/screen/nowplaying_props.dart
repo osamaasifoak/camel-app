@@ -1,7 +1,6 @@
 part of '_nowplaying_screen.dart';
 
 abstract class _NowPlayingScreenProps extends State<NowPlayingScreen> with AutomaticKeepAliveClientMixin {
-  final _navigationService = GetIt.I<BaseNavigationService>();
 
   late final ScrollController _scrollController;
   late final NowPlayingCubit _nowPlayingCubit;
