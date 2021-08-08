@@ -19,8 +19,8 @@ class ErrorScreen extends StatelessWidget {
           height: MediaQuery.of(context).size.height / 5,
           width: MediaQuery.of(context).size.height / 5,
           margin: const EdgeInsets.only(bottom: 30),
-          child: FittedBox(
-            child: const Icon(
+          child: const FittedBox(
+            child: Icon(
               Icons.sentiment_dissatisfied_rounded,
             ),
           ),
@@ -28,27 +28,27 @@ class ErrorScreen extends StatelessWidget {
         Text(
           errorMessage,
           textAlign: TextAlign.center,
-          style: TextStyle(
+          style: const TextStyle(
             fontFamily: 'Nunito Sans',
             fontWeight: FontWeight.bold,
           ),
         ),
         OutlinedButton(
           onPressed: onRetry,
-          child: const Text(
-            'Reload',
-          ),
           style: OutlinedButton.styleFrom(
             primary: const Color(0xFF01579B),
             backgroundColor: Colors.lightBlue[50],
-            side: BorderSide(
-              color: const Color(0xFF01579B),
+            side: const BorderSide(
+              color: Color(0xFF01579B),
               width: 1.5,
             ),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
             padding: const EdgeInsets.symmetric(horizontal: 40),
+          ),
+          child: const Text(
+            'Reload',
           ),
         ),
       ],
