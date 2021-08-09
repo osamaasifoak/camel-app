@@ -1,19 +1,17 @@
 import 'package:flutter/services.dart' show rootBundle;
 
 enum MovieEndpoint {
-  // discover,
   details,
   search,
   nowPlaying,
   upcoming,
   popular,
+  reviews,
 }
 
 extension MovieEndpointName on MovieEndpoint {
   String get name {
     switch (index) {
-      // case 0:
-      //   return '/3/discover/movie';
       case 0:
         return '/3/movie/';
       case 1:
@@ -24,6 +22,8 @@ extension MovieEndpointName on MovieEndpoint {
         return '/3/movie/upcoming';
       case 4:
         return '/3/movie/popular';
+      case 5:
+        return '/3/movie/<movieId>/reviews';
       default:
         throw IndexError(
           index,
@@ -37,6 +37,8 @@ enum TVEndpoint {
   onTheAir,
   popular,
   details,
+  search,
+  reviews,
 }
 
 extension TVEndpointName on TVEndpoint {
@@ -48,6 +50,10 @@ extension TVEndpointName on TVEndpoint {
         return '/3/tv/popular';
       case 2:
         return '/3/tv/';
+      case 3:
+        return '/3/search/tv';
+      case 4:
+        return '/3/tv/<tvId>/reviews';
       default:
         throw IndexError(
           index,
@@ -128,6 +134,7 @@ extension TVEndpointName on TVEndpoint {
 /// );
 /// ```
 const String kDefaultLanguage = 'en-US';
+const String kDefaultRegion = 'US';
 
 class AppApis {
   factory AppApis() => _singleton;
@@ -144,9 +151,10 @@ class AppApis {
 
   final String _paramApiKey = 'api_key';
   final String _paramLanguage = 'language';
+  final String _paramRegion = 'region';
 
   final String _paramPage = 'page';
-  final String _paramSearch = 'query';
+  final String _paramSearchKeyword = 'query';
 
   late final String _cachedApiKey;
 
@@ -173,28 +181,34 @@ class AppApis {
   ///
   /// [language] pass an ISO 639-1 value to display translated data for the fields that support it.
   /// defaults to [kDefaultLanguage] `en-US`
+  ///
+  /// [region] specify a ISO 3166-1 code to filter release dates. Must be uppercase.
+  /// defaults to [kDefaultRegion] `US`
   Uri endpointOf<MOVIE extends MovieEndpoint, TV extends TVEndpoint>(
     Object endpoint, {
     int? page,
     String? id,
     String? keyword,
     String language = kDefaultLanguage,
+    String region = kDefaultRegion,
   }) {
     if (endpoint is MOVIE) {
       return _movieEndpointOf(
         endpoint,
-        language: language,
         page: page,
         keyword: keyword,
         movieId: id,
+        language: language,
+        region: region,
       );
     } else if (endpoint is TV) {
       return _tvEndpointOf(
         endpoint,
-        language: language,
         page: page,
         keyword: keyword,
         tvId: id,
+        language: language,
+        region: region,
       );
     }
 
@@ -204,6 +218,7 @@ class AppApis {
   Uri _movieEndpointOf(
     MovieEndpoint endpoint, {
     required String language,
+    required String region,
     int? page,
     String? keyword,
     String? movieId,
@@ -212,6 +227,7 @@ class AppApis {
     final params = {
       _paramApiKey: _cachedApiKey,
       _paramLanguage: language,
+      _paramRegion: region,
     };
     switch (endpoint) {
       case MovieEndpoint.nowPlaying:
@@ -224,7 +240,7 @@ class AppApis {
         );
         params[_paramPage] = page!.toString();
         if (endpoint == MovieEndpoint.search) {
-          params[_paramSearch] = keyword!;
+          params[_paramSearchKeyword] = keyword!;
         }
         endpointName = endpoint.name;
         break;
@@ -234,6 +250,17 @@ class AppApis {
           "Don't set [page] and [keyword] if not needed",
         );
         endpointName = endpoint.name + movieId!;
+        break;
+      case MovieEndpoint.reviews:
+        assert(
+          keyword == null,
+          "Don't set [keyword] if not needed",
+        );
+        params[_paramPage] = page!.toString();
+        endpointName = endpoint.name.replaceFirst(
+          '<movieId>',
+          movieId!,
+        );
         break;
     }
     return Uri.https(
@@ -246,6 +273,7 @@ class AppApis {
   Uri _tvEndpointOf(
     TVEndpoint endpoint, {
     required String language,
+    required String region,
     int? page,
     String? keyword,
     String? tvId,
@@ -254,15 +282,20 @@ class AppApis {
     final params = {
       _paramApiKey: _cachedApiKey,
       _paramLanguage: language,
+      _paramRegion: region,
     };
     switch (endpoint) {
       case TVEndpoint.popular:
       case TVEndpoint.onTheAir:
+      case TVEndpoint.search:
         assert(
           tvId == null,
-          "Don't set [movieId] if not needed",
+          "Don't set [tvId] if not needed",
         );
         params[_paramPage] = page!.toString();
+        if (endpoint == TVEndpoint.search) {
+          params[_paramSearchKeyword] = keyword!;
+        }
         endpointName = endpoint.name;
         break;
       case TVEndpoint.details:
@@ -271,6 +304,18 @@ class AppApis {
           "Don't set [page] and [keyword] if not needed",
         );
         endpointName = endpoint.name + tvId!;
+        break;
+      case TVEndpoint.reviews:
+        assert(
+          keyword == null,
+          "Don't set [keyword] if not needed",
+        );
+        params[_paramPage] = page!.toString();
+        endpointName = endpoint.name.replaceFirst(
+          '<tvId>',
+          tvId!,
+        );
+        break;
     }
     return Uri.https(
       _baseUrl,
