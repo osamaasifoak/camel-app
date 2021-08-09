@@ -4,9 +4,8 @@ import 'package:get_it/get_it.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '/core/models/movie/base_movie.dart';
+import '/core/models/fav_entertainment_show/fav_entertainment_show.dart';
 import '/core/services/localdb_service/base_localdb_service.dart';
-
 import 'base_favmovies_repo.dart';
 
 class FavMoviesRepository implements BaseFavMoviesRepository {
@@ -24,7 +23,7 @@ class FavMoviesRepository implements BaseFavMoviesRepository {
   @override
   Future<int> getFavCount() async {
     final favCount = await _localDbService.select(
-      table: _localDbService.favTable,
+      table: _localDbService.movieFavsTable,
       columns: ['COUNT(*)'],
     );
     return Sqflite.firstIntValue(favCount) ?? 0;
@@ -34,53 +33,51 @@ class FavMoviesRepository implements BaseFavMoviesRepository {
   Future<void> close() => favCountController.close();
 
   @override
-  Future<List<BaseMovie>> getFavList({
+  Future<List<int>> getFavList({
     int page = 0,
     int perPage = 10,
   }) async {
     assert(page >= 0);
     final List<Map<String, Object?>> favList = await _localDbService.select(
-      table: _localDbService.favTable,
+      table: _localDbService.movieFavsTable,
       offset: page * perPage,
       limit: perPage,
+      columns: ['id'],
+      orderBy: 'added_on DESC',
     );
 
-    return List<BaseMovie>.from(favList.map((fav) => BaseMovie.fromMap(fav)));
+    return favList.map<int>((fav) => fav['id'] as int).toList();
   }
 
   @override
-  Future<void> insertFav(int id) async {
-
-    final movie = {
-      'id': id,
-    };
+  Future<void> insertFav(FavEShow favEShow) async {
 
     await _localDbService.insert(
-      table: _localDbService.favTable,
-      values: movie,
+      table: _localDbService.movieFavsTable,
+      values: favEShow.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
 
-    getFavCount().then(favCountController.add);
+    refreshFavMoviesCount();
   }
 
   @override
   Future<void> deleteFav(int id) async {
 
     await _localDbService.delete(
-      table: _localDbService.favTable,
+      table: _localDbService.movieFavsTable,
       where: 'id = ?',
       whereArgs: [id],
     );
 
-    getFavCount().then(favCountController.add);
+    refreshFavMoviesCount();
   }
 
   @override
   Future<bool> isFav(int id) async {
 
     final List<Map<String, Object?>> findFav = await _localDbService.select(
-      table: _localDbService.favTable,
+      table: _localDbService.movieFavsTable,
       where: 'id = ?',
       whereArgs: [id],
       limit: 1,
@@ -88,5 +85,10 @@ class FavMoviesRepository implements BaseFavMoviesRepository {
 
     if (findFav.isEmpty) return false;
     return true;
+  }
+
+  @override
+  void refreshFavMoviesCount() {
+    getFavCount().then(favCountController.add);
   }
 }
