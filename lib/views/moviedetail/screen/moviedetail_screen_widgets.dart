@@ -8,9 +8,8 @@ mixin _MovieDetailScreenWidgets on _MovieDetailScreenProps {
           actions: [
             favIcon,
           ],
-          floating: true,
-          elevation: 0.7,
-          shadowColor: Colors.grey[100],
+          elevation: 0,
+          pinned: true,
           backgroundColor: Colors.grey[50],
           expandedHeight: MediaQuery.of(context).size.height * 0.67,
           flexibleSpace: appBarBgImage,
@@ -25,10 +24,12 @@ mixin _MovieDetailScreenWidgets on _MovieDetailScreenProps {
               movieBackdropImage,
               movieRuntimeAndRating,
               movieOverview,
-              const SizedBox(height: 40),
             ],
           ),
         ),
+        movieReviewsSectionTitle,
+        movieReviews,
+        const SliverToBoxAdapter(child: SizedBox(height: 20)),
       ],
     );
   }
@@ -66,7 +67,7 @@ mixin _MovieDetailScreenWidgets on _MovieDetailScreenProps {
       ),
     );
     return FlexibleSpaceBar(
-      ///Taken from image poster
+      // Taken from image poster
       background: currentState.movieDetail.imgUrlPosterOriginal != null
           ? CachedNetworkImage(
               fit: BoxFit.fill,
@@ -82,7 +83,7 @@ mixin _MovieDetailScreenWidgets on _MovieDetailScreenProps {
   Widget get movieTitleAndYearOfRelease {
     final currentState = _movieDetailCubit.state as MovieDetailLoaded;
     return Padding(
-      padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
       child: RichText(
         overflow: TextOverflow.fade,
         maxLines: 3,
@@ -98,7 +99,7 @@ mixin _MovieDetailScreenWidgets on _MovieDetailScreenProps {
               text: currentState.movieDetail.title,
             ),
             TextSpan(
-              text: ' (${currentState.movieDetail.year ?? 'XXXX'})',
+              text: ' (${currentState.movieDetail.year})',
               style: TextStyle(color: Colors.grey[700]),
             ),
           ],
@@ -110,9 +111,9 @@ mixin _MovieDetailScreenWidgets on _MovieDetailScreenProps {
   Widget get movieOverview {
     final currentState = _movieDetailCubit.state as MovieDetailLoaded;
     return Padding(
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(16.0),
       child: Text(
-        currentState.movieDetail.overview!,
+        currentState.movieDetail.overview,
         style: const TextStyle(
           letterSpacing: 0.5,
           wordSpacing: 1.5,
@@ -124,7 +125,7 @@ mixin _MovieDetailScreenWidgets on _MovieDetailScreenProps {
   Widget get movieRuntimeAndRating {
     final currentState = _movieDetailCubit.state as MovieDetailLoaded;
     return Padding(
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(16.0),
       child: RichText(
         text: TextSpan(
           style: const TextStyle(
@@ -153,43 +154,64 @@ mixin _MovieDetailScreenWidgets on _MovieDetailScreenProps {
 
   Widget get movieBackdropImage {
     final currentState = _movieDetailCubit.state as MovieDetailLoaded;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 5),
-      child: currentState.movieDetail.imgUrlBackdropOriginal != null
-          ? ClipRRect(
-              borderRadius: BorderRadius.circular(40),
-              child: CachedNetworkImage(
-                fit: BoxFit.fill,
-                imageUrl: currentState.movieDetail.imgUrlBackdropOriginal!,
-                filterQuality: FilterQuality.high,
-                errorWidget: (_, __, ___) => Center(
-                  child: Icon(
-                    Icons.error_outline,
-                    size: 30,
-                    color: Theme.of(context).errorColor,
-                  ),
-                ),
-                fadeOutDuration: const Duration(milliseconds: 500),
-              ),
-            )
-          : const SizedBox(),
-    );
+    return currentState.movieDetail.imgUrlBackdropOriginal != null
+        ? CachedNetworkImage(
+          fit: BoxFit.fill,
+          imageUrl: currentState.movieDetail.imgUrlBackdropOriginal!,
+          filterQuality: FilterQuality.high,
+          errorWidget: (_, __, ___) => Center(
+            child: Icon(
+              Icons.error_outline,
+              size: 30,
+              color: Theme.of(context).errorColor,
+            ),
+          ),
+          fadeOutDuration: const Duration(milliseconds: 500),
+        )
+        : const SizedBox();
   }
 
   Widget get movieTags {
     final currentState = _movieDetailCubit.state as MovieDetailLoaded;
     return SizedBox(
-      height: (currentState.movieDetail.genres?.isNotEmpty ?? false) ? 60 : 0,
+      height: currentState.movieDetail.genres.isNotEmpty ? 80 : 0,
       child: ListView.builder(
-        padding: const EdgeInsets.all(5),
+        padding: const EdgeInsets.all(12),
         scrollDirection: Axis.horizontal,
-        itemCount: currentState.movieDetail.genres?.length ?? 0,
+        itemCount: currentState.movieDetail.genres.length,
         itemBuilder: (_, i) {
-          return MovieTagCard(
-            genreName: currentState.movieDetail.genres?[i].genreName ?? 'Genre',
+          return EShowTagCard(
+            tagName: currentState.movieDetail.genres[i].name,
           );
         },
       ),
     );
+  }
+
+  Widget get movieReviewsSectionTitle {
+    final currentState = _movieDetailCubit.state as MovieDetailLoaded;
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              'Reviews (${currentState.movieReviews.length})',
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const Divider(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget get movieReviews {
+    final currentState = _movieDetailCubit.state as MovieDetailLoaded;
+    return EShowReviewsList(reviews: currentState.movieReviews);
   }
 }

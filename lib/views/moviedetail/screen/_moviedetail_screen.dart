@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
-import '/core/services/navigation_service/base_navigation_service.dart';
-import '/views/_widgets/movie_detail/movie_detail_loading_indicator.dart';
-import '/views/_widgets/movie_detail/movie_tag_card.dart';
+import '/core/services/screen_messenger/base_screen_messenger.dart';
+import '/views/_widgets/eshow_detail/entshow_detail_loading_indicator.dart';
+import '/views/_widgets/eshow_detail/entshow_tag_card.dart';
+import '/views/_widgets/eshow_reviews/eshow_reviews_list.dart';
 import '/views/moviedetail/cubit/moviedetail_cubit.dart';
 
 part 'moviedetail_screen_props.dart';
@@ -30,7 +31,8 @@ class _MovieDetailScreenState extends _MovieDetailScreenProps
         bloc: _movieDetailCubit,
         listener: (_, state) {
           if (state is MovieDetailError) {
-            GetIt.I<BaseNavigationService>().showSnackBar(
+            GetIt.I<BaseScreenMessenger>().showSnackBar(
+              context: context,
               message: state.errorMessage,
             );
           }
@@ -40,7 +42,7 @@ class _MovieDetailScreenState extends _MovieDetailScreenProps
             case MovieDetailLoaded:
               return movieDetail;
             default:
-              return const MovieDetailLoadingIndicator();
+              return const EShowDetailLoadingIndicator();
           }
         },
       ),
