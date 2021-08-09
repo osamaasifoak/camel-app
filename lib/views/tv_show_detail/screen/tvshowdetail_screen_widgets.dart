@@ -8,9 +8,8 @@ mixin _TVShowDetailScreenWidgets on _TVShowDetailScreenProps {
           actions: [
             favIcon,
           ],
-          floating: true,
-          elevation: 0.7,
-          shadowColor: Colors.grey[100],
+          pinned: true,
+          elevation: 0,
           backgroundColor: Colors.grey[50],
           expandedHeight: MediaQuery.of(context).size.height * 0.67,
           flexibleSpace: appBarBgImage,
