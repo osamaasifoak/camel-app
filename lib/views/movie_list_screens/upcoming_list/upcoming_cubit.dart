@@ -1,24 +1,29 @@
-import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
 import 'package:get_it/get_it.dart';
 
+import '/core/enums/state_status.dart';
 import '/core/helpers/error_handler.dart';
 import '/core/models/movie/movie.dart';
 import '/core/repositories/movies_repo/base_movies_repo.dart';
+import '/views/_screen_templates/movie/base_movie_list_cubit/base_movie_list_cubit.dart';
 
 part 'upcoming_state.dart';
 
-class UpcomingCubit extends Cubit<UpcomingState> {
-  final _moviesRepo = GetIt.I<BaseMoviesRepository>();
+class UpcomingCubit extends BaseMovieListCubit<UpcomingState> {
 
-  UpcomingCubit(): super(UpcomingState.init());
+  UpcomingCubit({
+    BaseMoviesRepository? moviesRepo,
+  })  : _moviesRepo = moviesRepo ?? GetIt.I<BaseMoviesRepository>(),
+        super(UpcomingState.init());
 
+  final BaseMoviesRepository _moviesRepo;
+  
+  @override
   Future<void> loadMovies({bool more = false}) async {
 
     if (state.isBusy) return;
 
     emit(state.update(
-      status: more ? UpcomingStatus.loadingMore : UpcomingStatus.loading,
+      status: more ? StateStatus.loadingMore : StateStatus.loading,
       page: more ? state.page : 1,
     ));
 
@@ -29,7 +34,7 @@ class UpcomingCubit extends Cubit<UpcomingState> {
 
       emit(state.update(
         movies: state.movies + movies,
-        status: UpcomingStatus.loaded,
+        status: StateStatus.loaded,
         page: nextPage,
       ));
 
@@ -45,12 +50,10 @@ class UpcomingCubit extends Cubit<UpcomingState> {
     }
   }
 
-  void _catchError(String message) {
-
+  void _catchError(String errorMessage) {
     emit(state.update(
-      status: UpcomingStatus.error,
-      errorMessage: message,
+      status: StateStatus.error,
+      errorMessage: errorMessage,
     ));
-
   }
 }
