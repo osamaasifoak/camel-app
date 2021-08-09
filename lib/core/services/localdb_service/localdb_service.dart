@@ -7,20 +7,33 @@ import 'package:path/path.dart' as path show join;
 
 import '/core/services/localdb_service/base_localdb_service.dart';
 
-const String _dbFileName = 'userpref.db';
+const String _dbFileName = 'user_prefs.db';
 
 class LocalDbService implements BaseLocalDbService {
   @override
-  final String favTable = 'fav';
+  final String movieFavsTable = 'fav_movie';
 
-  late final String _createFavTable = 'CREATE TABLE $favTable(id INTEGER PRIMARY KEY)';
+  @override
+  final String tvFavsTable = 'fav_tv';
+
+  late final String _createFavMovieTable = 
+    'CREATE TABLE $movieFavsTable '
+    '(id INTEGER PRIMARY KEY, '
+    'added_on INTEGER)';
+
+  late final String _createFavTVTable = 
+    'CREATE TABLE $tvFavsTable '
+    '(id INTEGER PRIMARY KEY, '
+    'added_on INTEGER)';
 
   late final List<String> _createAllTables = [
-    _createFavTable,
+    _createFavMovieTable,
+    _createFavTVTable,
   ];
 
   late final List<String> _tablesToBeCleared = [
-    favTable,
+    movieFavsTable,
+    tvFavsTable,
   ];
 
   final _database = Completer<Database>();
