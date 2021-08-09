@@ -14,7 +14,7 @@ typedef PageBuilderFunction = Widget Function(
 
 /// a class to simplify navigating between screens.
 /// it requires no `BuildContext` to navigate.
-@Deprecated('Bad design (anti-pattern)')
+@Deprecated('Bad design (anti-pattern). Use [ScreenMessenger] instead')
 class NavigationService implements BaseNavigationService {
   final _navigatorKey = GlobalKey<NavigatorState>();
   @override
@@ -224,5 +224,91 @@ class NavigationService implements BaseNavigationService {
         dev.log(e.toString(), stackTrace: st);
       }
     }
+  }
+}
+
+// ignore: deprecated_member_use_from_same_package
+class UnimplementedNavigationService implements BaseNavigationService {
+  @override
+  void back<T extends Object?>([T? result]) {
+    throw UnimplementedError();
+  }
+
+  @override
+  void backUntilNamed(String routeName) {
+    throw UnimplementedError();
+  }
+
+  @override
+  GlobalKey<ScaffoldMessengerState> get messengerKey => throw UnimplementedError();
+
+  @override
+  GlobalKey<NavigatorState> get navigatorKey => throw UnimplementedError();
+
+  @override
+  Future<T?>? offAllToName<T extends Object?>(
+    String routeName, {
+    Object? arguments,
+  }) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<T?>? offToName<T extends Object?, TO extends Object?>(
+    String routeName, {
+    TO? result,
+    Object? arguments,
+  }) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<T?>? offToNameUntil<T extends Object?>(
+    String toRouteName, {
+    required String untilRouteName,
+    Object? arguments,
+  }) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<T?>? showDialogWithBlur<T extends Object?>({
+    required PageBuilderFunction pageBuilder,
+    double? blurFactor,
+    bool barrierDismissible = false,
+    String? barrierLabel,
+    Color barrierColor = const Color(0x8A000000),
+    Duration transitionDuration = const Duration(milliseconds: 300),
+    bool useRootNavigator = true,
+    RouteSettings? routeSettings,
+  }) {
+    throw UnimplementedError();
+  }
+
+  @override
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? showSnackBar({
+    String? message,
+    Widget? content,
+    Duration? duration,
+    Color backgroundColor = const Color(0xFF01579B),
+    double? elevation,
+    bool? floating,
+    EdgeInsetsGeometry? margin,
+    EdgeInsetsGeometry? padding,
+    double? width,
+    ShapeBorder? shape,
+    SnackBarAction? action,
+    Animation<double>? animation,
+    void Function()? onVisible,
+  }) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<T?>? toNamed<T extends Object?>(
+    String routeName, {
+    Object? arguments,
+  }) {
+    throw UnimplementedError();
   }
 }
