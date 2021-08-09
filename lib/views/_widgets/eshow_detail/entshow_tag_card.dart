@@ -1,12 +1,12 @@
 
 import 'package:flutter/material.dart';
 
-class MovieTagCard extends StatelessWidget{
-  final String genreName;
+class EShowTagCard extends StatelessWidget{
+  final String tagName;
 
-  const MovieTagCard({
+  const EShowTagCard({
     Key? key, 
-    required this.genreName,
+    required this.tagName,
   }) : super(key: key);
 
   @override
@@ -21,7 +21,7 @@ class MovieTagCard extends StatelessWidget{
         alignment: Alignment.center,
         padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
         child: Text(
-          genreName,
+          tagName,
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 18,

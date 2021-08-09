@@ -1,14 +1,11 @@
-
 import 'package:camelmovies/views/_widgets/default_shimmer.dart';
 import 'package:flutter/material.dart';
 
-class MovieDetailLoadingIndicator extends StatelessWidget{
-  
-  const MovieDetailLoadingIndicator({Key? key}) : super(key: key);
+class EShowDetailLoadingIndicator extends StatelessWidget {
+  const EShowDetailLoadingIndicator({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
@@ -27,17 +24,12 @@ class MovieDetailLoadingIndicator extends StatelessWidget{
     return DefaultShimmer(
       child: Container(
         height: screenHeight / 6,
-        margin: const EdgeInsets.symmetric(horizontal: 5),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(25),
-          color: Colors.white,
-        ),
+        color: Colors.white,
       ),
     );
   }
 
   Container movieTags(double screenWidth) {
-
     final smallTag = DefaultShimmer(
       child: Container(
         width: screenWidth / 3,
@@ -49,7 +41,7 @@ class MovieDetailLoadingIndicator extends StatelessWidget{
     );
 
     final midTag = DefaultShimmer(
-      child: Container(   
+      child: Container(
         width: screenWidth / 4.5,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(25),
@@ -60,7 +52,7 @@ class MovieDetailLoadingIndicator extends StatelessWidget{
 
     return Container(
       height: 45,
-      margin: const EdgeInsets.fromLTRB(10,15,10,15),
+      margin: const EdgeInsets.fromLTRB(16, 15, 16, 15),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -76,13 +68,13 @@ class MovieDetailLoadingIndicator extends StatelessWidget{
     return DefaultShimmer(
       child: Container(
         width: screenWidth / 2,
-        height: 40, 
-        margin: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+        height: 40,
+        margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(25),
           color: Colors.white,
         ),
-      ), 
+      ),
     );
   }
 
@@ -92,11 +84,10 @@ class MovieDetailLoadingIndicator extends StatelessWidget{
       shadowColor: Colors.grey[100],
       flexibleSpace: DefaultShimmer(
         child: Container(
-          height: screenHeight / 1.5, 
+          height: screenHeight / 1.5,
           color: Colors.white,
-        ), 
+        ),
       ),
     );
   }
-
 }
