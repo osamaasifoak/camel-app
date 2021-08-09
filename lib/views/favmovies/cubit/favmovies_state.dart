@@ -1,13 +1,5 @@
 part of 'favmovies_cubit.dart';
 
-enum FavMoviesStatus {
-  init,
-  loading,
-  loaded,
-  loadingMore,
-  error,
-}
-
 class FavMoviesState extends Equatable {
   const FavMoviesState({
     required this.status,
@@ -17,21 +9,21 @@ class FavMoviesState extends Equatable {
     this.errorMessage,
   });
 
-  final FavMoviesStatus status;
+  final StateStatus status;
   final int currentPage;
   final List<Movie> movies;
   final bool isAtEndOfPage;
   final String? errorMessage;
 
-  bool get isLoading => status == FavMoviesStatus.loading;
-  bool get isLoadingMore => status == FavMoviesStatus.loadingMore;
+  bool get isLoading => status == StateStatus.loading;
+  bool get isLoadingMore => status == StateStatus.loadingMore;
   bool get isBusy => isLoading || isLoadingMore;
 
-  bool get hasError => status == FavMoviesStatus.error;
+  bool get hasError => status == StateStatus.error;
 
   factory FavMoviesState.init() {
     return const FavMoviesState(
-      status: FavMoviesStatus.init,
+      status: StateStatus.init,
       currentPage: 0,
       movies: [],
     );
@@ -39,7 +31,7 @@ class FavMoviesState extends Equatable {
 
   FavMoviesState loading() {
     return const FavMoviesState(
-      status: FavMoviesStatus.loading,
+      status: StateStatus.loading,
       currentPage: 0,
       movies: [],
     );
@@ -49,7 +41,7 @@ class FavMoviesState extends Equatable {
     List<Movie>? movies,
   }) {
     return FavMoviesState(
-      status: FavMoviesStatus.loadingMore,
+      status: StateStatus.loadingMore,
       currentPage: currentPage,
       movies: movies ?? this.movies,
     );
@@ -61,7 +53,7 @@ class FavMoviesState extends Equatable {
     int? newPage,
   }) {
     return FavMoviesState(
-      status: FavMoviesStatus.loaded,
+      status: StateStatus.loaded,
       isAtEndOfPage: isAtEndOfPage ?? this.isAtEndOfPage,
       currentPage: newPage ?? currentPage,
       movies: movies,
@@ -72,7 +64,7 @@ class FavMoviesState extends Equatable {
     required String errorMessage,
   }) {
     return FavMoviesState(
-      status: FavMoviesStatus.error,
+      status: StateStatus.error,
       isAtEndOfPage: isAtEndOfPage,
       currentPage: currentPage,
       movies: movies,
