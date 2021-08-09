@@ -18,6 +18,13 @@ abstract class _FavMoviesScreenProps extends State<FavMoviesScreen> {
     _favMoviesScrollController.dispose();
     super.dispose();
   }
+  
+  Future<void> _onFavMovieTapped(int movieId) async {
+    await Navigator.of(context).pushNamed(
+      AppRoutes.getMovieDetail(movieId),
+    );
+    _favMoviesCubit.loadFavMovies();
+  }
 
   void _loadMoreFavMovies() {
     // don't execute when scroll controller has no clients (scrollviews)
@@ -30,4 +37,5 @@ abstract class _FavMoviesScreenProps extends State<FavMoviesScreen> {
       _favMoviesCubit.loadFavMovies(more: true);
     }
   }
+
 }
