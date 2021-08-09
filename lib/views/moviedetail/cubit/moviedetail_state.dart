@@ -23,21 +23,28 @@ class MovieDetailError extends MovieDetailState{
 
 class MovieDetailLoaded extends MovieDetailState {
   final MovieDetail movieDetail;
+  final List<MovieReview> movieReviews;
   final bool isFav;
 
   const MovieDetailLoaded({
     required this.movieDetail,
     required this.isFav,
+    required this.movieReviews,
   });
 
-  MovieDetailLoaded updateFav({required bool isFav}) {
+  MovieDetailLoaded update({
+    MovieDetail? movieDetail,
+    List<MovieReview>? movieReviews,
+    bool? isFav,
+  }) {
     return MovieDetailLoaded(
-      movieDetail: movieDetail,
-      isFav: isFav,
+      movieDetail: movieDetail ?? this.movieDetail,
+      movieReviews: movieReviews ?? this.movieReviews,
+      isFav: isFav ?? this.isFav,
     );
   }
 
   @override
-  List<Object> get props => [movieDetail, isFav];
+  List<Object> get props => [movieDetail, isFav, movieReviews];
 }
 
