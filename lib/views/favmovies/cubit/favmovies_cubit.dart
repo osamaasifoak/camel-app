@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:get_it/get_it.dart';
 
+import '/core/enums/state_status.dart';
 import '/core/helpers/error_handler.dart';
 import '/core/models/movie/movie.dart';
 import '/core/repositories/favmovies_repo/base_favmovies_repo.dart';
@@ -39,10 +40,10 @@ class FavMoviesCubit extends Cubit<FavMoviesState> {
         // because loading all at once, especially more than 5
         // takes a bit too long
         final int firstHalf = localFavMovies.length ~/ 2;
-        final int secondHalf = localFavMovies.length - firstHalf;
+        final int secondHalf = localFavMovies.length;
 
         final firstHalfMovies = await _moviesRepo.getMovieListById(
-          localFavMovies.take(firstHalf).toList(growable: false),
+          localFavMovies.getRange(0, firstHalf).toList(growable: false),
         );
 
         emit(state.loadingMore(
@@ -50,7 +51,7 @@ class FavMoviesCubit extends Cubit<FavMoviesState> {
         ));
 
         final secondHalfMovies = await _moviesRepo.getMovieListById(
-          localFavMovies.take(secondHalf).toList(growable: false),
+          localFavMovies.getRange(firstHalf, secondHalf).toList(growable: false),
         );
 
         emit(state.loaded(
