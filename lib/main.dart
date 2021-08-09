@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:get_it/get_it.dart';
-
 import 'core/constants/app_apis.dart';
 import 'core/constants/app_routes.dart';
 import 'core/helpers/screen_router.dart';
-import 'core/services/navigation_service/base_navigation_service.dart';
 
 import 'singletons.dart';
 
@@ -32,8 +29,6 @@ class App extends StatelessWidget {
     return MaterialApp(
       title: 'caMel',
       debugShowCheckedModeBanner: false,
-      navigatorKey: GetIt.I<BaseNavigationService>().navigatorKey,
-      scaffoldMessengerKey: GetIt.I<BaseNavigationService>().messengerKey,
       theme: ThemeData(
         primaryColor: Colors.white,
         accentColor: const Color(0xFF01579B),
