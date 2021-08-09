@@ -5,10 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 import '/core/constants/app_routes.dart';
-import '/core/services/navigation_service/base_navigation_service.dart';
+import '/core/enums/state_status.dart';
+import '/core/services/screen_messenger/base_screen_messenger.dart';
 import '/views/_widgets/error_screen.dart';
-import '/views/_widgets/movie_card/movie_card.dart';
-import '/views/_widgets/movie_card/movies_loading_indicator.dart';
+import '/views/_widgets/movie_list_tile/movie_list_loading_indicator.dart';
+import '/views/_widgets/movie_list_tile/movie_list_tile.dart';
 import '/views/favmovies/cubit/favmovies_cubit.dart';
 
 part 'favmovies_screen_props.dart';
@@ -27,22 +28,23 @@ class _FavMoviesScreenState extends _FavMoviesScreenProps
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Favorites'),
+        title: const Text('Your favorite movies'),
         elevation: 0.7,
         shadowColor: Colors.grey[100],
       ),
       body: BlocConsumer<FavMoviesCubit, FavMoviesState>(
         bloc: _favMoviesCubit,
         listener: (_, state) {
-          if (state.hasError) {
-            GetIt.I<BaseNavigationService>().showSnackBar(
+          if (state.hasError && state.movies.isNotEmpty) {
+            GetIt.I<BaseScreenMessenger>().showSnackBar(
+              context: context,
               message: state.errorMessage,
             );
           }
         },
         builder: (_, state) {
           switch (state.status) {
-            case FavMoviesStatus.loading:
+            case StateStatus.loading:
               return loadingIndicator;
             default:
               if(state.hasError && state.movies.isEmpty) {
