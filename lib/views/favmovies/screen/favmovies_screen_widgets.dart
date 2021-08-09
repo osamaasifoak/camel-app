@@ -7,7 +7,7 @@ mixin _FavMoviesScreenWidgets on _FavMoviesScreenProps {
         SliverToBoxAdapter(
           child: SizedBox(height: 20),
         ),
-        MoviesLoadingIndicator(
+        MovieListLoadingIndicator(
           itemExtent: 120,
           itemCount: 8,
         ),
@@ -19,23 +19,6 @@ mixin _FavMoviesScreenWidgets on _FavMoviesScreenProps {
   }
 
   Widget get favMoviesList {
-    final movieCardStyle = ElevatedButton.styleFrom(
-      shadowColor: Colors.grey[50]?.withOpacity(0.3),
-      elevation: 4.0,
-      primary: Colors.grey[50],
-      onPrimary: Colors.black87,
-      padding: const EdgeInsets.all(0),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-    );
-
-    Future<void> onCardPressed(int movieId) async {
-      await Navigator.of(context).pushNamed(
-        AppRoutes.movieDetail,
-        arguments: movieId,
-      );
-      _favMoviesCubit.loadFavMovies();
-    }
-
     return RefreshIndicator(
       onRefresh: _favMoviesCubit.loadFavMovies,
       child: CustomScrollView(
@@ -49,10 +32,9 @@ mixin _FavMoviesScreenWidgets on _FavMoviesScreenProps {
               delegate: SliverChildBuilderDelegate(
                 (_, index) {
                   final movie = _favMoviesCubit.state.movies[index];
-                  return MovieCard(
+                  return MovieListTile(
                     movie: movie,
-                    style: movieCardStyle,
-                    onCardPressed: () => onCardPressed(movie.id),
+                    onCardPressed: () => _onFavMovieTapped(movie.id),
                   );
                 },
                 childCount: _favMoviesCubit.state.movies.length,
@@ -71,7 +53,7 @@ mixin _FavMoviesScreenWidgets on _FavMoviesScreenProps {
 
   Widget get bottomLoadingIndicator {
     if (_favMoviesCubit.state.isLoadingMore) {
-      return const MoviesLoadingIndicator(
+      return const MovieListLoadingIndicator(
         itemExtent: 120,
         itemCount: 5,
       );
