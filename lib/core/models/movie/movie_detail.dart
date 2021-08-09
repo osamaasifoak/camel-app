@@ -1,28 +1,35 @@
 import 'dart:convert' show json;
 
 import '/core/constants/app_apis.dart';
-
+import '/core/models/entertainment_show/entertainment_show_details.dart';
+import '/core/models/entertainment_show/entertainment_show_genres.dart';
 import 'movie.dart';
-import 'movie_genre.dart';
 
-class MovieDetail extends Movie {
-  final String? overview; //overview
+typedef ESG = EShowGenre;
+typedef JsonMap = Map<String, dynamic>;
+
+class MovieDetail extends Movie implements EShowDetails {
+  @override
+  final String overview; //overview
+  @override
   final String? imgUrlBackdrop; //backdrop_path
-  final int? runtime;
-  final List<MovieGenre>? genres;
+  @override
+  final int runtime;
+  @override
+  final List<ESG> genres;
 
   const MovieDetail({
     required int id,
-    String? title,
-    String? releaseDate,
-    double? rating,
-    int? voteCount,
-    String? imgUrlPoster,
-    String? year,
-    this.overview,
-    this.imgUrlBackdrop,
-    this.runtime,
-    this.genres,
+    required String title,
+    required String releaseDate,
+    required double rating,
+    required int voteCount,
+    required String? imgUrlPoster,
+    required String year,
+    required this.overview,
+    required this.imgUrlBackdrop,
+    required this.runtime,
+    required this.genres,
   }) : super(
           id: id,
           title: title,
@@ -33,12 +40,14 @@ class MovieDetail extends Movie {
           year: year,
         );
 
+  @override
   String? get imgUrlBackdropOriginal {
     if (imgUrlBackdrop != null) {
       return AppApis().baseImageUrl + AppApis().epOriginalImage + imgUrlBackdrop!;
     }
   }
 
+  @override
   String? get imgUrlBackdropThumb {
     if (imgUrlBackdrop != null) {
       return AppApis().baseImageUrl + AppApis().epThumbImage + imgUrlBackdrop!;
@@ -46,52 +55,8 @@ class MovieDetail extends Movie {
   }
 
   @override
-  MovieDetail copyWith({
-    int? id,
-    String? title,
-    String? releaseDate,
-    String? overview,
-    double? rating,
-    int? voteCount,
-    String? imgUrlPoster,
-    String? imgUrlBackdrop,
-    int? runtime,
-    String? year,
-    List<MovieGenre>? genres,
-  }) {
-    return MovieDetail(
-      id: id ?? this.id,
-      title: title ?? this.title,
-      releaseDate: releaseDate ?? this.releaseDate,
-      overview: overview ?? this.overview,
-      rating: rating ?? this.rating,
-      voteCount: voteCount ?? this.voteCount,
-      imgUrlPoster: imgUrlPoster ?? this.imgUrlPoster,
-      imgUrlBackdrop: imgUrlBackdrop ?? this.imgUrlBackdrop,
-      runtime: runtime ?? this.runtime,
-      year: year ?? this.year,
-      genres: genres ?? this.genres,
-    );
-  }
-
-  @override
-  Map<String, dynamic> toMap() {
-    return {
-      ...super.toMap(),
-      'overview': overview,
-      'backdrop_path': imgUrlBackdrop,
-      'runtime': runtime,
-      'genres': genres,
-    };
-  }
-
-  @override
-  factory MovieDetail.fromMap(Map<String, dynamic> map) {
-    final genres = (map['genres'] as List)
-        .map(
-          (g) => MovieGenre.fromMap(g as Map<String, dynamic>),
-        )
-        .toList(growable: false);
+  factory MovieDetail.fromMap(JsonMap map) {
+    final genres = (map['genres'] as List).map((g) => ESG.fromMap(g as JsonMap)).toList(growable: false);
     return MovieDetail(
       id: map['id'] as int,
       title: map['title'] as String,
@@ -107,11 +72,7 @@ class MovieDetail extends Movie {
     );
   }
 
-  @override
-  String toJson() => json.encode(toMap());
-
-  @override
-  factory MovieDetail.fromJson(String source) => MovieDetail.fromMap(json.decode(source) as Map<String, dynamic>);
+    factory MovieDetail.fromJson(String source) => MovieDetail.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {

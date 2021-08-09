@@ -1,76 +1,54 @@
-
 import 'dart:convert' show json;
 
 import '/core/constants/app_apis.dart';
+import '/core/models/entertainment_show/entertainment_show.dart';
 
-import 'base_movie.dart';
+class Movie implements EShow {
 
-class Movie extends BaseMovie {
-  
-  final String? title; //title
-  final String? releaseDate; //release_date
-  final double? rating; //vote_average
-  final int? voteCount; //vote_count
-  final String? imgUrlPoster; //poster_path
-  final String? year;
-  
   const Movie({
-    required int id,
-    this.title,
-    this.releaseDate,
-    this.rating,
-    this.voteCount,
+    required this.id,
+    required this.title,
+    required this.releaseDate,
+    required this.rating,
+    required this.voteCount,
+    required this.year,
     this.imgUrlPoster,
-    this.year,
-  }) : super(id: id,);
+  });
 
+  @override
+  final int id;
+
+  @override
+  final String title;
+
+  @override
+  final String releaseDate; //release_date
+
+  @override
+  final double rating; //vote_average
+
+  @override
+  final int voteCount; //vote_count
+
+  @override
+  final String? imgUrlPoster; //poster_path
+  
+  final String year;
+
+  @override
   String? get imgUrlPosterOriginal {
     if (imgUrlPoster != null) {
       return AppApis().baseImageUrl + AppApis().epOriginalImage + imgUrlPoster!;
     }
   }
 
+  @override
   String? get imgUrlPosterThumb {
     if (imgUrlPoster != null) {
       return AppApis().baseImageUrl + AppApis().epThumbImage + imgUrlPoster!;
     }
   }
 
-  @override
-  Movie copyWith({
-    int? id,
-    String? title,
-    String? releaseDate,
-    double? rating, 
-    int? voteCount,
-    String? imgUrlPoster,
-    String? year,
-  }) {
-    return Movie(
-      id: id ?? this.id,
-      title: title ?? this.title,
-      releaseDate: releaseDate ?? this.releaseDate,
-      rating: rating ?? this.rating,
-      voteCount: voteCount ?? this.voteCount,
-      imgUrlPoster: imgUrlPoster ?? this.imgUrlPoster,
-      year: year ?? this.year,
-    );
-  }
-
-  @override
-  Map<String, dynamic> toMap() {
-    return {
-      ...super.toMap(),
-      'title': title,
-      'release_date': releaseDate,
-      'vote_average': rating,
-      'vote_count': voteCount,
-      'poster_path': imgUrlPoster,
-      'year': year,
-    };
-  }
-
-  @override
   factory Movie.fromMap(Map<String, dynamic> map) {
     return Movie(
       id: map['id'] as int,
@@ -83,10 +61,6 @@ class Movie extends BaseMovie {
     );
   }
 
-  @override
-  String toJson() => json.encode(toMap());
-
-  @override
   factory Movie.fromJson(String source) => Movie.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
@@ -97,25 +71,25 @@ class Movie extends BaseMovie {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-  
+
     return other is Movie &&
-      other.id == id &&
-      other.title == title &&
-      other.releaseDate == releaseDate &&
-      other.rating == rating &&
-      other.voteCount == voteCount &&
-      other.imgUrlPoster == imgUrlPoster &&
-      other.year == year;
+        other.id == id &&
+        other.title == title &&
+        other.releaseDate == releaseDate &&
+        other.rating == rating &&
+        other.voteCount == voteCount &&
+        other.imgUrlPoster == imgUrlPoster &&
+        other.year == year;
   }
 
   @override
   int get hashCode {
     return id.hashCode ^
-      title.hashCode ^
-      releaseDate.hashCode ^
-      rating.hashCode ^
-      voteCount.hashCode ^
-      imgUrlPoster.hashCode ^
-      year.hashCode;
+        title.hashCode ^
+        releaseDate.hashCode ^
+        rating.hashCode ^
+        voteCount.hashCode ^
+        imgUrlPoster.hashCode ^
+        year.hashCode;
   }
 }
