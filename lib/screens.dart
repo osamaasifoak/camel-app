@@ -1,7 +1,12 @@
+export 'views/fav_tv_shows/screen/_favtvshows_screen.dart';
 export 'views/favmovies/screen/_favmovies_screen.dart';
 export 'views/home/screen/_home_screen.dart';
-export 'views/home/tabs/nowplaying/screen/_nowplaying_screen.dart';
-export 'views/home/tabs/upcoming/screen/_upcoming_screen.dart';
+export 'views/movie_list_screens/nowplaying_list/now_playing_screen.dart';
+export 'views/movie_list_screens/popular_list/popular_list_screen.dart';
+export 'views/movie_list_screens/upcoming_list/upcoming_list_screen.dart';
 export 'views/moviedetail/screen/_moviedetail_screen.dart';
 export 'views/page_not_found_screen.dart';
 export 'views/splash_screen.dart';
+export 'views/tv_show_detail/screen/_tvshowdetail_screen.dart';
+export 'views/tv_show_list_screens/on_the_air_tv_show_list/on_the_air_screen.dart';
+export 'views/tv_show_list_screens/popular_tv_show_list/popular_tv_show_screen.dart';
