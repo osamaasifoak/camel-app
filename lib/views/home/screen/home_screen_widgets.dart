@@ -28,102 +28,86 @@ mixin _HomeScreenWidgets on _HomeScreenProps {
   Widget get favIcon {
     return ValueListenableBuilder<int>(
       valueListenable: _bottomNavSelectedIndex,
-      builder: (_, index, __) {
+      builder: (_, index, child) {
+        final Widget nextIcon;
+        switch (index) {
+          case 0:
+            nextIcon = favMoviesIconButton;
+            break;
+          case 1:
+            nextIcon = favTVShowsIconButton;
+            break;
+          default:
+            nextIcon = child!;
+        }
         return AnimatedSwitcher(
           duration: const Duration(milliseconds: 250),
-          transitionBuilder: (child, animation) {
-            return FadeTransition(
-              opacity: animation,
-              child: child,
-            );
-          },
-          layoutBuilder: (currentChild, previousChildren) {
-            return Stack(
-              alignment: Alignment.center,
-              children: <Widget>[
-                ...previousChildren,
-                if (currentChild != null) currentChild,
-              ],
-            );
-          },
-          child: index == 0
-              ? favMoviesIconButton
-              : index == 1
-                  ? favTVShowsIconButton
-                  : const SizedBox(key: ValueKey(2)),
+          child: nextIcon,
         );
       },
+      child: const SizedBox(key: ValueKey(2)),
     );
   }
 
-  Widget get favMoviesIconButton {
-    return IconButton(
-      key: const ValueKey(0),
-      onPressed: _loadFavorites,
-      color: Colors.grey[900],
-      iconSize: 27,
-      padding: const EdgeInsets.all(4),
-      icon: Stack(
-        children: [
-          const Icon(Icons.favorite_border),
-          StreamBuilder<int>(
-            key: const ValueKey(0),
-            initialData: 0,
-            stream: _favMoviesRepo.favCountController.stream,
-            builder: (_, countSnapshot) {
-              return favIconCount(countSnapshot.data);
-            },
-          ),
-        ],
-      ),
-    );
-  }
+  late final Widget favMoviesIconButton = FavCountIcon(
+    key: const ValueKey(0),
+    countStream: _favMoviesRepo.favCountController.stream,
+    onTap: _loadFavorites,
+  );
 
-  Widget get favTVShowsIconButton {
-    return IconButton(
-      key: const ValueKey(1),
-      onPressed: _loadFavorites,
-      color: Colors.grey[900],
-      iconSize: 27,
-      padding: const EdgeInsets.all(4),
-      icon: Stack(
-        children: [
-          const Icon(Icons.favorite_border),
-          StreamBuilder<int>(
-            key: const ValueKey(1),
-            initialData: 0,
-            stream: _favTVShowsRepo.favTVCountController.stream,
-            builder: (_, countSnapshot) {
-              return favIconCount(countSnapshot.data);
-            },
-          ),
-        ],
-      ),
-    );
-  }
+  late final Widget favTVShowsIconButton = FavCountIcon(
+    key: const ValueKey(1),
+    countStream: _favTVShowsRepo.favTVCountController.stream,
+    onTap: _loadFavorites,
+  );
+}
 
-  Widget favIconCount(int? count) {
-    return Positioned(
-      right: 0,
-      bottom: 0,
-      child: Container(
-        padding: const EdgeInsets.all(2),
-        constraints: const BoxConstraints(
-          minHeight: 12,
-          minWidth: 13,
-        ),
-        decoration: BoxDecoration(
-          color: Colors.pinkAccent[400],
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Text(
-          count?.toString() ?? '0',
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 8,
-            fontWeight: FontWeight.bold,
+class _AnimatedHomeScreenTitle extends StatelessWidget {
+  const _AnimatedHomeScreenTitle({
+    Key? key,
+    required this.bottomNavSelectedIndex,
+  }) : super(key: key);
+
+  final ValueNotifier<int> bottomNavSelectedIndex;
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<int>(
+      valueListenable: bottomNavSelectedIndex,
+      builder: (_, index, child) {
+        return AnimatedSwitcher(
+          duration: const Duration(milliseconds: 500),
+          transitionBuilder: (child, animation) => AnimatedBuilder(
+            animation: animation,
+            builder: (_, child) => FadeTransition(
+              opacity: animation,
+              child: Transform.translate(
+                offset: Offset(0, (1 - animation.value) * 40),
+                child: child,
+              ),
+            ),
+            child: child,
           ),
+          child: index != 2
+              ? child!
+              : const Text(
+                  'about Me',
+                  key: ValueKey('about-dev'),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF01579B),
+                  ),
+                ),
+        );
+      },
+      child: const Text(
+        'caMel',
+        key: ValueKey('app-name'),
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          color: Color(0xFF01579B),
         ),
       ),
     );
