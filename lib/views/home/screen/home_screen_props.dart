@@ -1,6 +1,6 @@
 part of '_home_screen.dart';
 
-abstract class _HomeScreenProps extends State<HomeScreen> with SingleTickerProviderStateMixin {
+abstract class _HomeScreenProps extends State<HomeScreen> {
   final _bottomNavSelectedIndex = ValueNotifier(0);
 
   final _favMoviesRepo = GetIt.I<BaseFavMoviesRepository>();
