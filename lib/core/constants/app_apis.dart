@@ -1,5 +1,8 @@
 import 'package:flutter/services.dart' show rootBundle;
 
+const String kDefaultLanguage = 'en-US';
+const String kDefaultRegion = 'US';
+
 enum MovieEndpoint {
   details,
   search,
@@ -133,9 +136,6 @@ extension TVEndpointName on TVEndpoint {
 ///   page: 1,
 /// );
 /// ```
-const String kDefaultLanguage = 'en-US';
-const String kDefaultRegion = 'US';
-
 class AppApis {
   factory AppApis() => _singleton;
 
