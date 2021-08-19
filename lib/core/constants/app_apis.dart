@@ -184,7 +184,7 @@ class AppApis {
   ///
   /// [region] specify a ISO 3166-1 code to filter release dates. Must be uppercase.
   /// defaults to [kDefaultRegion] `US`
-  Uri endpointOf<MOVIE extends MovieEndpoint, TV extends TVEndpoint>(
+  Uri endpointOf(
     Object endpoint, {
     int? page,
     String? id,
@@ -192,7 +192,7 @@ class AppApis {
     String language = kDefaultLanguage,
     String region = kDefaultRegion,
   }) {
-    if (endpoint is MOVIE) {
+    if (endpoint is MovieEndpoint) {
       return _movieEndpointOf(
         endpoint,
         page: page,
@@ -201,7 +201,7 @@ class AppApis {
         language: language,
         region: region,
       );
-    } else if (endpoint is TV) {
+    } else if (endpoint is TVEndpoint) {
       return _tvEndpointOf(
         endpoint,
         page: page,
