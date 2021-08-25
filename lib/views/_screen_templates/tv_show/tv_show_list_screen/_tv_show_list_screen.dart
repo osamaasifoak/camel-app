@@ -7,8 +7,8 @@ import '/core/enums/state_status.dart';
 import '/core/services/screen_messenger/base_screen_messenger.dart';
 import '/views/_screen_templates/tv_show/base_tv_show_list_cubit/base_tv_show_list_cubit.dart';
 import '/views/_widgets/error_screen.dart';
-import '/views/_widgets/tv_show_list_tile/tvshow_list_loading_indicator.dart';
-import '/views/_widgets/tv_show_list_tile/tvshow_list_tile.dart';
+import '/views/_widgets/eshow_list_tile/eshow_list_loading_indicator.dart';
+import '/views/_widgets/eshow_list_tile/eshow_list_tile.dart';
 
 part 'tv_show_list_props.dart';
 part 'tv_show_list_widgets.dart';

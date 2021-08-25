@@ -8,8 +8,8 @@ import '/core/constants/app_routes.dart';
 import '/core/enums/state_status.dart';
 import '/core/services/screen_messenger/base_screen_messenger.dart';
 import '/views/_widgets/error_screen.dart';
-import '/views/_widgets/movie_list_tile/movie_list_loading_indicator.dart';
-import '/views/_widgets/tv_show_list_tile/tvshow_list_tile.dart';
+import '/views/_widgets/eshow_list_tile/eshow_list_loading_indicator.dart';
+import '/views/_widgets/eshow_list_tile/eshow_list_tile.dart';
 import '/views/fav_tv_shows/cubit/favtvshows_cubit.dart';
 
 part 'favtvshows_screen_props.dart';

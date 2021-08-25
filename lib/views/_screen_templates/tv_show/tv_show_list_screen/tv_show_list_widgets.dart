@@ -5,7 +5,7 @@ mixin _TVShowListScreenWidgets<B extends BTVSLC<S>, S extends BTVSLS> on _TVShow
     return const CustomScrollView(
       slivers: [
         SliverToBoxAdapter(child: SizedBox(height: 20)),
-        TVShowListLoadingIndicator(
+        EShowListLoadingIndicator(
           itemExtent: 120,
           itemCount: 8,
         ),
@@ -37,8 +37,8 @@ mixin _TVShowListScreenWidgets<B extends BTVSLC<S>, S extends BTVSLS> on _TVShow
               delegate: SliverChildBuilderDelegate(
                 (_, index) {
                   final tvShow = _baseTVShowListCubit.state.tvShows[index];
-                  return TVShowListTile(
-                    tvShow: tvShow,
+                  return EShowListTile(
+                    eShow: tvShow,
                     style: tvShowCardStyle,
                     onCardPressed: () => widget.onTVShowTapped(
                       context,
@@ -60,7 +60,7 @@ mixin _TVShowListScreenWidgets<B extends BTVSLC<S>, S extends BTVSLS> on _TVShow
   Widget get bottomLoadingIndicator {
     switch (_baseTVShowListCubit.state.status) {
       case StateStatus.loadingMore:
-        return const TVShowListLoadingIndicator(itemExtent: 120);
+        return const EShowListLoadingIndicator(itemExtent: 120);
       default:
         return const SliverToBoxAdapter(child: SizedBox(height: 10));
     }

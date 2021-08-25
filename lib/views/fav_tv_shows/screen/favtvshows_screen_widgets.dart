@@ -7,7 +7,7 @@ mixin _FavTVShowsScreenWidgets on _FavTVShowsScreenProps {
         SliverToBoxAdapter(
           child: SizedBox(height: 20),
         ),
-        MovieListLoadingIndicator(
+        EShowListLoadingIndicator(
           itemExtent: 120,
           itemCount: 8,
         ),
@@ -33,8 +33,8 @@ mixin _FavTVShowsScreenWidgets on _FavTVShowsScreenProps {
               delegate: SliverChildBuilderDelegate(
                 (_, index) {
                   final tvShow = _favTVShowsCubit.state.tvShows[index];
-                  return TVShowListTile(
-                    tvShow: tvShow,
+                  return EShowListTile(
+                    eShow: tvShow,
                     onCardPressed: () => _onTVShowTapped(tvShow.id),
                   );
                 },
@@ -54,7 +54,7 @@ mixin _FavTVShowsScreenWidgets on _FavTVShowsScreenProps {
 
   Widget get bottomLoadingIndicator {
     if (_favTVShowsCubit.state.isLoadingMore) {
-      return const MovieListLoadingIndicator(
+      return const EShowListLoadingIndicator(
         itemExtent: 120,
         itemCount: 5,
       );

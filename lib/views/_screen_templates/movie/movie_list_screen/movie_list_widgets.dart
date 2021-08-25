@@ -5,7 +5,7 @@ mixin _MovieListScreenWidgets<B extends BMLC<S>, S extends BMLS> on _MovieListSc
     return const CustomScrollView(
       slivers: [
         SliverToBoxAdapter(child: SizedBox(height: 20)),
-        MovieListLoadingIndicator(
+        EShowListLoadingIndicator(
           itemExtent: 120,
           itemCount: 8,
         ),
@@ -37,8 +37,8 @@ mixin _MovieListScreenWidgets<B extends BMLC<S>, S extends BMLS> on _MovieListSc
               delegate: SliverChildBuilderDelegate(
                 (_, index) {
                   final movie = _baseMovieListCubit.state.movies[index];
-                  return MovieListTile(
-                    movie: movie,
+                  return EShowListTile(
+                    eShow: movie,
                     style: movieCardStyle,
                     onCardPressed: () => widget.onMovieTapped(
                       context,
@@ -60,7 +60,7 @@ mixin _MovieListScreenWidgets<B extends BMLC<S>, S extends BMLS> on _MovieListSc
   Widget get bottomLoadingIndicator {
     switch (_baseMovieListCubit.state.status) {
       case StateStatus.loadingMore:
-        return const MovieListLoadingIndicator(itemExtent: 120);
+        return const EShowListLoadingIndicator(itemExtent: 120);
       default:
         return const SliverToBoxAdapter(child: SizedBox(height: 10));
     }
