@@ -1,5 +1,3 @@
-import 'dart:convert' show json;
-
 import '/core/constants/app_apis.dart';
 import '/core/models/entertainment_show/entertainment_show.dart';
 
@@ -60,8 +58,6 @@ class Movie implements EShow {
       year: DateTime.parse(map['release_date'] as String).year.toString(),
     );
   }
-
-  factory Movie.fromJson(String source) => Movie.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
