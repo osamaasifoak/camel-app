@@ -19,7 +19,7 @@ mixin _TVShowListScreenWidgets<B extends BTVSLC<S>, S extends BTVSLS> on _TVShow
     elevation: 4.0,
     primary: Colors.grey[50],
     onPrimary: Colors.black87,
-    padding: const EdgeInsets.all(0),
+    padding: EdgeInsets.zero,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
   );
 
