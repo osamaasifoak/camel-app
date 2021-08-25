@@ -8,9 +8,9 @@ import 'package:postor/postor.dart' hide Postor, PFile, PFileFromBytes, PFileFro
 import '/core/constants/app_error_messages.dart';
 
 class ErrorHandler {
-  static void catchIt({
+  static E catchIt<E>({
     required Object error,
-    required void Function(String errorMessage) onCatch,
+    required E Function(String errorMessage) onCatch,
     StackTrace? stackTrace,
     String? customUnknownErrorMessage,
   }) {
@@ -21,20 +21,20 @@ class ErrorHandler {
       );
     }
     if (error is TimeoutException) {
-      onCatch(AppErrorMessages.timeOutError);
+      return onCatch(AppErrorMessages.timeOutError);
     } else if (error is SocketException) {
-      onCatch(AppErrorMessages.socketError);
+      return onCatch(AppErrorMessages.socketError);
     } else if (error is PException) {
       if (error is CancelledRequestException) {
-        onCatch(AppErrorMessages.cancelledRequestError);
+        return onCatch(AppErrorMessages.cancelledRequestError);
       } else {
-        onCatch(error.message ?? AppErrorMessages.unknownRequestError);
         if (foundation.kDebugMode) {
           dev.log('[${error.runtimeType}] Response body: \n${error.message}');
         }
+        return onCatch(error.message ?? AppErrorMessages.unknownRequestError);
       }
     } else {
-      onCatch(customUnknownErrorMessage ?? AppErrorMessages.unknownError);
+      return onCatch(customUnknownErrorMessage ?? AppErrorMessages.unknownError);
     }
   }
 }
