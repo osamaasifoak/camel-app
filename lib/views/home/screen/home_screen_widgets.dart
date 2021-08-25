@@ -82,7 +82,7 @@ class _AnimatedHomeScreenTitle extends StatelessWidget {
             builder: (_, child) => FadeTransition(
               opacity: animation,
               child: Transform.translate(
-                offset: Offset(0, (1 - animation.value) * 40),
+                offset: Offset(0, (1 - animation.value) * 20),
                 child: child,
               ),
             ),
