@@ -9,7 +9,7 @@ class FavCountIcon extends StatelessWidget {
     required this.onTap,
     this.favIconSize = 27.0,
     this.favCountTextStyle,
-    this.favCountTextRadius = 8.0,
+    this.favCountTextRadius = 10.0,
   }) : super(key: key);
 
   final Stream<int> countStream;
@@ -48,15 +48,15 @@ class FavCountIcon extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(2),
         constraints: const BoxConstraints(
-          minHeight: 12,
-          minWidth: 13,
+          minHeight: 15,
+          minWidth: 15,
         ),
         decoration: BoxDecoration(
           color: Colors.pinkAccent[400],
           borderRadius: BorderRadius.circular(favCountTextRadius),
         ),
         child: Text(
-          count?.toString() ?? '0',
+          (count ?? 0).toString(),
           textAlign: TextAlign.center,
           style: favCountTextStyle ?? const TextStyle(
             color: Colors.white,
