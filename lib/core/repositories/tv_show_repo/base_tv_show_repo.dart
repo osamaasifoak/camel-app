@@ -7,10 +7,7 @@ abstract class BaseTVShowRepository {
   Future<TVShowDetail> getTVShowDetail(int id);
   Future<List<TVShow>> getOnTheAir({int page = 1});
   Future<List<TVShow>> getPopular({int page = 1});
-  Future<List<TVShow>> searchTVShow(String keyword, {int page = 1});
-  Future<List<TVShowReview>> getTVShowReviews({
-    required int tvShowId,
-    int page = 1,
-  });
-
+  Future<List<TVShowReview>> getTVShowReviews({required int tvShowId, int page = 1});
+  Future<List<TVShow>> searchTVShow({required String keyword, int page = 1});
+  void cancelLastTVShowSearch();
 }

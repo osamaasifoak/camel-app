@@ -18,6 +18,9 @@ class TVShowRepository implements BaseTVShowRepository {
   @protected
   final Postor postor;
 
+  @protected
+  String? lastTVShowSearchUrl;
+
   @override
   Future<List<TVShow>> getOnTheAir({int page = 1}) async {
     final endpoint = TVEndpoint.onTheAir.name;
@@ -62,19 +65,6 @@ class TVShowRepository implements BaseTVShowRepository {
   }
 
   @override
-  Future<List<TVShow>> searchTVShow(String keyword, {int page = 1}) async {
-    final endpoint = TVEndpoint.search.name;
-    final params = AppApis().paramsOf(
-      page: page,
-      searchKeyword: keyword,
-    );
-    final rawSearchResult = await postor.get(endpoint, parameters: params).get<JsonMap>();
-
-    final rawSearchResultList = rawSearchResult['results'] as List;
-    return rawSearchResultList.map((tvShow) => TVShow.fromMap(tvShow as JsonMap)).toList();
-  }
-
-  @override
   Future<List<TVShowReview>> getTVShowReviews({required int tvShowId, int page = 1}) async {
     final params = AppApis().paramsOf(page: page);
     final tvShowReviewEndpoint = AppApis().tvShowReviewsOf(tvShowId: tvShowId);
@@ -82,5 +72,29 @@ class TVShowRepository implements BaseTVShowRepository {
 
     final rawTVShowReviewsList = rawTVShowReviews['results'] as List;
     return rawTVShowReviewsList.map((r) => TVShowReview.fromMap(r as JsonMap)).toList();
+  }
+
+  @override
+  Future<List<TVShow>> searchTVShow({required String keyword, int page = 1}) async {
+    final endpoint = TVEndpoint.search.name;
+    final params = AppApis().paramsOf(
+      page: page,
+      searchKeyword: keyword,
+    );
+    cancelLastTVShowSearch();
+    lastTVShowSearchUrl = Uri.https(postor.baseUrl, endpoint, params).toString();
+    final rawSearchResult = await postor.get(endpoint, parameters: params).get<JsonMap>().whenComplete(() {
+      lastTVShowSearchUrl = null;
+    });
+
+    final rawSearchResultList = rawSearchResult['results'] as List;
+    return rawSearchResultList.map((tvShow) => TVShow.fromMap(tvShow as JsonMap)).toList();
+  }
+
+  @override
+  void cancelLastTVShowSearch() {
+    if (lastTVShowSearchUrl != null) {
+      postor.cancel(lastTVShowSearchUrl!);
+    }
   }
 }

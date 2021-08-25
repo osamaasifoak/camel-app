@@ -7,7 +7,8 @@ abstract class BaseMoviesRepository {
   Future<MovieDetail> getMovieDetail(int id);
   Future<List<Movie>> getNowPlaying({int page = 1});
   Future<List<Movie>> getUpcoming({int page = 1});
-  Future<List<Movie>> searchMovie(String keyword, {int page = 1});
   Future<List<Movie>> getPopular({int page = 1});
   Future<List<MovieReview>> getMovieReviews({required int movieId, int page = 1});
+  Future<List<Movie>> searchMovie({required String keyword, int page = 1});
+  void cancelLastMovieSearch();
 }

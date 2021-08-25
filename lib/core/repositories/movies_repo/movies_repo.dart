@@ -18,6 +18,9 @@ class MoviesRepository implements BaseMoviesRepository {
   @protected
   final Postor postor;
 
+  @protected
+  String? lastMovieSearchUrl;
+
   @override
   Future<List<Movie>> getMovieListById(List<int> movieIds) async {
     final List<Movie> movies = [];
@@ -82,15 +85,25 @@ class MoviesRepository implements BaseMoviesRepository {
   }
 
   @override
-  Future<List<Movie>> searchMovie(String keyword, {int page = 1}) async {
+  Future<List<Movie>> searchMovie({required String keyword, int page = 1}) async {
     final endpoint = MovieEndpoint.search.name;
     final params = AppApis().paramsOf(
       page: page,
       searchKeyword: keyword,
     );
-    final rawSearchResult = await postor.get(endpoint, parameters: params).get<JsonMap>();
+    lastMovieSearchUrl = Uri.https(postor.baseUrl, endpoint, params).toString();
+    final rawSearchResult = await postor.get(endpoint, parameters: params).get<JsonMap>().whenComplete(() {
+      lastMovieSearchUrl = null;
+    });
 
     final rawSearchResultList = rawSearchResult['results'] as List;
     return rawSearchResultList.map((movie) => Movie.fromMap(movie as JsonMap)).toList();
+  }
+
+  @override
+  void cancelLastMovieSearch() {
+    if (lastMovieSearchUrl != null) {
+      postor.cancel(lastMovieSearchUrl!);
+    }
   }
 }
