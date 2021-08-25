@@ -15,6 +15,7 @@ typedef StreamedResponseTimeoutCallback = FutureOr<StreamedResponse> Function();
 /// it is by default sets `Duration` of network timeout on every http request and retries 3 times when fails.
 ///
 /// it can also help retrieving network status (i.e. connectivity status, internet connection status).
+@Deprecated('Use [Postor] instead')
 class NetworkService implements BaseNetworkService {
   final Client _client;
   final Duration _defaultTimeLimit;
@@ -23,6 +24,7 @@ class NetworkService implements BaseNetworkService {
   /// initializes a new instance of `NetworkService`.
   /// * [defaultTimeLimit] defaults to 10 seconds if not set.
   /// * [retryPolicy] defauts to 3 times if not set.
+  @Deprecated('Use [Postor] instead')
   NetworkService({
     Client? client,
     Duration? defaultTimeLimit,

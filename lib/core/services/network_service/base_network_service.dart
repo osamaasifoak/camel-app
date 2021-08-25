@@ -6,6 +6,7 @@ import 'package:http/http.dart' show BaseRequest, Response, StreamedResponse;
 typedef ResponseTimeoutCallback = FutureOr<Response> Function();
 typedef StreamedResponseTimeoutCallback = FutureOr<StreamedResponse> Function();
 
+@Deprecated('Use [Postor] instead')
 abstract class BaseNetworkService {
   ///Closes the client and cleans up any resources associated with it.
   ///
