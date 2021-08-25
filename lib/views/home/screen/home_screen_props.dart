@@ -21,7 +21,7 @@ abstract class _HomeScreenProps extends State<HomeScreen> {
     _pageController.dispose();
     _favMoviesRepo.close();
 
-    GetIt.I<BaseNetworkService>().close();
+    GetIt.I<Postor>().cancelAll();
     GetIt.I<BaseLocalDbService>().closeDb();
 
     super.dispose();

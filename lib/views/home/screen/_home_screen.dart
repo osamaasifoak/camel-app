@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:postor/postor.dart';
 
 import '/core/constants/app_routes.dart';
 import '/core/repositories/fav_tv_shows_repo/base_fav_tv_shows_repo.dart';
 import '/core/repositories/favmovies_repo/base_favmovies_repo.dart';
 import '/core/services/localdb_service/base_localdb_service.dart';
-import '/core/services/network_service/base_network_service.dart';
 import '/views/_widgets/fav_count_icon.dart';
 import '/views/home/tabs/movies_sections/screen/_movies_sections_screen.dart';
 import '/views/home/tabs/profile/profile_screen.dart';
@@ -37,7 +37,6 @@ class _HomeScreenState extends _HomeScreenProps with _HomeScreenWidgets {
       body: PageView(
         controller: _pageController,
         onPageChanged: _onPageChanged,
-        allowImplicitScrolling: true,
         children: bottomNavPages,
       ),
       bottomNavigationBar: ValueListenableBuilder<int>(
