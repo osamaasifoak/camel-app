@@ -1,94 +1,50 @@
-import 'dart:convert' show json;
-import 'dart:io' show HttpHeaders;
-
 import 'package:get_it/get_it.dart' show GetIt;
 import 'package:meta/meta.dart' show protected;
+import 'package:postor/postor.dart';
 
 import '/core/constants/app_apis.dart';
-import '/core/helpers/error_handler.dart';
 import '/core/models/tv_show/tv_show.dart';
 import '/core/models/tv_show/tv_show_detail.dart';
 import '/core/models/tv_show/tv_show_review.dart';
 import '/core/repositories/tv_show_repo/base_tv_show_repo.dart';
-import '/core/services/network_service/base_network_service.dart';
+
+typedef JsonMap = Map<String, dynamic>;
 
 class TVShowRepository implements BaseTVShowRepository {
   TVShowRepository({
-    BaseNetworkService? networkService,
-  }) : networkService = networkService ?? GetIt.I<BaseNetworkService>();
+    Postor? postor,
+  }) : postor = postor ?? GetIt.I<Postor>();
 
   @protected
-  final BaseNetworkService networkService;
-
-  @protected
-  final defaultHeader = const {
-    HttpHeaders.contentTypeHeader: 'application/json',
-  };
+  final Postor postor;
 
   @override
   Future<List<TVShow>> getOnTheAir({int page = 1}) async {
-    final uri = AppApis().endpointOf(
-      TVEndpoint.onTheAir,
-      page: page,
-    );
-    final response = await networkService.get(
-      uri,
-      headers: defaultHeader,
-    );
+    final endpoint = TVEndpoint.onTheAir.name;
+    final params = AppApis().paramsOf(page: page);
+    final rawOnTheAir = await postor.get(endpoint, parameters: params).get<JsonMap>();
 
-    if (response.statusCode == 200) {
-      final map = json.decode(response.body) as Map<String, dynamic>;
-      final results = map['results'] as List;
-      return results.map((r) => TVShow.fromMap(r as Map<String, dynamic>)).toList();
-    } else {
-      throw ErrorHandler.transformStatusCodeToException(
-        statusCode: response.statusCode,
-        responseBody: response.body,
-      );
-    }
+    final rawOnTheAirList = rawOnTheAir['results'] as List;
+    return rawOnTheAirList.map((r) => TVShow.fromMap(r as JsonMap)).toList();
   }
 
   @override
   Future<List<TVShow>> getPopular({int page = 1}) async {
-    final uri = AppApis().endpointOf(
-      TVEndpoint.popular,
-      page: page,
-    );
-    final response = await networkService.get(
-      uri,
-      headers: defaultHeader,
-    );
+    final endpoint = TVEndpoint.popular.name;
+    final params = AppApis().paramsOf(page: page);
+    final rawPopular = await postor.get(endpoint, parameters: params).get<JsonMap>();
 
-    if (response.statusCode == 200) {
-      final map = json.decode(response.body) as Map<String, dynamic>;
-      final results = map['results'] as List;
-      return results.map((r) => TVShow.fromMap(r as Map<String, dynamic>)).toList();
-    } else {
-      throw ErrorHandler.transformStatusCodeToException(
-        statusCode: response.statusCode,
-        responseBody: response.body,
-      );
-    }
+    final rawPopularList = rawPopular['results'] as List;
+    return rawPopularList.map((r) => TVShow.fromMap(r as JsonMap)).toList();
   }
 
   @override
   Future<TVShowDetail> getTVShowDetail(int id) async {
-    final uri = AppApis().endpointOf(
-      TVEndpoint.details,
-      id: id.toString(),
-    );
-    final response = await networkService.get(
-      uri,
-      headers: defaultHeader,
-    );
-    if (response.statusCode == 200) {
-      return TVShowDetail.fromJson(response.body);
-    } else {
-      throw ErrorHandler.transformStatusCodeToException(
-        statusCode: response.statusCode,
-        responseBody: response.body,
-      );
-    }
+    final endpoint = TVEndpoint.details.name + id.toString();
+    final params = AppApis().paramsOf();
+    final rawTVShowDetail = await postor.get(endpoint, parameters: params).get<JsonMap>();
+
+    return TVShowDetail.fromMap(rawTVShowDetail);
   }
 
   @override
@@ -96,75 +52,35 @@ class TVShowRepository implements BaseTVShowRepository {
     final List<TVShow> tvShows = [];
 
     for (final id in tvShowIds) {
-      final uri = AppApis().endpointOf(
-        TVEndpoint.details,
-        id: id.toString(),
-      );
-      final response = await networkService.get(
-        uri,
-        headers: defaultHeader,
-      );
-      if (response.statusCode == 200) {
-        tvShows.add(TVShow.fromJson(response.body));
-      } else {
-        throw ErrorHandler.transformStatusCodeToException(
-          statusCode: response.statusCode,
-          responseBody: response.body,
-        );
-      }
+      final endpoint = TVEndpoint.details.name + id.toString();
+      final params = AppApis().paramsOf();
+      final rawTVShowDetails = await postor.get(endpoint, parameters: params).get<JsonMap>();
+
+      tvShows.add(TVShow.fromMap(rawTVShowDetails));
     }
     return tvShows;
   }
 
   @override
   Future<List<TVShow>> searchTVShow(String keyword, {int page = 1}) async {
-    final uri = AppApis().endpointOf(
-      TVEndpoint.search,
+    final endpoint = TVEndpoint.search.name;
+    final params = AppApis().paramsOf(
       page: page,
-      keyword: keyword,
+      searchKeyword: keyword,
     );
+    final rawSearchResult = await postor.get(endpoint, parameters: params).get<JsonMap>();
 
-    final response = await networkService.get(
-      uri,
-      headers: defaultHeader,
-    );
-
-    if (response.statusCode == 200) {
-      final jsonMap = json.decode(response.body) as Map<String, dynamic>;
-      final searchResult = jsonMap['results'] as List;
-      return searchResult.map((movie) => TVShow.fromMap(movie as Map<String, dynamic>)).toList();
-    } else {
-      throw ErrorHandler.transformStatusCodeToException(
-        statusCode: response.statusCode,
-        responseBody: response.body,
-      );
-    }
+    final rawSearchResultList = rawSearchResult['results'] as List;
+    return rawSearchResultList.map((tvShow) => TVShow.fromMap(tvShow as JsonMap)).toList();
   }
 
   @override
-  Future<List<TVShowReview>> getTVShowReviews({
-    required int tvShowId,
-    int page = 1,
-  }) async {
-    final uri = AppApis().endpointOf(
-      TVEndpoint.reviews,
-      page: page,
-      id: tvShowId.toString(),
-    );
-    final response = await networkService.get(
-      uri,
-      headers: defaultHeader,
-    );
+  Future<List<TVShowReview>> getTVShowReviews({required int tvShowId, int page = 1}) async {
+    final params = AppApis().paramsOf(page: page);
+    final tvShowReviewEndpoint = AppApis().tvShowReviewsOf(tvShowId: tvShowId);
+    final rawTVShowReviews = await postor.get(tvShowReviewEndpoint, parameters: params).get<JsonMap>();
 
-    if (response.statusCode == 200) {
-      final map = json.decode(response.body) as Map<String, dynamic>;
-      final results = map['results'] as List;
-      return results.map((r) => TVShowReview.fromMap(r as Map<String, dynamic>)).toList();
-    } else {
-      throw ErrorHandler.transformStatusCodeToException(
-        statusCode: response.statusCode,
-        responseBody: response.body,
-      );
-    }
+    final rawTVShowReviewsList = rawTVShowReviews['results'] as List;
+    return rawTVShowReviewsList.map((r) => TVShowReview.fromMap(r as JsonMap)).toList();
   }
 }
