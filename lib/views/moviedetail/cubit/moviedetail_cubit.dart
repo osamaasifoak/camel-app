@@ -10,18 +10,17 @@ import '/core/models/movie/movie_detail.dart';
 import '/core/models/movie/movie_review.dart';
 import '/core/repositories/favmovies_repo/base_favmovies_repo.dart';
 import '/core/repositories/movies_repo/base_movies_repo.dart';
-import '/core/repositories/movies_repo/movies2_repo/base_movies2_repo.dart';
 
 part 'moviedetail_state.dart';
 
 class MovieDetailCubit extends Cubit<MovieDetailState> {
-  final BaseMovies2Repository _moviesRepo;
+  final BaseMoviesRepository _moviesRepo;
   final BaseFavMoviesRepository _favMoviesRepo;
 
   MovieDetailCubit({
-    BaseMovies2Repository? moviesRepo,
+    BaseMoviesRepository? moviesRepo,
     BaseFavMoviesRepository? favMoviesRepo,
-  })  : _moviesRepo = moviesRepo ?? (GetIt.I<BaseMoviesRepository>() as BaseMovies2Repository),
+  })  : _moviesRepo = moviesRepo ?? GetIt.I<BaseMoviesRepository>(),
         _favMoviesRepo = favMoviesRepo ?? GetIt.I<BaseFavMoviesRepository>(),
         super(const MovieDetailLoading());
 

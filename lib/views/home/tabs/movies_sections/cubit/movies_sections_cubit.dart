@@ -6,20 +6,18 @@ import '/core/enums/state_status.dart';
 import '/core/helpers/error_handler.dart';
 import '/core/models/movie/movie.dart';
 import '/core/repositories/movies_repo/base_movies_repo.dart';
-import '/core/repositories/movies_repo/movies2_repo/base_movies2_repo.dart';
 
 part 'movies_sections_state.dart';
 
 typedef BMR = BaseMoviesRepository;
-typedef BMR2 = BaseMovies2Repository;
 
 class MoviesSectionsCubit extends Cubit<MoviesSectionsState> {
   MoviesSectionsCubit({
-    BMR2? movies2repo,
-  })  : _movies2repo = movies2repo ?? (GetIt.I<BMR>() as BMR2),
+    BMR? moviesRepo,
+  })  : _moviesRepo = moviesRepo ?? GetIt.I<BMR>(),
         super(MoviesSectionsState.init());
 
-  final BMR2 _movies2repo;
+  final BMR _moviesRepo;
 
   Future<void> loadMoviesSections() async {
     if (state.isBusy) return;
@@ -29,17 +27,17 @@ class MoviesSectionsCubit extends Cubit<MoviesSectionsState> {
     ));
 
     try {
-      final popularMovies = await _movies2repo.getPopular();
+      final popularMovies = await _moviesRepo.getPopular();
       emit(state.update(
         popularMovies: popularMovies,
       ));
 
-      final nowPlayingMovies = await _movies2repo.getNowPlaying();
+      final nowPlayingMovies = await _moviesRepo.getNowPlaying();
       emit(state.update(
         nowPlayingMovies: nowPlayingMovies,
       ));
 
-      final upcomingMovies = await _movies2repo.getUpcoming();
+      final upcomingMovies = await _moviesRepo.getUpcoming();
       emit(state.update(
         status: StateStatus.loaded,
         upcomingMovies: upcomingMovies,

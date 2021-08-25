@@ -4,7 +4,6 @@ import '/core/enums/state_status.dart';
 import '/core/helpers/error_handler.dart';
 import '/core/models/movie/movie.dart';
 import '/core/repositories/movies_repo/base_movies_repo.dart';
-import '/core/repositories/movies_repo/movies2_repo/base_movies2_repo.dart';
 import '/views/_screen_templates/movie/base_movie_list_cubit/base_movie_list_cubit.dart';
 
 part 'popular_state.dart';
@@ -12,11 +11,11 @@ part 'popular_state.dart';
 class PopularCubit extends BaseMovieListCubit<PopularState> {
 
   PopularCubit({
-    BaseMovies2Repository? moviesRepo,
-  })  : _moviesRepo = moviesRepo ?? (GetIt.I<BaseMoviesRepository>() as BaseMovies2Repository),
+    BaseMoviesRepository? moviesRepo,
+  })  : _moviesRepo = moviesRepo ?? GetIt.I<BaseMoviesRepository>(),
         super(PopularState.init());
 
-  final BaseMovies2Repository _moviesRepo;
+  final BaseMoviesRepository _moviesRepo;
   
   @override
   Future<void> loadMovies({bool more = false}) async {
