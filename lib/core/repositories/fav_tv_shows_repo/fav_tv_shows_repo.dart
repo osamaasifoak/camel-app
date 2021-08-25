@@ -54,7 +54,7 @@ class FavTVShowsRepository implements BaseFavTVShowsRepository {
       orderBy: 'added_on DESC',
     );
 
-    return favList.map<int>((fav) => fav['id'] as int).toList();
+    return favList.map<int>((fav) => fav['id']! as int).toList();
   }
 
   @override
