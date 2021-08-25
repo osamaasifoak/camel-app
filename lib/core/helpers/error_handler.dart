@@ -3,9 +3,9 @@ import 'dart:developer' as dev show log;
 import 'dart:io' show SocketException;
 
 import 'package:flutter/foundation.dart' as foundation show kDebugMode;
+import 'package:postor/postor.dart' hide Postor, PFile, PFileFromBytes, PFileFromPath, GetResponse;
 
 import '/core/constants/app_error_messages.dart';
-import '/core/models/custom_http_exceptions/custom_http_exceptions.dart';
 
 class ErrorHandler {
   static void catchIt({
@@ -24,41 +24,17 @@ class ErrorHandler {
       onCatch(AppErrorMessages.timeOutError);
     } else if (error is SocketException) {
       onCatch(AppErrorMessages.socketError);
-    } else if (error is CustomHttpException) {
-      onCatch(error.message);
-      if(foundation.kDebugMode){
-        dev.log('[${error.runtimeType}] Response body: \n${error.responseBody}');
+    } else if (error is PException) {
+      if (error is CancelledRequestException) {
+        onCatch(AppErrorMessages.cancelledRequestError);
+      } else {
+        onCatch(error.message ?? AppErrorMessages.unknownRequestError);
+        if (foundation.kDebugMode) {
+          dev.log('[${error.runtimeType}] Response body: \n${error.message}');
+        }
       }
     } else {
       onCatch(customUnknownErrorMessage ?? AppErrorMessages.unknownError);
-    }
-  }
-
-  static CustomHttpException transformStatusCodeToException({
-    required int statusCode,
-    String? responseBody,
-  }) {
-    switch (statusCode) {
-      case 400:
-        return BadRequestException(responseBody: responseBody);
-      case 401:
-        return UnauthorizedException(responseBody: responseBody);
-      case 403:
-        return ForbiddenException(responseBody: responseBody);
-      case 404:
-        return NotFound404Exception(responseBody: responseBody);
-      case 408:
-        return RequestTimeoutException(responseBody: responseBody);
-      case 415:
-        return UnsupportedMediaTypeException(responseBody: responseBody);
-      case 429:
-        return TooManyRequestsException(responseBody: responseBody);
-    }
-
-    if (statusCode == 444 || statusCode >= 500) {
-      return ProblemWithServerException(responseBody: responseBody);
-    } else {
-      return UnknownHttpException(responseBody: responseBody);
     }
   }
 }
