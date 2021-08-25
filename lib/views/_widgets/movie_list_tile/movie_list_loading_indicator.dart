@@ -10,24 +10,26 @@ final _cardShape = RoundedRectangleBorder(
 
 final _shimmeringItemImageContainer = DefaultShimmer(
   child: Container(
-    width: 80, 
-    height: 120, 
+    width: 80,
+    height: 120,
     color: Colors.white,
   ),
 );
 
 final _shimmeringItemDetailDecoration = BoxDecoration(
-  color: Colors.white, 
+  color: Colors.white,
   borderRadius: BorderRadius.circular(7.5),
 );
 
-class MovieListLoadingIndicator extends StatelessWidget{
+@Deprecated('This is duplicate. Use [EShowListLoadingIndicator] instead')
+class MovieListLoadingIndicator extends StatelessWidget {
   final double itemExtent;
   final int itemCount;
 
+  @Deprecated('This is duplicate. Use [EShowListLoadingIndicator] instead')
   const MovieListLoadingIndicator({
     Key? key,
-    this.itemExtent = 200, 
+    this.itemExtent = 200,
     this.itemCount = 4,
   }) : super(key: key);
 
@@ -37,12 +39,12 @@ class MovieListLoadingIndicator extends StatelessWidget{
     final double quarterScreenWidth = halfScreenWidth * 0.5;
 
     return SliverFixedExtentList(
-        itemExtent: itemExtent,
-        delegate: SliverChildBuilderDelegate(
+      itemExtent: itemExtent,
+      delegate: SliverChildBuilderDelegate(
         (_, __) => _card(halfScreenWidth, quarterScreenWidth),
         childCount: itemCount,
-      ),   
-    );    
+      ),
+    );
   }
 
   Card _card(double halfScreenWidth, double quarterScreenWidth) {
@@ -59,27 +61,27 @@ class MovieListLoadingIndicator extends StatelessWidget{
           const SizedBox(width: 10),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,   
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               DefaultShimmer(
                 child: Container(
                   width: halfScreenWidth,
-                  height: 20, 
+                  height: 20,
                   margin: const EdgeInsets.only(bottom: 5),
                   decoration: _shimmeringItemDetailDecoration,
-                ), 
+                ),
               ),
               DefaultShimmer(
                 child: Container(
-                  width: quarterScreenWidth, 
-                  height: 17.5, 
+                  width: quarterScreenWidth,
+                  height: 17.5,
                   decoration: _shimmeringItemDetailDecoration,
-                ), 
+                ),
               ),
             ],
           ),
         ],
       ),
     );
-  }  
+  }
 }

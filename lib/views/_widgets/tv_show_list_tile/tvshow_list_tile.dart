@@ -4,21 +4,23 @@ import 'package:flutter/material.dart';
 import '/core/models/tv_show/tv_show.dart';
 
 final _defaultTVShowListTileStyle = ElevatedButton.styleFrom(
-          shadowColor: Colors.grey[50]?.withOpacity(0.3),
-          elevation: 4.0,
-          primary: Colors.grey[50],
-          onPrimary: Colors.black87,
-          padding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-        );
+  shadowColor: Colors.grey[50]?.withOpacity(0.3),
+  elevation: 4.0,
+  primary: Colors.grey[50],
+  onPrimary: Colors.black87,
+  padding: EdgeInsets.zero,
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(10),
+  ),
+);
 
+@Deprecated('This is duplicate. Use [EShowListTile] instead')
 class TVShowListTile extends StatelessWidget {
   final TVShow tvShow;
   final VoidCallback? onCardPressed;
   final ButtonStyle? style;
 
+  @Deprecated('This is duplicate. Use [EShowListTile] instead')
   const TVShowListTile({
     Key? key,
     required this.tvShow,
