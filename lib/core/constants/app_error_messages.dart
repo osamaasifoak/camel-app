@@ -6,4 +6,5 @@ class AppErrorMessages {
   static const String unauthorizedError = 'Request Error: Unauthorized request.';
   static const String unknownError = 'An unknown error occurred. Please try again.';
   static const String unknownRequestError = 'An unknown error occurred while requesting to server. Please try again.';
+  static const String cancelledRequestError = 'Network request was cancelled.';
 }
