@@ -4,27 +4,30 @@ import 'package:camelmovies/core/constants/app_apis.dart';
 import 'package:camelmovies/core/models/movie/movie.dart';
 import 'package:camelmovies/core/models/movie/movie_detail.dart';
 import 'package:camelmovies/core/repositories/movies_repo/base_movies_repo.dart';
-import 'package:camelmovies/core/repositories/movies_repo/movies2_repo/base_movies2_repo.dart';
-import 'package:camelmovies/core/repositories/movies_repo/movies2_repo/movies2_repo.dart';
-import 'package:camelmovies/core/services/network_service/base_network_service.dart';
-import 'package:camelmovies/core/services/network_service/network_service.dart';
+import 'package:camelmovies/core/repositories/movies_repo/movies_repo.dart';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
+import 'package:postor/postor.dart';
 
 const apiKey = '';
 
 void main() {
   // prepare network service & movie repository
-  GetIt.I.registerSingleton<BaseNetworkService>(NetworkService());
-  GetIt.I.registerSingleton<BaseMoviesRepository>(Movies2Repository());
-  final moviesRepo = GetIt.I<BaseMoviesRepository>() as BaseMovies2Repository;
+  GetIt.I.registerSingleton<Postor>(
+    Postor(
+      AppApis().baseUrl,
+      defaultHeaders: AppApis().defaultHeader,
+    ),
+  );
+  GetIt.I.registerSingleton<BaseMoviesRepository>(MoviesRepository());
+  final moviesRepo = GetIt.I<BaseMoviesRepository>();
 
   AppApis().loadApiKey(apiKey: apiKey);
   group('Test [Movie] model: see if [Movie] can parse response.body correctly:\n', () {
     test(
         'Given user request of get now playing,\n'
-        'when `BaseMovies2Repository` do getNowPlaying()\n'
+        'when `BaseMoviesRepository` do getNowPlaying()\n'
         'then return an instance of `List<Movie>` consists of '
         '20 items.', () {
       expectLater(
@@ -37,7 +40,7 @@ void main() {
     });
     test(
         'Given user request of get upcoming,\n'
-        'when `BaseMovies2Repository` do getUpcoming()\n'
+        'when `BaseMoviesRepository` do getUpcoming()\n'
         'then return an instance of `List<Movie>` consists of '
         '20 items.', () {
       expectLater(
@@ -50,7 +53,7 @@ void main() {
     });
     test(
         'Given user request of get now playing,\n'
-        'when `BaseMovies2Repository` do getPopular()\n'
+        'when `BaseMoviesRepository` do getPopular()\n'
         'then return an instance of `List<Movie>` consists of '
         '20 items.', () {
       expectLater(
@@ -81,6 +84,6 @@ void main() {
   });
 
   tearDownAll(() {
-    GetIt.I<BaseNetworkService>().close();
+    GetIt.I<Postor>().cancelAll();
   });
 }
