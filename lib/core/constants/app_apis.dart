@@ -9,6 +9,7 @@ enum MovieEndpoint {
   nowPlaying,
   upcoming,
   popular,
+  @Deprecated('Use [AppApis().movieReviewsOf] instead')
   reviews,
 }
 
@@ -26,7 +27,7 @@ extension MovieEndpointName on MovieEndpoint {
       case 4:
         return '/3/movie/popular';
       case 5:
-        return '/3/movie/<movieId>/reviews';
+      // return '/3/movie/<movieId>/reviews';
       default:
         throw IndexError(
           index,
@@ -41,6 +42,7 @@ enum TVEndpoint {
   popular,
   details,
   search,
+  @Deprecated('Use [AppApis().tvShowReviewsOf] instead')
   reviews,
 }
 
@@ -56,7 +58,7 @@ extension TVEndpointName on TVEndpoint {
       case 3:
         return '/3/search/tv';
       case 4:
-        return '/3/tv/<tvId>/reviews';
+      // return '/3/tv/<tvId>/reviews';
       default:
         throw IndexError(
           index,
@@ -147,7 +149,7 @@ class AppApis {
   final String epThumbImage = '/t/p/w500';
   final String epOriginalImage = '/t/p/original';
 
-  final String _baseUrl = 'api.themoviedb.org';
+  final String baseUrl = 'api.themoviedb.org';
 
   final String _paramApiKey = 'api_key';
   final String _paramLanguage = 'language';
@@ -155,6 +157,10 @@ class AppApis {
 
   final String _paramPage = 'page';
   final String _paramSearchKeyword = 'query';
+
+  final Map<String, String> defaultHeader = const {
+    'Content-Type': 'application/json',
+  };
 
   late final String _cachedApiKey;
 
@@ -164,6 +170,34 @@ class AppApis {
           'assets/apikey.txt',
           cache: false,
         );
+  }
+
+  String movieReviewsOf({
+    required final int movieId,
+  }) {
+    return '/3/movie/$movieId/reviews';
+  }
+
+  String tvShowReviewsOf({
+    required final int tvShowId,
+  }) {
+    return '/3/tv/$tvShowId/reviews';
+  }
+
+  Map<String, String> paramsOf({
+    final int? page,
+    final String? searchKeyword,
+    final String language = kDefaultLanguage,
+    final String region = kDefaultRegion,
+  }) {
+    final Map<String, String> params = {
+      _paramApiKey: _cachedApiKey,
+      _paramLanguage: language,
+      _paramRegion: region,
+      if (page != null) _paramPage: page.toString(),
+      if (searchKeyword != null) _paramSearchKeyword: searchKeyword,
+    };
+    return params;
   }
 
   /// [endpoint] get either [MovieEndpoint] or [TVEndpoint] endpoint
@@ -184,6 +218,7 @@ class AppApis {
   ///
   /// [region] specify a ISO 3166-1 code to filter release dates. Must be uppercase.
   /// defaults to [kDefaultRegion] `US`
+  @Deprecated('We no longer use this since using [Postor]. Use [paramsOf] instead')
   Uri endpointOf(
     Object endpoint, {
     int? page,
@@ -215,6 +250,7 @@ class AppApis {
     throw ArgumentError('You have to choose between Movie or TV endpoint');
   }
 
+  @Deprecated('We no longer use this since using [Postor]. Use [paramsOf] instead')
   Uri _movieEndpointOf(
     MovieEndpoint endpoint, {
     required String language,
@@ -264,12 +300,13 @@ class AppApis {
         break;
     }
     return Uri.https(
-      _baseUrl,
+      baseUrl,
       endpointName,
       params,
     );
   }
 
+  @Deprecated('We no longer use this since using [Postor]. Use [paramsOf] instead')
   Uri _tvEndpointOf(
     TVEndpoint endpoint, {
     required String language,
@@ -318,7 +355,7 @@ class AppApis {
         break;
     }
     return Uri.https(
-      _baseUrl,
+      baseUrl,
       endpointName,
       params,
     );
