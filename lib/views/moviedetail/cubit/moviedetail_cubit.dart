@@ -3,8 +3,8 @@ import 'dart:async' show FutureOr;
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:get_it/get_it.dart';
+import 'package:postor/error_handler.dart' as eh show catchIt;
 
-import '/core/helpers/error_handler.dart';
 import '/core/models/fav_entertainment_show/fav_entertainment_show.dart';
 import '/core/models/movie/movie_detail.dart';
 import '/core/models/movie/movie_review.dart';
@@ -41,10 +41,10 @@ class MovieDetailCubit extends Cubit<MovieDetailState> {
         ),
       );
     } catch (e, st) {
-      ErrorHandler.catchIt(
+      eh.catchIt(
         error: e,
         stackTrace: st,
-        customUnknownErrorMessage: 'Failed to load movie detail. Please try again.',
+        otherErrorMessage: 'Failed to load movie detail. Please try again.',
         onCatch: _catchError,
       );
 
@@ -66,10 +66,10 @@ class MovieDetailCubit extends Cubit<MovieDetailState> {
 
       emit(currentState.update(isFav: fav));
     } catch (e, st) {
-      ErrorHandler.catchIt(
+      eh.catchIt(
         error: e,
         stackTrace: st,
-        customUnknownErrorMessage: 'Failed to save favourite movie. Please try again.',
+        otherErrorMessage: 'Failed to save favourite movie. Please try again.',
         onCatch: _catchError,
       );
     }

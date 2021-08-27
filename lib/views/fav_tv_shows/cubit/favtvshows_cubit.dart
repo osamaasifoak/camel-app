@@ -1,9 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:get_it/get_it.dart';
+import 'package:postor/error_handler.dart' as eh show catchIt;
 
 import '/core/enums/state_status.dart';
-import '/core/helpers/error_handler.dart';
 import '/core/models/tv_show/tv_show.dart';
 import '/core/repositories/fav_tv_shows_repo/base_fav_tv_shows_repo.dart';
 import '/core/repositories/tv_show_repo/base_tv_show_repo.dart';
@@ -60,10 +60,10 @@ class FavTVShowsCubit extends Cubit<FavTVShowsState> {
         ));
       }
     } catch (e, st) {
-      ErrorHandler.catchIt(
+      eh.catchIt(
         error: e,
         stackTrace: st,
-        customUnknownErrorMessage: 'Failed to fetch favourite TV shows. Please try again.',
+        otherErrorMessage: 'Failed to fetch favourite TV shows. Please try again.',
         onCatch: _catchError,
       );
     }

@@ -1,9 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:get_it/get_it.dart';
+import 'package:postor/error_handler.dart' as eh show catchIt;
 
 import '/core/enums/state_status.dart';
-import '/core/helpers/error_handler.dart';
 import '/core/models/movie/movie.dart';
 import '/core/repositories/favmovies_repo/base_favmovies_repo.dart';
 import '/core/repositories/movies_repo/base_movies_repo.dart';
@@ -60,10 +60,10 @@ class FavMoviesCubit extends Cubit<FavMoviesState> {
         ));
       }
     } catch (e, st) {
-      ErrorHandler.catchIt(
+      eh.catchIt(
         error: e,
         stackTrace: st,
-        customUnknownErrorMessage: 'Failed to fetch favourite movies. Please try again.',
+        otherErrorMessage: 'Failed to fetch favourite movies. Please try again.',
         onCatch: _catchError,
       );
     }

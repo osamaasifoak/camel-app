@@ -1,9 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:get_it/get_it.dart';
+import 'package:postor/error_handler.dart' as eh show catchIt;
 
 import '/core/enums/state_status.dart';
-import '/core/helpers/error_handler.dart';
 import '/core/models/movie/movie.dart';
 import '/core/repositories/movies_repo/base_movies_repo.dart';
 
@@ -43,10 +43,10 @@ class MoviesSectionsCubit extends Cubit<MoviesSectionsState> {
         upcomingMovies: upcomingMovies,
       ));
     } catch (error, stackTrace) {
-      ErrorHandler.catchIt(
+      eh.catchIt(
         error: error,
         stackTrace: stackTrace,
-        customUnknownErrorMessage: "Something's wrong when loading movies sections :( Please try again",
+        otherErrorMessage: "Something's wrong when loading movies sections :( Please try again",
         onCatch: _catchError,
       );
     }

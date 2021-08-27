@@ -1,7 +1,7 @@
 import 'package:get_it/get_it.dart';
+import 'package:postor/error_handler.dart' as eh show catchIt;
 
 import '/core/enums/state_status.dart';
-import '/core/helpers/error_handler.dart';
 import '/core/models/movie/movie.dart';
 import '/core/repositories/movies_repo/base_movies_repo.dart';
 import '/views/_screen_templates/movie/base_movie_list_cubit/base_movie_list_cubit.dart';
@@ -38,10 +38,10 @@ class NowPlayingCubit extends BaseMovieListCubit<NowPlayingState> {
         ));
 
     } catch (e, st) {
-      ErrorHandler.catchIt(
+      eh.catchIt(
         error: e,
         stackTrace: st,
-        customUnknownErrorMessage: 'Failed to fetch now playing movies. Please try again.',
+        otherErrorMessage: 'Failed to fetch now playing movies. Please try again.',
         onCatch: _catchError,
       );
     }

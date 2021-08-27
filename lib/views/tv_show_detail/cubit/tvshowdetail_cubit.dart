@@ -1,15 +1,15 @@
 import 'dart:async' show FutureOr;
 
 import 'package:bloc/bloc.dart';
-import 'package:camelmovies/core/models/fav_entertainment_show/fav_entertainment_show.dart';
-import 'package:camelmovies/core/models/tv_show/tv_show_detail.dart';
-import 'package:camelmovies/core/models/tv_show/tv_show_review.dart';
-import 'package:camelmovies/core/repositories/fav_tv_shows_repo/base_fav_tv_shows_repo.dart';
-import 'package:camelmovies/core/repositories/tv_show_repo/base_tv_show_repo.dart';
 import 'package:equatable/equatable.dart';
 import 'package:get_it/get_it.dart';
+import 'package:postor/error_handler.dart' as eh show catchIt;
 
-import '/core/helpers/error_handler.dart';
+import '/core/models/fav_entertainment_show/fav_entertainment_show.dart';
+import '/core/models/tv_show/tv_show_detail.dart';
+import '/core/models/tv_show/tv_show_review.dart';
+import '/core/repositories/fav_tv_shows_repo/base_fav_tv_shows_repo.dart';
+import '/core/repositories/tv_show_repo/base_tv_show_repo.dart';
 
 part 'tvshowdetail_state.dart';
 
@@ -41,10 +41,10 @@ class TVShowDetailCubit extends Cubit<TVShowDetailState> {
         ),
       );
     } catch (e, st) {
-      ErrorHandler.catchIt(
+      eh.catchIt(
         error: e,
         stackTrace: st,
-        customUnknownErrorMessage: 'Failed to load TV show detail. Please try again.',
+        otherErrorMessage: 'Failed to load TV show detail. Please try again.',
         onCatch: _catchError,
       );
 
@@ -66,10 +66,10 @@ class TVShowDetailCubit extends Cubit<TVShowDetailState> {
 
       emit(currentState.update(isFavTV: fav));
     } catch (e, st) {
-      ErrorHandler.catchIt(
+      eh.catchIt(
         error: e,
         stackTrace: st,
-        customUnknownErrorMessage: 'Failed to save favourite TV show. Please try again.',
+        otherErrorMessage: 'Failed to save favourite TV show. Please try again.',
         onCatch: _catchError,
       );
     }
