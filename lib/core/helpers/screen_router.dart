@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -6,9 +5,7 @@ import '/core/constants/app_routes.dart';
 import '/screens.dart';
 import '/views/_widgets/circular_reveal_clipper.dart';
 
-
 class ScreenRouter {
-
   static PageRoute circularRevealPageRoute({
     required Widget destinationPage,
     Alignment? circularAlignment,
@@ -41,10 +38,9 @@ class ScreenRouter {
   }
 
   static Route onGenerateRoute(RouteSettings settings) {
-
     final String? routeUri = settings.name;
 
-    if(routeUri == null) {
+    if (routeUri == null) {
       return CupertinoPageRoute(builder: (_) => const PageNotFoundScreen());
     }
 
@@ -52,18 +48,20 @@ class ScreenRouter {
     final String routePath = routeUriData.path;
     final Map<String, String> routeParameters = routeUriData.queryParameters;
 
-    if(routePath == AppRoutes.splash) {
+    if (routePath == AppRoutes.splash) {
       return circularRevealPageRoute(
-        destinationPage:  const SplashScreen(),
+        destinationPage: const SplashScreen(),
         settings: settings,
       );
-    } else if (routePath == AppRoutes.favMovies) {
+    }
+    if (routePath == AppRoutes.favMovies) {
       return circularRevealPageRoute(
         circularAlignment: Alignment.topRight,
         destinationPage: const FavMoviesScreen(),
         settings: settings,
       );
-    } else if (routePath == AppRoutes.favTVShows) {
+    }
+    if (routePath == AppRoutes.favTVShows) {
       return circularRevealPageRoute(
         circularAlignment: Alignment.topRight,
         destinationPage: const FavTVShowsScreen(),
@@ -73,43 +71,38 @@ class ScreenRouter {
 
     return CupertinoPageRoute(
       builder: (context) {
-        switch (routePath) {
-
-          case AppRoutes.home:
-            return const HomeScreen();
-
-          case AppRoutes.nowPlayingMovieList:
-            return const NowPlayingListScreen();
-          
-          case AppRoutes.popularMovieList:
-            return const PopularListScreen();
-
-          case AppRoutes.upcomingMovieList:
-            return const UpcomingListScreen();
-
-          case AppRoutes.movieDetail:
-            final movieId = int.tryParse(routeParameters['id'] ?? '-');
-            if (movieId is int) {
-              return MovieDetailScreen(movieId: movieId);
-            }
-            return const PageNotFoundScreen();
-
-          case AppRoutes.popularTVShowList:
-            return const PopularTVShowListScreen();
-
-          case AppRoutes.onTheAirTVShowList:
-            return const OnTheAirTVShowListScreen();
-          
-          case AppRoutes.tvShowDetail:
-            final tvShowId = int.tryParse(routeParameters['id'] ?? '-');
-            if(tvShowId is int) {
-              return TVShowDetailScreen(tvShowId: tvShowId);
-            }
-            return const PageNotFoundScreen();
-
-          default:
-            return const PageNotFoundScreen();
+        if (routePath == AppRoutes.home) {
+          return const HomeScreen();
         }
+        if (routePath == AppRoutes.nowPlayingMovieList) {
+          return const NowPlayingListScreen();
+        }
+        if (routePath == AppRoutes.popularMovieList) {
+          return const PopularListScreen();
+        }
+        if (routePath == AppRoutes.upcomingMovieList) {
+          return const UpcomingListScreen();
+        }
+        if (routePath == AppRoutes.movieDetail) {
+          final movieId = int.tryParse(routeParameters['id'] ?? '-');
+          if (movieId is int) {
+            return MovieDetailScreen(movieId: movieId);
+          }
+        }
+        if (routePath == AppRoutes.popularTVShowList) {
+          return const PopularTVShowListScreen();
+        }
+        if (routePath == AppRoutes.onTheAirTVShowList) {
+          return const OnTheAirTVShowListScreen();
+        }
+        if (routePath == AppRoutes.tvShowDetail) {
+          final tvShowId = int.tryParse(routeParameters['id'] ?? '-');
+          if (tvShowId is int) {
+            return TVShowDetailScreen(tvShowId: tvShowId);
+          }
+        }
+
+        return const PageNotFoundScreen();
       },
       settings: settings,
     );
