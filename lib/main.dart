@@ -5,6 +5,7 @@ import 'core/constants/app_apis.dart';
 import 'core/constants/app_routes.dart';
 import 'core/helpers/screen_router.dart';
 
+import 'error_msg_handlers.dart';
 import 'singletons.dart';
 
 Future<void> main() async {
@@ -17,6 +18,8 @@ Future<void> main() async {
   await AppApis().loadApiKey();
 
   initSingletons();
+
+  initErrorMessageHandlers();
 
   runApp(const App());
 }
