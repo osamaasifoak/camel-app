@@ -1,108 +1,165 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:developer' as _dev show log;
+
 import 'package:flutter/material.dart';
 
 import '/core/constants/app_routes.dart';
 import '/screens.dart';
 import '/views/_widgets/circular_reveal_clipper.dart';
 
+const log = _dev.log;
+
 class ScreenRouter {
-  static PageRoute circularRevealPageRoute({
-    required Widget destinationPage,
-    Alignment? circularAlignment,
-    RouteSettings? settings,
-  }) {
-    return PageRouteBuilder(
-      pageBuilder: (_, __, ___) => destinationPage,
-      transitionsBuilder: (context, animation, __, child) {
-        const begin = 0.0;
-        const end = 1.0;
-        const curve = Curves.fastLinearToSlowEaseIn;
-        final tween = Tween(
-          begin: begin,
-          end: end,
-        ).chain(CurveTween(curve: curve));
-        return ScaleTransition(
-          alignment: circularAlignment ?? Alignment.center,
-          scale: animation.drive(tween),
-          child: ClipPath(
-            clipper: CircularRevealClipper(
-              centerAlignment: circularAlignment,
-              fraction: animation.value,
-            ),
-            child: child,
-          ),
-        );
-      },
-      settings: settings,
-    );
+  static final _instance = ScreenRouter._internal();
+
+  factory ScreenRouter() => _instance;
+
+  ScreenRouter._internal();
+
+  PointerDownEvent? _pointerDownEvent;
+
+  void onPointerDownEvent(PointerDownEvent newPointerDownEvent) {
+    log(newPointerDownEvent.toString());
+    _pointerDownEvent = newPointerDownEvent;
   }
 
-  static Route onGenerateRoute(RouteSettings settings) {
-    final String? routeUri = settings.name;
+  static const double _defaultTweenDoubleBegin = 0.0;
+  static const double _defaultTweenDoubleEnd = 1.0;
+  static const Curve _defaultTweenDoubleCurve = Curves.fastLinearToSlowEaseIn;
 
-    if (routeUri == null) {
-      return CupertinoPageRoute(builder: (_) => const PageNotFoundScreen());
+  static final Animatable<Offset> _defaultTweenOffset = Tween<Offset>(
+    begin: _defaultTweenOffsetBegin,
+    end: _defaultTweenOffsetEnd,
+  );
+  static const Offset _defaultTweenOffsetBegin = Offset(1.0, 0.0);
+  static const Offset _defaultTweenOffsetEnd = Offset.zero;
+  static const Curve _defaultTweenOffsetCurve = Curves.easeIn;
+
+  Animatable<double> get _defaultTweenDouble {
+    return Tween<double>(
+      begin: _defaultTweenDoubleBegin,
+      end: _defaultTweenDoubleEnd,
+    ).chain(CurveTween(curve: _defaultTweenDoubleCurve));
+  }
+
+  Animatable<Offset> get _defaultCurvedTweenOffset {
+    return _defaultTweenOffset.chain(CurveTween(curve: _defaultTweenOffsetCurve));
+  }
+
+  Route onGenerateRoute(RouteSettings settings) {
+    final String? routeName = settings.name;
+    final Object? routeArgs = settings.arguments;
+    final Widget destPage;
+    Alignment? circularAlignment;
+    bool useFadeTransition = false;
+
+    if (routeName == null) {
+      circularAlignment = Alignment.center;
+      destPage = const PageNotFoundScreen();
+    } else {
+      final Uri routeUri = Uri.parse(routeName);
+      final String routePath = routeUri.path;
+
+      if (routePath == AppRoutes.splash) {
+        circularAlignment = Alignment.center;
+        destPage = const SplashScreen();
+      } else if (routePath == AppRoutes.searchShows) {
+        circularAlignment = Alignment.topCenter;
+        destPage = const SearchScreen();
+      } else if (routePath == AppRoutes.favMovies) {
+        circularAlignment = Alignment.topRight;
+        destPage = const FavMoviesScreen();
+      } else if (routePath == AppRoutes.favTVShows) {
+        circularAlignment = Alignment.topRight;
+        destPage = const FavTVShowsScreen();
+      } else if (routePath == AppRoutes.home) {
+        destPage = const HomeScreen();
+      } else if (routePath == AppRoutes.nowPlayingMovieList) {
+        destPage = const NowPlayingListScreen();
+      } else if (routePath == AppRoutes.popularMovieList) {
+        destPage = const PopularListScreen();
+      } else if (routePath == AppRoutes.upcomingMovieList) {
+        destPage = const UpcomingListScreen();
+      } else if (routePath == AppRoutes.popularTVShowList) {
+        destPage = const PopularTVShowListScreen();
+      } else if (routePath == AppRoutes.onTheAirTVShowList) {
+        destPage = const OnTheAirTVShowListScreen();
+      } else if (routePath == AppRoutes.movieDetail) {
+        final movieId = int.tryParse(routeUri.queryParameters['id'] ?? '-');
+        if (movieId is int) {
+          destPage = MovieDetailScreen(movieId: movieId);
+        } else {
+          destPage = const PageNotFoundScreen();
+        }
+      } else if (routePath == AppRoutes.tvShowDetail) {
+        final tvShowId = int.tryParse(routeUri.queryParameters['id'] ?? '-');
+        if (tvShowId is int) {
+          destPage = TVShowDetailScreen(tvShowId: tvShowId);
+        } else {
+          destPage = const PageNotFoundScreen();
+        }
+      } else {
+        destPage = const PageNotFoundScreen();
+      }
     }
 
-    final Uri routeUriData = Uri.parse(routeUri);
-    final String routePath = routeUriData.path;
-    final Map<String, String> routeParameters = routeUriData.queryParameters;
-
-    if (routePath == AppRoutes.splash) {
-      return circularRevealPageRoute(
-        destinationPage: const SplashScreen(),
-        settings: settings,
+    if (circularAlignment == null && _pointerDownEvent != null && routeArgs is BuildContext) {
+      final double dx = _pointerDownEvent!.position.dx;
+      final double dy = _pointerDownEvent!.position.dy;
+      final Size screenSize = MediaQuery.of(routeArgs).size;
+      circularAlignment = Alignment(
+        2 * dx / screenSize.width - 1,
+        2 * dy / screenSize.height - 1,
       );
-    }
-    if (routePath == AppRoutes.favMovies) {
-      return circularRevealPageRoute(
-        circularAlignment: Alignment.topRight,
-        destinationPage: const FavMoviesScreen(),
-        settings: settings,
-      );
-    }
-    if (routePath == AppRoutes.favTVShows) {
-      return circularRevealPageRoute(
-        circularAlignment: Alignment.topRight,
-        destinationPage: const FavTVShowsScreen(),
-        settings: settings,
-      );
+      useFadeTransition = true;
     }
 
-    return CupertinoPageRoute(
-      builder: (context) {
-        if (routePath == AppRoutes.home) {
-          return const HomeScreen();
-        }
-        if (routePath == AppRoutes.nowPlayingMovieList) {
-          return const NowPlayingListScreen();
-        }
-        if (routePath == AppRoutes.popularMovieList) {
-          return const PopularListScreen();
-        }
-        if (routePath == AppRoutes.upcomingMovieList) {
-          return const UpcomingListScreen();
-        }
-        if (routePath == AppRoutes.movieDetail) {
-          final movieId = int.tryParse(routeParameters['id'] ?? '-');
-          if (movieId is int) {
-            return MovieDetailScreen(movieId: movieId);
+    return PageRouteBuilder(
+      pageBuilder: (_, __, ___) => destPage,
+      transitionsBuilder: (context, primaryAnimation, secondaryAnimation, page) {
+        if (circularAlignment != null) {
+          if (useFadeTransition) {
+            return FadeTransition(
+              opacity: primaryAnimation,
+              child: ScaleTransition(
+                alignment: circularAlignment,
+                scale: primaryAnimation.drive(_defaultTweenDouble),
+                child: ClipPath(
+                  clipper: CircularRevealClipper(
+                    centerAlignment: circularAlignment,
+                    fraction: primaryAnimation.value,
+                  ),
+                  child: page,
+                ),
+              ),
+            );
           }
-        }
-        if (routePath == AppRoutes.popularTVShowList) {
-          return const PopularTVShowListScreen();
-        }
-        if (routePath == AppRoutes.onTheAirTVShowList) {
-          return const OnTheAirTVShowListScreen();
-        }
-        if (routePath == AppRoutes.tvShowDetail) {
-          final tvShowId = int.tryParse(routeParameters['id'] ?? '-');
-          if (tvShowId is int) {
-            return TVShowDetailScreen(tvShowId: tvShowId);
-          }
-        }
 
-        return const PageNotFoundScreen();
+          return ScaleTransition(
+            alignment: circularAlignment,
+            scale: primaryAnimation.drive(_defaultTweenDouble),
+            child: ClipPath(
+              clipper: CircularRevealClipper(
+                centerAlignment: circularAlignment,
+                fraction: primaryAnimation.value,
+              ),
+              child: page,
+            ),
+          );
+        } else {
+          final Animation<Offset> primarySlideTransitionTween = CurvedAnimation(
+            parent: primaryAnimation,
+            curve: Curves.linearToEaseOut,
+            reverseCurve: Curves.easeInToLinear,
+          ).drive(_defaultCurvedTweenOffset);
+
+          return SlideTransition(
+            position: primarySlideTransitionTween,
+            child: FadeTransition(
+              opacity: primaryAnimation,
+              child: page,
+            ),
+          );
+        }
       },
       settings: settings,
     );
