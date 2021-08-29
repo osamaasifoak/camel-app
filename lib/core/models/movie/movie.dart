@@ -48,14 +48,15 @@ class Movie implements EShow {
   }
 
   factory Movie.fromMap(Map<String, dynamic> map) {
+    final relDate = map['release_date'] as String? ?? '';
     return Movie(
       id: map['id'] as int,
       title: map['title'] as String,
-      releaseDate: map['release_date'] as String,
+      releaseDate: relDate,
       rating: (map['vote_average'] as num).toDouble(),
       voteCount: map['vote_count'] as int,
       imgUrlPoster: map['poster_path'] as String?,
-      year: DateTime.parse(map['release_date'] as String).year.toString(),
+      year: relDate.isNotEmpty ? DateTime.parse(relDate).year.toString() : '',
     );
   }
 

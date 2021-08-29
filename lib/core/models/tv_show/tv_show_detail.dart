@@ -61,7 +61,7 @@ class TVShowDetail extends TVShow implements EShowDetails {
     return TVShowDetail(
       id: map['id'] as int,
       title: map['name'] as String,
-      releaseDate: map['first_air_date'] as String,
+      releaseDate: map['first_air_date'] as String? ?? '--',
       rating: (map['vote_average'] as num).toDouble(),
       voteCount: map['vote_count'] as int,
       overview: map['overview'] as String,

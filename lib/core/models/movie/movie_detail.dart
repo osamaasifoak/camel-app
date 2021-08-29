@@ -57,17 +57,18 @@ class MovieDetail extends Movie implements EShowDetails {
   @override
   factory MovieDetail.fromMap(JsonMap map) {
     final genres = (map['genres'] as List).map((g) => ESG.fromMap(g as JsonMap)).toList(growable: false);
+    final relDate = map['release_date'] as String? ?? '';
     return MovieDetail(
       id: map['id'] as int,
       title: map['title'] as String,
-      releaseDate: map['release_date'] as String,
+      releaseDate: relDate,
       overview: map['overview'] as String,
       rating: (map['vote_average'] as num).toDouble(),
       voteCount: map['vote_count'] as int,
       imgUrlPoster: map['poster_path'] as String?,
       imgUrlBackdrop: map['backdrop_path'] as String?,
       runtime: map['runtime'] as int,
-      year: DateTime.parse(map['release_date'] as String).year.toString(),
+      year: relDate.isNotEmpty ? DateTime.parse(relDate).year.toString() : '',
       genres: genres,
     );
   }
