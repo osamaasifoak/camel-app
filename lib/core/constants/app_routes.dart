@@ -13,6 +13,8 @@ class AppRoutes {
   static const String onTheAirTVShowList = '/tv_shows/on_the_air';
   static const String favTVShows = '/fav/tv_shows';
 
+  static const String searchShows = '/search';
+
   static String getMovieDetail(int movieId) {
     return Uri(
       path: movieDetail,
