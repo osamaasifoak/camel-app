@@ -7,6 +7,14 @@ import '/core/repositories/fav_tv_shows_repo/base_fav_tv_shows_repo.dart';
 import '/core/services/localdb_service/base_localdb_service.dart';
 
 class FavTVShowsRepository implements BaseFavTVShowsRepository {
+
+  static const String favTVShowsTableName = 'fav_tv';
+
+  static const String createFavTVShowsTableQuery = 
+    'CREATE TABLE $favTVShowsTableName '
+    '(id INTEGER PRIMARY KEY, '
+    'added_on INTEGER)';
+
   FavTVShowsRepository({
     BaseLocalDbService? localDbService,
     BehaviorSubject<int>? favTVCountController,
@@ -23,7 +31,7 @@ class FavTVShowsRepository implements BaseFavTVShowsRepository {
   @override
   Future<void> deleteFavTV(int id) async {
     await _localDbService.delete(
-      table: _localDbService.tvFavsTable,
+      table: favTVShowsTableName,
       where: 'id = ?',
       whereArgs: [id],
     );
@@ -34,7 +42,7 @@ class FavTVShowsRepository implements BaseFavTVShowsRepository {
   @override
   Future<int> getFavTVCount() async {
     final favTVCount = await _localDbService.select(
-      table: _localDbService.tvFavsTable,
+      table: favTVShowsTableName,
       columns: ['COUNT(*)'],
     );
     return Sqflite.firstIntValue(favTVCount) ?? 0;
@@ -47,7 +55,7 @@ class FavTVShowsRepository implements BaseFavTVShowsRepository {
   }) async {
     assert(page >= 0);
     final List<Map<String, Object?>> favList = await _localDbService.select(
-      table: _localDbService.tvFavsTable,
+      table: favTVShowsTableName,
       offset: page * perPage,
       limit: perPage,
       columns: ['id'],
@@ -60,7 +68,7 @@ class FavTVShowsRepository implements BaseFavTVShowsRepository {
   @override
   Future<void> insertFavTV(FavEShow favEShow) async {
     await _localDbService.insert(
-      table: _localDbService.tvFavsTable,
+      table: favTVShowsTableName,
       values: favEShow.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
@@ -71,7 +79,7 @@ class FavTVShowsRepository implements BaseFavTVShowsRepository {
   @override
   Future<bool> isFavTV(int id) async {
     final List<Map<String, Object?>> findFav = await _localDbService.select(
-      table: _localDbService.tvFavsTable,
+      table: favTVShowsTableName,
       where: 'id = ?',
       whereArgs: [id],
       limit: 1,

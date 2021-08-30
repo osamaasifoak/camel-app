@@ -9,6 +9,13 @@ import '/core/services/localdb_service/base_localdb_service.dart';
 import 'base_favmovies_repo.dart';
 
 class FavMoviesRepository implements BaseFavMoviesRepository {
+
+  static const String favMoviesTableName = 'fav_movie';
+  static const String createFavMovieTableQuery = 
+    'CREATE TABLE $favMoviesTableName '
+    '(id INTEGER PRIMARY KEY, '
+    'added_on INTEGER)';
+
   FavMoviesRepository({
     BaseLocalDbService? localDbService,
     BehaviorSubject<int>? favCountController,
@@ -23,7 +30,7 @@ class FavMoviesRepository implements BaseFavMoviesRepository {
   @override
   Future<int> getFavCount() async {
     final favCount = await _localDbService.select(
-      table: _localDbService.movieFavsTable,
+      table: favMoviesTableName,
       columns: ['COUNT(*)'],
     );
     return Sqflite.firstIntValue(favCount) ?? 0;
@@ -39,7 +46,7 @@ class FavMoviesRepository implements BaseFavMoviesRepository {
   }) async {
     assert(page >= 0);
     final List<Map<String, Object?>> favList = await _localDbService.select(
-      table: _localDbService.movieFavsTable,
+      table: favMoviesTableName,
       offset: page * perPage,
       limit: perPage,
       columns: ['id'],
@@ -53,7 +60,7 @@ class FavMoviesRepository implements BaseFavMoviesRepository {
   Future<void> insertFav(FavEShow favEShow) async {
 
     await _localDbService.insert(
-      table: _localDbService.movieFavsTable,
+      table: favMoviesTableName,
       values: favEShow.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
@@ -65,7 +72,7 @@ class FavMoviesRepository implements BaseFavMoviesRepository {
   Future<void> deleteFav(int id) async {
 
     await _localDbService.delete(
-      table: _localDbService.movieFavsTable,
+      table: favMoviesTableName,
       where: 'id = ?',
       whereArgs: [id],
     );
@@ -77,7 +84,7 @@ class FavMoviesRepository implements BaseFavMoviesRepository {
   Future<bool> isFav(int id) async {
 
     final List<Map<String, Object?>> findFav = await _localDbService.select(
-      table: _localDbService.movieFavsTable,
+      table: favMoviesTableName,
       where: 'id = ?',
       whereArgs: [id],
       limit: 1,
