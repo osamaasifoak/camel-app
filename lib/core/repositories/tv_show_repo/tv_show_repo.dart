@@ -21,32 +21,38 @@ class TVShowRepository implements BaseTVShowRepository {
   @protected
   String? lastTVShowSearchUrl;
 
-  @override
-  Future<List<TVShow>> getOnTheAir({int page = 1}) async {
-    final endpoint = TVEndpoint.onTheAir.name;
+  @protected
+  Future<List<TVShow>> getTVShows({
+    required TVEndpoint tvEndpoint,
+    required int page,
+  }) async {
     final params = AppApis().paramsOf(page: page);
-    final rawOnTheAir = await postor.get(endpoint, parameters: params).get<JsonMap>();
+    final rawTVShows = await postor.get(tvEndpoint.name, parameters: params).get<JsonMap>();
 
-    final rawOnTheAirList = rawOnTheAir['results'] as List;
-    return rawOnTheAirList.map((r) => TVShow.fromMap(r as JsonMap)).toList();
+    final rawTVShowsList = rawTVShows['results'] as List;
+    return rawTVShowsList.map((r) => TVShow.fromMap(r as JsonMap)).toList();
+  }
+
+  @protected
+  Future<JsonMap> getRawTVShowDetails({required int tvShowId}) {
+    final endpoint = TVEndpoint.details.name + tvShowId.toString();
+    final params = AppApis().paramsOf();
+    return postor.get(endpoint, parameters: params).get<JsonMap>();
+  }
+
+  @override
+  Future<List<TVShow>> getOnTheAir({int page = 1}) {
+    return getTVShows(tvEndpoint: TVEndpoint.onTheAir, page: page);
   }
 
   @override
   Future<List<TVShow>> getPopular({int page = 1}) async {
-    final endpoint = TVEndpoint.popular.name;
-    final params = AppApis().paramsOf(page: page);
-    final rawPopular = await postor.get(endpoint, parameters: params).get<JsonMap>();
-
-    final rawPopularList = rawPopular['results'] as List;
-    return rawPopularList.map((r) => TVShow.fromMap(r as JsonMap)).toList();
+    return getTVShows(tvEndpoint: TVEndpoint.popular, page: page);
   }
 
   @override
   Future<TVShowDetail> getTVShowDetail(int id) async {
-    final endpoint = TVEndpoint.details.name + id.toString();
-    final params = AppApis().paramsOf();
-    final rawTVShowDetail = await postor.get(endpoint, parameters: params).get<JsonMap>();
-
+    final rawTVShowDetail = await getRawTVShowDetails(tvShowId: id);
     return TVShowDetail.fromMap(rawTVShowDetail);
   }
 
@@ -55,10 +61,7 @@ class TVShowRepository implements BaseTVShowRepository {
     final List<TVShow> tvShows = [];
 
     for (final id in tvShowIds) {
-      final endpoint = TVEndpoint.details.name + id.toString();
-      final params = AppApis().paramsOf();
-      final rawTVShowDetails = await postor.get(endpoint, parameters: params).get<JsonMap>();
-
+      final rawTVShowDetails = await getRawTVShowDetails(tvShowId: id);
       tvShows.add(TVShow.fromMap(rawTVShowDetails));
     }
     return tvShows;

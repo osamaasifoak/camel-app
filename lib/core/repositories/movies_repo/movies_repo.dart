@@ -21,15 +21,31 @@ class MoviesRepository implements BaseMoviesRepository {
   @protected
   String? lastMovieSearchUrl;
 
+  @protected
+  Future<JsonMap> getRawMovieDetails({required int movieId}) {
+    final endpoint = MovieEndpoint.details.name + movieId.toString();
+    final params = AppApis().paramsOf();
+    return postor.get(endpoint, parameters: params).get<JsonMap>();
+  }
+
+  @protected
+  Future<List<Movie>> getMovies({
+    required MovieEndpoint movieEndpoint,
+    required int page,
+  }) async {
+    final params = AppApis().paramsOf(page: page);
+    final rawMovies = await postor.get(movieEndpoint.name, parameters: params).get<JsonMap>();
+
+    final rawMoviesList = rawMovies['results'] as List;
+    return rawMoviesList.map((r) => Movie.fromMap(r as JsonMap)).toList();
+  }
+
   @override
   Future<List<Movie>> getMovieListById(List<int> movieIds) async {
     final List<Movie> movies = [];
 
-    for (final id in movieIds) {
-      final endpoint = MovieEndpoint.details.name + id.toString();
-      final params = AppApis().paramsOf();
-      final rawMovieDetails = await postor.get(endpoint, parameters: params).get<JsonMap>();
-
+    for (final int id in movieIds) {
+      final rawMovieDetails = await getRawMovieDetails(movieId: id);
       movies.add(Movie.fromMap(rawMovieDetails));
     }
     return movies;
@@ -37,41 +53,23 @@ class MoviesRepository implements BaseMoviesRepository {
 
   @override
   Future<MovieDetail> getMovieDetail(int id) async {
-    final endpoint = MovieEndpoint.details.name + id.toString();
-    final params = AppApis().paramsOf();
-    final rawMovieDetails = await postor.get(endpoint, parameters: params).get<JsonMap>();
-
+    final rawMovieDetails = await getRawMovieDetails(movieId: id);
     return MovieDetail.fromMap(rawMovieDetails);
   }
 
   @override
-  Future<List<Movie>> getNowPlaying({int page = 1}) async {
-    final endpoint = MovieEndpoint.nowPlaying.name;
-    final params = AppApis().paramsOf(page: page);
-    final rawNowPlaying = await postor.get(endpoint, parameters: params).get<JsonMap>();
-
-    final rawNowPlayingList = rawNowPlaying['results'] as List;
-    return rawNowPlayingList.map((r) => Movie.fromMap(r as JsonMap)).toList();
+  Future<List<Movie>> getNowPlaying({int page = 1}) {
+    return getMovies(movieEndpoint: MovieEndpoint.nowPlaying, page: page);
   }
 
   @override
-  Future<List<Movie>> getUpcoming({int page = 1}) async {
-    final endpoint = MovieEndpoint.upcoming.name;
-    final params = AppApis().paramsOf(page: page);
-    final rawUpcoming = await postor.get(endpoint, parameters: params).get<JsonMap>();
-
-    final rawUpcomingList = rawUpcoming['results'] as List;
-    return rawUpcomingList.map((r) => Movie.fromMap(r as JsonMap)).toList();
+  Future<List<Movie>> getUpcoming({int page = 1}) {
+    return getMovies(movieEndpoint: MovieEndpoint.upcoming, page: page);
   }
 
   @override
-  Future<List<Movie>> getPopular({int page = 1}) async {
-    final endpoint = MovieEndpoint.popular.name;
-    final params = AppApis().paramsOf(page: page);
-    final rawPopular = await postor.get(endpoint, parameters: params).get<JsonMap>();
-
-    final rawPopularList = rawPopular['results'] as List;
-    return rawPopularList.map((r) => Movie.fromMap(r as JsonMap)).toList();
+  Future<List<Movie>> getPopular({int page = 1}) {
+    return getMovies(movieEndpoint: MovieEndpoint.popular, page: page);
   }
 
   @override
