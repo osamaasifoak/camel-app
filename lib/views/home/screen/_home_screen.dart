@@ -1,3 +1,4 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:postor/postor.dart';
@@ -28,6 +29,7 @@ class _HomeScreenState extends _HomeScreenProps with _HomeScreenWidgets {
       appBar: AppBar(
         title: _AnimatedHomeScreenTitle(
           bottomNavSelectedIndex: _bottomNavSelectedIndex,
+          onSearchTapped: _goToSearchScreen,
         ),
         actions: [favIcon],
         centerTitle: true,

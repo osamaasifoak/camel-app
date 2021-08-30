@@ -27,6 +27,10 @@ abstract class _HomeScreenProps extends State<HomeScreen> {
     super.dispose();
   }
 
+  void _goToSearchScreen() {
+    Navigator.of(context).pushNamed(AppRoutes.searchShows);
+  }
+
   // ignore: use_setters_to_change_properties
   void _onPageChanged(int index) {
     _bottomNavSelectedIndex.value = index;

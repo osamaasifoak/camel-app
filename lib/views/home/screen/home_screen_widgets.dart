@@ -66,9 +66,11 @@ class _AnimatedHomeScreenTitle extends StatelessWidget {
   const _AnimatedHomeScreenTitle({
     Key? key,
     required this.bottomNavSelectedIndex,
+    required this.onSearchTapped,
   }) : super(key: key);
 
   final ValueNotifier<int> bottomNavSelectedIndex;
+  final VoidCallback onSearchTapped;
 
   @override
   Widget build(BuildContext context) {
@@ -101,14 +103,71 @@ class _AnimatedHomeScreenTitle extends StatelessWidget {
                 ),
         );
       },
-      child: const Text(
-        'caMel',
-        key: ValueKey('app-name'),
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          color: Color(0xFF01579B),
+      child: GestureDetector(
+        key: const ValueKey('app-name+search'),
+        behavior: HitTestBehavior.opaque,
+        onTap: onSearchTapped,
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width * 0.45,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _AnimatedAppNameTitle(onTap: onSearchTapped),
+              const SizedBox(width: 5),
+              const Icon(
+                Icons.search_rounded,
+                color: Colors.grey,
+              ),
+            ],
+          ),
         ),
+      ),
+    );
+  }
+}
+
+class _AnimatedAppNameTitle extends StatelessWidget {
+  const _AnimatedAppNameTitle({
+    Key? key,
+    this.onTap,
+  }) : super(key: key);
+
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTextStyle.merge(
+      style: const TextStyle(
+        color: Color(0xFF01579B),
+        fontWeight: FontWeight.bold,
+      ),
+      child: AnimatedTextKit(
+        pause: const Duration(milliseconds: 1500),
+        totalRepeatCount: 1,
+        onTap: onTap,
+        animatedTexts: [
+          TyperAnimatedText(
+            'caMel',
+            curve: Curves.ease,
+            speed: const Duration(milliseconds: 100),
+          ),
+          TyperAnimatedText(
+            'moVies',
+            curve: Curves.ease,
+            speed: const Duration(milliseconds: 100),
+          ),
+          TyperAnimatedText(
+            'tvShows',
+            curve: Curves.ease,
+            speed: const Duration(milliseconds: 100),
+          ),
+          TyperAnimatedText(
+            'discover Now',
+            curve: Curves.ease,
+            speed: const Duration(milliseconds: 100),
+          ),
+        ],
       ),
     );
   }
