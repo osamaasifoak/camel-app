@@ -17,25 +17,18 @@ final _defaultEShowListTileStyle = ElevatedButton.styleFrom(
 
 class EShowListTile extends StatelessWidget {
   final EShow eShow;
-  final VoidCallback? onCardPressed;
+  final VoidCallback? onTap;
   final ButtonStyle? style;
 
   const EShowListTile({
     Key? key,
     required this.eShow,
-    required this.onCardPressed,
+    required this.onTap,
     this.style,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final errorImage = Center(
-      child: Icon(
-        Icons.error_outline,
-        size: 24,
-        color: Theme.of(context).errorColor,
-      ),
-    );
     final leadingImage = Flexible(
       flex: 0,
       child: Container(
@@ -52,9 +45,21 @@ class EShowListTile extends StatelessWidget {
                 maxHeightDiskCache: 300,
                 memCacheWidth: 200,
                 memCacheHeight: 300,
-                errorWidget: (_, __, ___) => errorImage,
+                errorWidget: (_, __, ___) => Center(
+                  child: Icon(
+                    Icons.error_outline,
+                    size: 24,
+                    color: Theme.of(context).errorColor,
+                  ),
+                ),
               )
-            : errorImage,
+            : Center(
+                child: Icon(
+                  Icons.error_outline,
+                  size: 24,
+                  color: Theme.of(context).errorColor,
+                ),
+              ),
       ),
     );
 
@@ -63,8 +68,14 @@ class EShowListTile extends StatelessWidget {
     final Text eShowTitle;
     if (eShow is Movie) {
       final movie = eShow as Movie;
+      final String movieTitleAndYear;
+      if (movie.year.isEmpty) {
+        movieTitleAndYear = movie.title;
+      } else {
+        movieTitleAndYear = '${movie.title} (${movie.year})';
+      }
       eShowTitle = Text(
-        '${movie.title} (${movie.year})',
+        movieTitleAndYear,
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
         style: const TextStyle(
@@ -129,7 +140,7 @@ class EShowListTile extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 10),
       child: ElevatedButton(
         style: cardStyle,
-        onPressed: onCardPressed,
+        onPressed: onTap,
         clipBehavior: Clip.hardEdge,
         child: Row(
           children: [
