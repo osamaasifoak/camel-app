@@ -2,27 +2,24 @@ import 'package:flutter/material.dart';
 
 import '/views/_widgets/default_shimmer.dart';
 
-final _cardShape = RoundedRectangleBorder(
-  borderRadius: BorderRadius.circular(15),
+const _cardShape = RoundedRectangleBorder(
+  borderRadius: BorderRadius.all(Radius.circular(15)),
 );
 
-final _shimmeringItemDetailDecoration = BoxDecoration(
-  color: Colors.white,
-  borderRadius: BorderRadius.circular(5),
-);
+const _itemDetaiBorderRadius = BorderRadius.all(Radius.circular(5));
 
-final _shimmeringMovieImage = Expanded(
-  flex: 2,
-  child: DefaultShimmer(
-    child: Container(
-      clipBehavior: Clip.hardEdge,
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(15),
-      ),
-    ),
-  ),
-);
+// const _noShimmerItemDetailDecoration = BoxDecoration(
+//   color: Colors.white,
+//   borderRadius: _itemDetaiBorderRadius,
+// );
+
+// const _noShimmerMovieImage = Expanded(
+//   flex: 2,
+//   child: ClipRRect(
+//     borderRadius: BorderRadius.all(Radius.circular(15)),
+//     child: NoShimmer(),
+//   ),
+// );
 
 class EShowCardLoadingIndicator extends StatelessWidget {
   final double listItemExtent;
@@ -69,7 +66,13 @@ class EShowCardLoadingIndicator extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _shimmeringMovieImage,
+          // movie image
+          const Expanded(
+            flex: 2,
+            child: NoShimmer(
+              borderRadius: BorderRadius.all(Radius.circular(15)),
+            ),
+          ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(14),
@@ -77,30 +80,24 @@ class EShowCardLoadingIndicator extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // title
-                  DefaultShimmer(
-                    child: Container(
-                      width: quarterScreenWidth * 1.5,
-                      height: 20,
-                      margin: const EdgeInsets.only(bottom: 5),
-                      decoration: _shimmeringItemDetailDecoration,
-                    ),
+                  NoShimmer(
+                    borderRadius: _itemDetaiBorderRadius,
+                    height: 20,
+                    padding: const EdgeInsets.only(bottom: 5),
+                    width: quarterScreenWidth * 1.5,
                   ),
                   // rating
-                  DefaultShimmer(
-                    child: Container(
-                      width: quarterScreenWidth * 0.85,
-                      height: 15,
-                      margin: const EdgeInsets.only(bottom: 7),
-                      decoration: _shimmeringItemDetailDecoration,
-                    ),
+                  NoShimmer(
+                    borderRadius: _itemDetaiBorderRadius,
+                    height: 15,
+                    padding: const EdgeInsets.only(bottom: 7),
+                    width: quarterScreenWidth * 0.85,
                   ),
                   // release date
-                  DefaultShimmer(
-                    child: Container(
-                      width: quarterScreenWidth,
-                      height: 15,
-                      decoration: _shimmeringItemDetailDecoration,
-                    ),
+                  NoShimmer(
+                    height: 15,
+                    borderRadius: _itemDetaiBorderRadius,
+                    width: quarterScreenWidth,
                   ),
                 ],
               ),

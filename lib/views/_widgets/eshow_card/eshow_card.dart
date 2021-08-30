@@ -28,20 +28,13 @@ class EShowCard extends StatelessWidget {
   final VoidCallback? onTap;
 
   const EShowCard({
+    Key? key,
     required this.entShow,
     required this.onTap,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final errorImage = Center(
-      child: Icon(
-        Icons.error_outline,
-        size: 24,
-        color: Theme.of(context).errorColor,
-      ),
-    );
-
     final showTitle = Text(
       entShow.title,
       maxLines: 3,
@@ -104,9 +97,21 @@ class EShowCard extends StatelessWidget {
                         maxHeightDiskCache: 600,
                         memCacheWidth: 400,
                         memCacheHeight: 600,
-                        errorWidget: (_, __, ___) => errorImage,
+                        errorWidget: (_, __, ___) => Center(
+                          child: Icon(
+                            Icons.error_outline,
+                            size: 24,
+                            color: Theme.of(context).errorColor,
+                          ),
+                        ),
                       )
-                    : errorImage,
+                    : Center(
+                        child: Icon(
+                          Icons.error_outline,
+                          size: 24,
+                          color: Theme.of(context).errorColor,
+                        ),
+                      ),
               ),
             ),
             Expanded(
