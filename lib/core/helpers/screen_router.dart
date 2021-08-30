@@ -9,7 +9,7 @@ import '/views/_widgets/circular_reveal_clipper.dart';
 const log = _dev.log;
 
 class ScreenRouter {
-  static final _instance = ScreenRouter._internal();
+  static final ScreenRouter _instance = ScreenRouter._internal();
 
   factory ScreenRouter() => _instance;
 
@@ -116,25 +116,11 @@ class ScreenRouter {
     return PageRouteBuilder(
       pageBuilder: (_, __, ___) => destPage,
       transitionsBuilder: (context, primaryAnimation, secondaryAnimation, page) {
-        if (circularAlignment != null) {
-          if (useFadeTransition) {
-            return FadeTransition(
-              opacity: primaryAnimation,
-              child: ScaleTransition(
-                alignment: circularAlignment,
-                scale: primaryAnimation.drive(_defaultTweenDouble),
-                child: ClipPath(
-                  clipper: CircularRevealClipper(
-                    centerAlignment: circularAlignment,
-                    fraction: primaryAnimation.value,
-                  ),
-                  child: page,
-                ),
-              ),
-            );
-          }
+        Widget transition;
 
-          return ScaleTransition(
+        if (circularAlignment != null) {
+
+          transition = ScaleTransition(
             alignment: circularAlignment,
             scale: primaryAnimation.drive(_defaultTweenDouble),
             child: ClipPath(
@@ -145,6 +131,14 @@ class ScreenRouter {
               child: page,
             ),
           );
+
+          if (useFadeTransition) {
+            transition = FadeTransition(
+              opacity: primaryAnimation,
+              child: transition,
+            );
+          }
+
         } else {
           final Animation<Offset> primarySlideTransitionTween = CurvedAnimation(
             parent: primaryAnimation,
@@ -152,7 +146,7 @@ class ScreenRouter {
             reverseCurve: Curves.easeInToLinear,
           ).drive(_defaultCurvedTweenOffset);
 
-          return SlideTransition(
+          transition = SlideTransition(
             position: primarySlideTransitionTween,
             child: FadeTransition(
               opacity: primaryAnimation,
@@ -160,6 +154,8 @@ class ScreenRouter {
             ),
           );
         }
+
+        return transition;
       },
       settings: settings,
     );
