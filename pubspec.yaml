@@ -20,14 +20,13 @@ dependencies:
   path: ^1.8.0
   postor: ^0.0.4
   rxdart: ^0.27.1
-  sqflite: ^2.0.0+3
+  sqflite: ^2.0.0+4
   url_launcher: ^6.0.9
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-  lint: ^1.5.3
+  lint: ^1.6.0
 
 flutter:
 
