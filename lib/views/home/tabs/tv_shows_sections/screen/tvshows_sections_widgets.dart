@@ -6,9 +6,11 @@ mixin _TVShowsSectionsWidgets on _TVShowsSectionsProps {
       bloc: _tvShowsSectionsCubit,
       builder: (_, state) {
         if (state.hasError) {
-          return ErrorScreen(
-            errorMessage: 'Failed to load TV shows sections :( Please try again',
-            onRetry: _tvShowsSectionsCubit.loadTVShowSections,
+          return Center(
+            child: ErrorScreen(
+              errorMessage: 'Failed to load TV shows sections :( Please try again',
+              onRetry: _tvShowsSectionsCubit.loadTVShowSections,
+            ),
           );
         }
         return CustomScrollView(
@@ -68,6 +70,7 @@ mixin _TVShowsSectionsWidgets on _TVShowsSectionsProps {
       child: SizedBox(
         height: 450,
         child: ListView.builder(
+          physics: const PageScrollPhysics(),
           padding: const EdgeInsets.all(8.0),
           scrollDirection: Axis.horizontal,
           itemBuilder: (_, index) {
@@ -129,6 +132,7 @@ mixin _TVShowsSectionsWidgets on _TVShowsSectionsProps {
       child: SizedBox(
         height: 450,
         child: ListView.builder(
+          physics: const PageScrollPhysics(),
           padding: const EdgeInsets.all(8.0),
           scrollDirection: Axis.horizontal,
           itemBuilder: (_, index) {

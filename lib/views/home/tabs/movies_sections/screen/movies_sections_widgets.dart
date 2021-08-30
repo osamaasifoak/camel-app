@@ -6,9 +6,11 @@ mixin _MoviesSectionsWidgets on _MoviesSectionsProps {
       bloc: _moviesSectionsCubit,
       builder: (_, state) {
         if (state.hasError) {
-          return ErrorScreen(
-            errorMessage: 'Failed to load movies sections :( Please try again',
-            onRetry: _moviesSectionsCubit.loadMoviesSections,
+          return Center(
+            child: ErrorScreen(
+              errorMessage: 'Failed to load movies sections :( Please try again',
+              onRetry: _moviesSectionsCubit.loadMoviesSections,
+            ),
           );
         }
         return CustomScrollView(
@@ -70,6 +72,7 @@ mixin _MoviesSectionsWidgets on _MoviesSectionsProps {
       child: SizedBox(
         height: 450,
         child: ListView.builder(
+          physics: const PageScrollPhysics(),
           padding: const EdgeInsets.all(8.0),
           scrollDirection: Axis.horizontal,
           itemBuilder: (_, index) {
@@ -131,6 +134,7 @@ mixin _MoviesSectionsWidgets on _MoviesSectionsProps {
       child: SizedBox(
         height: 450,
         child: ListView.builder(
+          physics: const PageScrollPhysics(),
           padding: const EdgeInsets.all(8.0),
           scrollDirection: Axis.horizontal,
           itemBuilder: (_, index) {
@@ -192,6 +196,7 @@ mixin _MoviesSectionsWidgets on _MoviesSectionsProps {
       child: SizedBox(
         height: 450,
         child: ListView.builder(
+          physics: const PageScrollPhysics(),
           padding: const EdgeInsets.all(8.0),
           scrollDirection: Axis.horizontal,
           itemBuilder: (_, index) {
