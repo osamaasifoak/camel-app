@@ -28,7 +28,18 @@ void initSingletons() {
       defaultHeaders: AppApis().defaultHeader,
     ),
   );
-  GetIt.I.registerSingleton<BaseLocalDbService>(LocalDbService());
+  GetIt.I.registerSingleton<BaseLocalDbService>(
+    LocalDbService(
+      createTablesQueries: const [
+        FavMoviesRepository.createFavMovieTableQuery,
+        FavTVShowsRepository.createFavTVShowsTableQuery,
+      ],
+      tablesNames: const [
+        FavMoviesRepository.favMoviesTableName,
+        FavTVShowsRepository.favTVShowsTableName,
+      ],
+    ),
+  );
   GetIt.I.registerLazySingleton<BaseScreenMessenger>(() => ScreenMessenger());
 
   // initialize repositories
