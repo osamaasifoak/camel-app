@@ -311,7 +311,7 @@ packages:
     source: hosted
     version: "6.0.0"
   retry:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: retry
       url: "https://pub.dartlang.org"
@@ -324,13 +324,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.27.1"
-  shimmer:
-    dependency: "direct main"
-    description:
-      name: shimmer
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.0"
   sky_engine:
     dependency: transitive
     description: flutter
