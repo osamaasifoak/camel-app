@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 
+import '/core/constants/app_error_messages.dart';
 import '/core/constants/app_routes.dart';
-import '/views/_screen_templates/tv_show/tv_show_list_screen/_tv_show_list_screen.dart';
-import 'ontheair_cubit.dart';
+import '/core/repositories/tv_show_repo/base_tv_show_repo.dart';
+import '/views/_screen_templates/eshow_list/cubit/eshow_list_cubit.dart';
+import '/views/_screen_templates/eshow_list/screen/_eshow_list_screen.dart';
 
 class OnTheAirTVShowListScreen extends StatefulWidget {
   const OnTheAirTVShowListScreen({Key? key}) : super(key: key);
@@ -21,12 +24,18 @@ class _OnTheAirTVShowListScreenState extends State<OnTheAirTVShowListScreen> {
     super.dispose();
   }
 
-  void _onTVShowTapped(BuildContext context, int tvShowId) {
-    Navigator.of(context).pushNamed(AppRoutes.getTVShowDetail(tvShowId));
+  void _onTVShowTapped(int tvShowId) {
+    Navigator.of(context).pushNamed(
+      AppRoutes.getTVShowDetail(tvShowId),
+      arguments: context,
+    );
   }
 
   bool _onBackPressed() {
-    if (_onTheAirTVShowScrollController.offset > 0.0) {
+    if (!_onTheAirTVShowScrollController.hasClients) {
+      return true;
+    }
+    if (_onTheAirTVShowScrollController.offset > 100) {
       _scrollOnTheAirTVShow();
       return false;
     }
@@ -52,11 +61,13 @@ class _OnTheAirTVShowListScreenState extends State<OnTheAirTVShowListScreen> {
           shadowColor: Colors.grey[100],
         ),
         body: BlocProvider(
-          create: (_) => OnTheAirTVShowCubit(),
-          child: TVShowListScreen<OnTheAirTVShowCubit, OnTheAirTVShowState>(
-            onTVShowTapped: _onTVShowTapped,
+          create: (_) => EShowListCubit(
+            loadEShowCallback: GetIt.I<BaseTVShowRepository>().getOnTheAir,
+            unknownErrorMessage: AppErrorMessages.onTheAirTVShowsUnknownError,
+          ),
+          child: EShowListScreen(
+            onEShowTapped: _onTVShowTapped,
             scrollController: _onTheAirTVShowScrollController,
-            closeCubitOnDispose: true,
           ),
         ),
       ),
