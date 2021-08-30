@@ -18,18 +18,22 @@ abstract class _TVShowsSectionsProps extends State<TVShowsSectionsScreen> with A
     super.dispose();
   }
 
-  void _onTVShowTapped(int tvShowId) {
+  void _onTVShowTapped(final int tvShowId) {
     Navigator.of(context).pushNamed(
       AppRoutes.getTVShowDetail(tvShowId),
+      arguments: context,
     );
   }
 
   void _goToPopularTVShowList() {
-    Navigator.of(context).pushNamed(AppRoutes.popularTVShowList);
+    Navigator.of(context).pushNamed(
+      AppRoutes.popularTVShowList,
+    );
   }
 
   void _goToOnTheAirTVShowList() {
-    Navigator.of(context).pushNamed(AppRoutes.onTheAirTVShowList);
+    Navigator.of(context).pushNamed(
+      AppRoutes.onTheAirTVShowList,
+    );
   }
-
 }

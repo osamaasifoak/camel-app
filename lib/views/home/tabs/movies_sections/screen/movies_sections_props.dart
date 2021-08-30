@@ -18,21 +18,28 @@ abstract class _MoviesSectionsProps extends State<MoviesSectionsScreen> with Aut
     super.dispose();
   }
 
-  void _onMovieTapped(int movieId) {
+  void _onMovieTapped(final int movieId) {
     Navigator.of(context).pushNamed(
       AppRoutes.getMovieDetail(movieId),
+      arguments: context,
     );
   }
 
   void _goToPopularMovieList() {
-    Navigator.of(context).pushNamed(AppRoutes.popularMovieList);
+    Navigator.of(context).pushNamed(
+      AppRoutes.popularMovieList,
+    );
   }
 
   void _goToNowPlayingMovieList() {
-    Navigator.of(context).pushNamed(AppRoutes.nowPlayingMovieList);
+    Navigator.of(context).pushNamed(
+      AppRoutes.nowPlayingMovieList,
+    );
   }
 
   void _goToUpcomingMovieList() {
-    Navigator.of(context).pushNamed(AppRoutes.upcomingMovieList);
+    Navigator.of(context).pushNamed(
+      AppRoutes.upcomingMovieList,
+    );
   }
 }
