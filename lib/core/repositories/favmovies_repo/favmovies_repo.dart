@@ -1,14 +1,12 @@
-import 'dart:async';
-
 import 'package:get_it/get_it.dart';
-import 'package:rxdart/rxdart.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:rxdart/rxdart.dart' show BehaviorSubject;
+import 'package:sqflite/sqflite.dart' show Sqflite, ConflictAlgorithm;
 
+import '../base_fav_eshows_repo.dart';
 import '/core/models/fav_entertainment_show/fav_entertainment_show.dart';
 import '/core/services/localdb_service/base_localdb_service.dart';
-import 'base_favmovies_repo.dart';
 
-class FavMoviesRepository implements BaseFavMoviesRepository {
+class FavMoviesRepository implements BaseFavEShowsRepository {
 
   static const String favMoviesTableName = 'fav_movie';
   static const String createFavMovieTableQuery = 
@@ -65,7 +63,7 @@ class FavMoviesRepository implements BaseFavMoviesRepository {
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
 
-    refreshFavMoviesCount();
+    refreshFavCount();
   }
 
   @override
@@ -77,7 +75,7 @@ class FavMoviesRepository implements BaseFavMoviesRepository {
       whereArgs: [id],
     );
 
-    refreshFavMoviesCount();
+    refreshFavCount();
   }
 
   @override
@@ -95,7 +93,7 @@ class FavMoviesRepository implements BaseFavMoviesRepository {
   }
 
   @override
-  void refreshFavMoviesCount() {
+  void refreshFavCount() {
     getFavCount().then(favCountController.add);
   }
 }

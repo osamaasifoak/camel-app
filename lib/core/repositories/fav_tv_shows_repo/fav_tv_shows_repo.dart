@@ -2,14 +2,13 @@ import 'package:get_it/get_it.dart';
 import 'package:rxdart/rxdart.dart' show BehaviorSubject;
 import 'package:sqflite/sqflite.dart' show Sqflite, ConflictAlgorithm;
 
+import '../base_fav_eshows_repo.dart';
 import '/core/models/fav_entertainment_show/fav_entertainment_show.dart';
-import '/core/repositories/fav_tv_shows_repo/base_fav_tv_shows_repo.dart';
 import '/core/services/localdb_service/base_localdb_service.dart';
 
-class FavTVShowsRepository implements BaseFavTVShowsRepository {
+class FavTVShowsRepository implements BaseFavEShowsRepository {
 
   static const String favTVShowsTableName = 'fav_tv';
-
   static const String createFavTVShowsTableQuery = 
     'CREATE TABLE $favTVShowsTableName '
     '(id INTEGER PRIMARY KEY, '
@@ -17,30 +16,30 @@ class FavTVShowsRepository implements BaseFavTVShowsRepository {
 
   FavTVShowsRepository({
     BaseLocalDbService? localDbService,
-    BehaviorSubject<int>? favTVCountController,
+    BehaviorSubject<int>? favCountController,
   })  : _localDbService = localDbService ?? GetIt.I<BaseLocalDbService>(),
-        favTVCountController = favTVCountController ?? BehaviorSubject<int>();
+        favCountController = favCountController ?? BehaviorSubject<int>();
 
   final BaseLocalDbService _localDbService;
 
   @override
-  final BehaviorSubject<int> favTVCountController;
+  final BehaviorSubject<int> favCountController;
   @override
-  Future<void> close() => favTVCountController.close();
+  Future<void> close() => favCountController.close();
 
   @override
-  Future<void> deleteFavTV(int id) async {
+  Future<void> deleteFav(int id) async {
     await _localDbService.delete(
       table: favTVShowsTableName,
       where: 'id = ?',
       whereArgs: [id],
     );
 
-    refreshFavTVShowsCount();
+    refreshFavCount();
   }
 
   @override
-  Future<int> getFavTVCount() async {
+  Future<int> getFavCount() async {
     final favTVCount = await _localDbService.select(
       table: favTVShowsTableName,
       columns: ['COUNT(*)'],
@@ -49,7 +48,7 @@ class FavTVShowsRepository implements BaseFavTVShowsRepository {
   }
 
   @override
-  Future<List<int>> getFavTVList({
+  Future<List<int>> getFavList({
     int page = 0,
     int perPage = 10,
   }) async {
@@ -66,18 +65,18 @@ class FavTVShowsRepository implements BaseFavTVShowsRepository {
   }
 
   @override
-  Future<void> insertFavTV(FavEShow favEShow) async {
+  Future<void> insertFav(FavEShow favEShow) async {
     await _localDbService.insert(
       table: favTVShowsTableName,
       values: favEShow.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
 
-    refreshFavTVShowsCount();
+    refreshFavCount();
   }
 
   @override
-  Future<bool> isFavTV(int id) async {
+  Future<bool> isFav(int id) async {
     final List<Map<String, Object?>> findFav = await _localDbService.select(
       table: favTVShowsTableName,
       where: 'id = ?',
@@ -90,7 +89,7 @@ class FavTVShowsRepository implements BaseFavTVShowsRepository {
   }
 
   @override
-  void refreshFavTVShowsCount() {
-    getFavTVCount().then(favTVCountController.add);
+  void refreshFavCount() {
+    getFavCount().then(favCountController.add);
   }
 }
