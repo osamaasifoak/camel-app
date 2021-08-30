@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:shimmer/shimmer.dart';
 
 @Deprecated('Use [NoShimmer] instead')
 class DefaultShimmer extends StatelessWidget {
@@ -14,12 +13,7 @@ class DefaultShimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Shimmer.fromColors(
-      period: const Duration(milliseconds: 1000),
-      baseColor: const Color(0xFFEEEEEE), // Colors.grey[200]
-      highlightColor: const Color(0xFFF5F5F5), // Colors.grey[100]
-      child: child,
-    );
+    throw UnimplementedError();
   }
 }
 
