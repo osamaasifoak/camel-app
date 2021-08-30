@@ -1,5 +1,5 @@
 import 'dart:async' show TimeoutException;
-import 'dart:developer' as dev show log;
+import 'dart:developer' as _dev show log;
 import 'dart:io' show SocketException;
 
 import 'package:flutter/foundation.dart' as foundation show kDebugMode;
@@ -8,11 +8,13 @@ import 'package:postor/postor.dart' show CancelledRequestException, PException;
 
 import 'core/constants/app_error_messages.dart';
 
+const log = _dev.log;
+
 void initErrorMessageHandlers() {
   return eh.initErrorMessages((error, stackTrace, otherErrorMessage) {
     if (foundation.kDebugMode) {
-      dev.log(
-        '[ErrorHandler] caught an error:\n\n$error\n\ncaused by the following:',
+      log(
+        '[ErrorHandler] caught an error:\n$error\ncaused by the following:',
         stackTrace: stackTrace,
       );
     }
@@ -25,7 +27,7 @@ void initErrorMessageHandlers() {
         return AppErrorMessages.cancelledRequestError;
       } else {
         if (foundation.kDebugMode) {
-          dev.log('[${error.runtimeType}] Response body: \n${error.message}');
+          log('[${error.runtimeType}] Response body: \n${error.message}');
         }
         return error.message ?? AppErrorMessages.unknownRequestError;
       }
