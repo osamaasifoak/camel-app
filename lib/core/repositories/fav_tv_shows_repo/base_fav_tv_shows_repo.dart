@@ -1,6 +1,7 @@
 import 'package:rxdart/rxdart.dart' show BehaviorSubject;
 import '/core/models/fav_entertainment_show/fav_entertainment_show.dart';
 
+@Deprecated('BaseFavTVShowsRepository is now merged into BaseFavEShowsRepository, use it instead')
 abstract class BaseFavTVShowsRepository {
   BehaviorSubject<int> get favTVCountController;
   void refreshFavTVShowsCount();

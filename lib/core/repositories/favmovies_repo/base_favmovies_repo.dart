@@ -1,9 +1,7 @@
-import 'dart:async';
-
 import 'package:rxdart/rxdart.dart' show BehaviorSubject;
-
 import '/core/models/fav_entertainment_show/fav_entertainment_show.dart';
 
+@Deprecated('BaseFavMoviesRepository is now merged into BaseFavEShowsRepository, use it instead')
 abstract class BaseFavMoviesRepository {
   BehaviorSubject<int> get favCountController;
   void refreshFavMoviesCount();
