@@ -1,14 +1,15 @@
 name: camelmovies
-description: caMel, your favourite app to discover millions of movies.
+description: caMel, your favourite app to discover millions of movies & tv shows.
 
 publish_to: 'none'
 
-version: 1.1.0+6
+version: 1.2.0
 
 environment:
   sdk: '>=2.13.4 <3.0.0'
 
 dependencies:
+  animated_text_kit: ^4.2.1
   cached_network_image: ^3.1.0
   equatable: ^2.0.3
   flutter:
@@ -17,7 +18,7 @@ dependencies:
   get_it: ^7.2.0
   intl: ^0.17.0
   path: ^1.8.0
-  postor: ^0.0.3+0
+  postor: ^0.0.4
   retry: ^3.1.0
   rxdart: ^0.27.1
   shimmer: ^2.0.0
