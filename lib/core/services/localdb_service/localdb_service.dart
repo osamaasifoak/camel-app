@@ -10,41 +10,26 @@ import '/core/services/localdb_service/base_localdb_service.dart';
 const String _dbFileName = 'user_prefs.db';
 
 class LocalDbService implements BaseLocalDbService {
-  @override
-  final String movieFavsTable = 'fav_movie';
 
-  @override
-  final String tvFavsTable = 'fav_tv';
-
-  late final String _createFavMovieTable = 
-    'CREATE TABLE $movieFavsTable '
-    '(id INTEGER PRIMARY KEY, '
-    'added_on INTEGER)';
-
-  late final String _createFavTVTable = 
-    'CREATE TABLE $tvFavsTable '
-    '(id INTEGER PRIMARY KEY, '
-    'added_on INTEGER)';
-
-  late final List<String> _createAllTables = [
-    _createFavMovieTable,
-    _createFavTVTable,
-  ];
-
-  late final List<String> _tablesToBeCleared = [
-    movieFavsTable,
-    tvFavsTable,
-  ];
-
-  final _database = Completer<Database>();
-
-  LocalDbService({Database? database}) {
+  LocalDbService({
+    required List<String> createTablesQueries,
+    required List<String> tablesNames,
+    Database? database,
+  }) :  _createTablesQueries = createTablesQueries,
+        _tablesNames = tablesNames {
     _initDb(database: database);
   }
+
+  final Completer<Database> _database = Completer<Database>();
+
+  final List<String> _createTablesQueries;
+
+  final List<String> _tablesNames;
 
   Future<void> _initDb({Database? database}) async {
     if (database != null) {
       _database.complete(database);
+      return;
     }
     try {
       final dbPath = path.join(
@@ -72,7 +57,7 @@ class LocalDbService implements BaseLocalDbService {
 
   Future<void> _createTables(Database db, int version) async {
     final batch = db.batch();
-    _createAllTables.forEach(batch.execute);
+    _createTablesQueries.forEach(batch.execute);
     await batch.commit(noResult: true);
   }
 
@@ -107,7 +92,7 @@ class LocalDbService implements BaseLocalDbService {
   @override
   Future<void> clearDb() async {
     final batch = (await _database.future).batch();
-    _tablesToBeCleared.forEach(batch.delete);
+    _tablesNames.forEach(batch.delete);
     await batch.commit(noResult: true);
   }
 

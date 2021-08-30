@@ -3,9 +3,6 @@ import 'package:sqflite/sqflite.dart';
 
 abstract class BaseLocalDbService {
 
-  String get movieFavsTable;
-  String get tvFavsTable;
-
   Future<void> clearDb();
   Future<void> closeDb();
 
