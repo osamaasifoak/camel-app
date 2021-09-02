@@ -23,20 +23,22 @@ final _starIcon = Icon(
 
 final _dateFormatter = DateFormat('MMM dd, yyyy');
 
-class EShowCard extends StatelessWidget {
-  final EShow entShow;
-  final VoidCallback? onTap;
+typedef EShowCardCallback = void Function(EShow eShow);
 
+class EShowCard extends StatelessWidget {
   const EShowCard({
     Key? key,
-    required this.entShow,
+    required this.eShow,
     required this.onTap,
   }) : super(key: key);
+
+  final EShow eShow;
+  final EShowCardCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final showTitle = Text(
-      entShow.title,
+      eShow.title,
       maxLines: 3,
       overflow: TextOverflow.ellipsis,
       style: const TextStyle(
@@ -46,11 +48,11 @@ class EShowCard extends StatelessWidget {
     );
 
     final showRating = Text(
-      entShow.rating.toStringAsFixed(1),
+      eShow.rating.toStringAsFixed(1),
     );
 
     final movieReleaseDate = Text(
-      _dateFormatter.format(DateTime.parse(entShow.releaseDate)),
+      _dateFormatter.format(DateTime.parse(eShow.releaseDate)),
       style: const TextStyle(
         color: Colors.black54,
       ),
@@ -74,7 +76,7 @@ class EShowCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ElevatedButton(
-        onPressed: onTap,
+        onPressed: onTap != null ? () => onTap!(eShow) : null,
         style: _cardStyle,
         clipBehavior: Clip.hardEdge,
         child: Column(
@@ -87,11 +89,11 @@ class EShowCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(15),
                   color: Colors.grey[200],
                 ),
-                child: entShow.imgUrlPoster != null
+                child: eShow.imgUrlPoster != null
                     ? CachedNetworkImage(
-                        cacheKey: entShow.id.toString(),
+                        cacheKey: eShow.id.toString(),
                         fit: BoxFit.cover,
-                        imageUrl: entShow.imgUrlPosterThumb!,
+                        imageUrl: eShow.imgUrlPosterThumb!,
                         fadeOutDuration: const Duration(milliseconds: 500),
                         maxWidthDiskCache: 400,
                         maxHeightDiskCache: 600,
