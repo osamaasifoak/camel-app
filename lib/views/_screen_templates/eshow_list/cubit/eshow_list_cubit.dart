@@ -3,21 +3,23 @@ import 'package:postor/error_handler.dart' as eh show catchIt;
 
 import '/core/enums/state_status.dart';
 import '/core/models/entertainment_show/entertainment_show.dart';
+import '/core/repositories/base_eshows_repo.dart';
 import '/views/_screen_templates/base_bloc_state.dart';
 
 part 'eshow_list_state.dart';
 
-typedef LoadEShowCallback = Future<List<EShow>> Function({int page});
-
 class EShowListCubit extends Cubit<EShowListState> {
   EShowListCubit({
-    required LoadEShowCallback loadEShowCallback,
+    required String category,
+    required BaseEShowsRepository eShowsRepo,
     required String unknownErrorMessage,
-  })  : _loadEShowCallback = loadEShowCallback,
+  })  : _category = category,
+        _eShowsRepo = eShowsRepo,
         _unknownErrorMessage = unknownErrorMessage,
         super(EShowListState.init());
 
-  final LoadEShowCallback _loadEShowCallback;
+  final String _category;
+  final BaseEShowsRepository _eShowsRepo;
   final String _unknownErrorMessage;
 
   Future<void> loadEShows({bool more = false}) async {
@@ -30,7 +32,10 @@ class EShowListCubit extends Cubit<EShowListState> {
 
     try {
       final int nextPage = more ? state.currentPage + 1 : 1;
-      final List<EShow> eShows = await _loadEShowCallback(page: nextPage);
+      final List<EShow> eShows = await _eShowsRepo.fetch(
+        category: _category,
+        page: nextPage,
+      );
 
       if (eShows.isEmpty) {
         emit(state.update(
