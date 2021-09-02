@@ -1,10 +1,10 @@
-import 'package:camelmovies/views/_widgets/default_refresh_indicator_builder.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../default_refresh_indicator_builder.dart';
+import '../eshow_list_tile/eshow_list_loading_indicator.dart';
+import '../eshow_list_tile/eshow_list_tile.dart';
 import '/core/models/entertainment_show/entertainment_show.dart';
-import 'eshow_list_tile/eshow_list_loading_indicator.dart';
-import 'eshow_list_tile/eshow_list_tile.dart';
 
 final _eShowCardStyle = ElevatedButton.styleFrom(
   shadowColor: Colors.grey[50]?.withOpacity(0.3),
