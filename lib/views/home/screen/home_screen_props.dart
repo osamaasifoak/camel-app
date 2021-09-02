@@ -3,23 +3,17 @@ part of '_home_screen.dart';
 abstract class _HomeScreenProps extends State<HomeScreen> {
   final _bottomNavSelectedIndex = ValueNotifier(0);
 
-  final _favMoviesRepo = GetIt.I<BaseFavMoviesRepository>();
-  final _favTVShowsRepo = GetIt.I<BaseFavTVShowsRepository>();
+  final _favMoviesRepo = GetIt.I<BaseFavEShowsRepository>(instanceName: SIName.repo.favMovies);
+  final _favTVShowsRepo = GetIt.I<BaseFavEShowsRepository>(instanceName: SIName.repo.favTVShows);
 
   final _pageController = PageController();
-
-  @override
-  void initState() {
-    super.initState();
-    _favMoviesRepo.refreshFavMoviesCount();
-    _favTVShowsRepo.refreshFavTVShowsCount();
-  }
 
   @override
   void dispose() {
     _bottomNavSelectedIndex.dispose();
     _pageController.dispose();
     _favMoviesRepo.close();
+    _favTVShowsRepo.close();
 
     GetIt.I<Postor>().cancelAll();
     GetIt.I<BaseLocalDbService>().closeDb();

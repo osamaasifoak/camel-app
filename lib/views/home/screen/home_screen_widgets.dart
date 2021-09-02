@@ -57,7 +57,7 @@ mixin _HomeScreenWidgets on _HomeScreenProps {
 
   late final Widget favTVShowsIconButton = FavCountIcon(
     key: const ValueKey(1),
-    countStream: _favTVShowsRepo.favTVCountController.stream,
+    countStream: _favTVShowsRepo.favCountController.stream,
     onTap: _loadFavorites,
   );
 }

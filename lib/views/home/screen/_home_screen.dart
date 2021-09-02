@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:postor/postor.dart';
 
+import '../tabs/movies_sections_screen.dart';
+import '../tabs/profile_screen.dart';
+import '../tabs/tvshows_sections_screen.dart';
 import '/core/constants/app_routes.dart';
-import '/core/repositories/fav_tv_shows_repo/base_fav_tv_shows_repo.dart';
-import '/core/repositories/favmovies_repo/base_favmovies_repo.dart';
+import '/core/constants/singletons_names.dart';
+import '/core/repositories/base_fav_eshows_repo.dart';
 import '/core/services/localdb_service/base_localdb_service.dart';
 import '/views/_widgets/fav_count_icon.dart';
-import '/views/home/tabs/movies_sections/screen/_movies_sections_screen.dart';
-import '/views/home/tabs/profile/profile_screen.dart';
-import '/views/home/tabs/tv_shows_sections/screen/_tvshows_sections_screen.dart';
 
 part 'home_screen_props.dart';
 part 'home_screen_widgets.dart';
