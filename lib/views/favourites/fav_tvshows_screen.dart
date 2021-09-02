@@ -4,8 +4,8 @@ import 'package:get_it/get_it.dart';
 
 import '/core/constants/app_error_messages.dart';
 import '/core/constants/app_routes.dart';
-import '/core/repositories/fav_tv_shows_repo/base_fav_tv_shows_repo.dart';
-import '/core/repositories/tv_show_repo/base_tv_show_repo.dart';
+import '/core/repositories/base_eshows_repo.dart';
+import '/core/repositories/base_fav_eshows_repo.dart';
 import '/views/_screen_templates/fav_eshow_list/cubit/fav_eshow_list_cubit.dart';
 import '/views/_screen_templates/fav_eshow_list/screen/_fav_eshow_list_screen.dart';
 
@@ -23,8 +23,8 @@ class FavTVShowsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => FavEShowListCubit(
-        loadFavEShowIDsListCallback: GetIt.I<BaseFavTVShowsRepository>().getFavTVList,
-        loadEShowListByIDsCallback: GetIt.I<BaseTVShowRepository>().getTVShowListById,
+        eShowsRepo: GetIt.I<BaseEShowsRepository>(instanceName: 'tvshows'),
+        favEShowRepo: GetIt.I<BaseFavEShowsRepository>(instanceName: 'fav-tvshows'),
         unknownErrorMessage: AppErrorMessages.favTVShowsUnknownError,
       ),
       child: FavEShowListScreen(
