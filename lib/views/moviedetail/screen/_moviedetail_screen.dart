@@ -12,6 +12,7 @@ import '/views/moviedetail/cubit/moviedetail_cubit.dart';
 part 'moviedetail_screen_props.dart';
 part 'moviedetail_screen_widgets.dart';
 
+// TODO: Merge this into one single reusable Widget
 class MovieDetailScreen extends StatefulWidget {
   final int movieId;
   const MovieDetailScreen({

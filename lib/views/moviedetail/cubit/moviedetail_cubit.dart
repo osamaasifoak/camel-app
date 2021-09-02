@@ -5,23 +5,25 @@ import 'package:equatable/equatable.dart';
 import 'package:get_it/get_it.dart';
 import 'package:postor/error_handler.dart' as eh show catchIt;
 
+import '/core/constants/singletons_names.dart';
 import '/core/models/fav_entertainment_show/fav_entertainment_show.dart';
 import '/core/models/movie/movie_detail.dart';
 import '/core/models/movie/movie_review.dart';
-import '/core/repositories/favmovies_repo/base_favmovies_repo.dart';
-import '/core/repositories/movies_repo/base_movies_repo.dart';
+import '/core/repositories/base_eshows_repo.dart';
+import '/core/repositories/base_fav_eshows_repo.dart';
 
 part 'moviedetail_state.dart';
 
+// TODO: Merge this into one single reusable Cubit
 class MovieDetailCubit extends Cubit<MovieDetailState> {
-  final BaseMoviesRepository _moviesRepo;
-  final BaseFavMoviesRepository _favMoviesRepo;
+  final BaseEShowsRepository _moviesRepo;
+  final BaseFavEShowsRepository _favMoviesRepo;
 
   MovieDetailCubit({
-    BaseMoviesRepository? moviesRepo,
-    BaseFavMoviesRepository? favMoviesRepo,
-  })  : _moviesRepo = moviesRepo ?? GetIt.I<BaseMoviesRepository>(),
-        _favMoviesRepo = favMoviesRepo ?? GetIt.I<BaseFavMoviesRepository>(),
+    BaseEShowsRepository? moviesRepo,
+    BaseFavEShowsRepository? favMoviesRepo,
+  })  : _moviesRepo = moviesRepo ?? GetIt.I<BaseEShowsRepository>(instanceName: SIName.repo.movies),
+        _favMoviesRepo = favMoviesRepo ?? GetIt.I<BaseFavEShowsRepository>(instanceName: SIName.repo.favMovies),
         super(const MovieDetailLoading());
 
   Future<void> loadMovieDetail({
@@ -29,9 +31,9 @@ class MovieDetailCubit extends Cubit<MovieDetailState> {
     required FutureOr<void> Function() onFail,
   }) async {
     try {
-      final movieDetail = await _moviesRepo.getMovieDetail(movieId);
-      final movieReviews = await _moviesRepo.getMovieReviews(movieId: movieId);
-      final isFav = await _favMoviesRepo.isFav(movieDetail.id);
+      final MovieDetail movieDetail = await _moviesRepo.getDetails(id: movieId) as MovieDetail;
+      final List<MovieReview> movieReviews = await _moviesRepo.getReviews(id: movieId) as List<MovieReview>;
+      final bool isFav = await _favMoviesRepo.isFav(movieDetail.id);
 
       emit(
         MovieDetailLoaded(
