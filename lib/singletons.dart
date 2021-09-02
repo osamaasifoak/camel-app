@@ -2,6 +2,8 @@ import 'package:get_it/get_it.dart';
 import 'package:postor/postor.dart';
 
 import 'core/constants/app_apis.dart';
+import 'core/constants/singletons_names.dart';
+
 import 'core/repositories/base_eshows_repo.dart';
 import 'core/repositories/base_fav_eshows_repo.dart';
 
@@ -43,19 +45,19 @@ void initSingletons() {
   // initialize repositories
   GetIt.I.registerSingleton<BaseEShowsRepository>(
     MoviesRepository(),
-    instanceName: 'movies',
+    instanceName: SIName.repo.movies,
   );
   GetIt.I.registerSingleton<BaseEShowsRepository>(
     TVShowRepository(),
-    instanceName: 'tvshows',
+    instanceName: SIName.repo.tvShows,
   );
 
   GetIt.I.registerSingleton<BaseFavEShowsRepository>(
     FavMoviesRepository(),
-    instanceName: 'fav-movies',
+    instanceName: SIName.repo.favMovies,
   );
   GetIt.I.registerSingleton<BaseFavEShowsRepository>(
     FavTVShowsRepository(),
-    instanceName: 'fav-tvshows',
+    instanceName: SIName.repo.favTVShows,
   );
 }
