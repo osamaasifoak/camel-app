@@ -74,15 +74,15 @@ class ScreenRouter {
       } else if (routePath == AppRoutes.home) {
         destPage = const HomeScreen();
       } else if (routePath == AppRoutes.nowPlayingMovieList) {
-        destPage = const NowPlayingListScreen();
+        destPage = const NowPlayingMoviesListScreen();
       } else if (routePath == AppRoutes.popularMovieList) {
-        destPage = const PopularListScreen();
+        destPage = const PopularMoviesListScreen();
       } else if (routePath == AppRoutes.upcomingMovieList) {
-        destPage = const UpcomingListScreen();
+        destPage = const UpcomingMoviesListScreen();
       } else if (routePath == AppRoutes.popularTVShowList) {
-        destPage = const PopularTVShowListScreen();
+        destPage = const PopularTVShowsListScreen();
       } else if (routePath == AppRoutes.onTheAirTVShowList) {
-        destPage = const OnTheAirTVShowListScreen();
+        destPage = const OnTheAirTVShowsListScreen();
       } else if (routePath == AppRoutes.movieDetail) {
         final movieId = int.tryParse(routeUri.queryParameters['id'] ?? '-');
         if (movieId is int) {
