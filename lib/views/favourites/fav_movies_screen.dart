@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 
 import '/core/constants/app_error_messages.dart';
 import '/core/constants/app_routes.dart';
+import '/core/constants/singletons_names.dart';
 import '/core/repositories/base_eshows_repo.dart';
 import '/core/repositories/base_fav_eshows_repo.dart';
 import '/views/_screen_templates/fav_eshow_list/cubit/fav_eshow_list_cubit.dart';
@@ -23,8 +24,8 @@ class FavMoviesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => FavEShowListCubit(
-        eShowsRepo: GetIt.I<BaseEShowsRepository>(instanceName: 'movies'),
-        favEShowRepo: GetIt.I<BaseFavEShowsRepository>(instanceName: 'fav-movies'),
+        eShowsRepo: GetIt.I<BaseEShowsRepository>(instanceName: SIName.repo.movies),
+        favEShowRepo: GetIt.I<BaseFavEShowsRepository>(instanceName: SIName.repo.favMovies),
         unknownErrorMessage: AppErrorMessages.favMoviesUnknownError,
       ),
       child: FavEShowListScreen(
