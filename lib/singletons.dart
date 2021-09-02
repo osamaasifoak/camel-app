@@ -2,14 +2,14 @@ import 'package:get_it/get_it.dart';
 import 'package:postor/postor.dart';
 
 import 'core/constants/app_apis.dart';
+import 'core/repositories/base_eshows_repo.dart';
 import 'core/repositories/base_fav_eshows_repo.dart';
+
 import 'core/repositories/fav_tv_shows_repo/fav_tv_shows_repo.dart';
 import 'core/repositories/favmovies_repo/favmovies_repo.dart';
 
-import 'core/repositories/movies_repo/base_movies_repo.dart';
 import 'core/repositories/movies_repo/movies_repo.dart';
 
-import 'core/repositories/tv_show_repo/base_tv_show_repo.dart';
 import 'core/repositories/tv_show_repo/tv_show_repo.dart';
 
 import 'core/services/localdb_service/base_localdb_service.dart';
@@ -41,8 +41,14 @@ void initSingletons() {
   GetIt.I.registerLazySingleton<BaseScreenMessenger>(() => ScreenMessenger());
 
   // initialize repositories
-  GetIt.I.registerSingleton<BaseMoviesRepository>(MoviesRepository());
-  GetIt.I.registerSingleton<BaseTVShowRepository>(TVShowRepository());
+  GetIt.I.registerSingleton<BaseEShowsRepository>(
+    MoviesRepository(),
+    instanceName: 'movies',
+  );
+  GetIt.I.registerSingleton<BaseEShowsRepository>(
+    TVShowRepository(),
+    instanceName: 'tvshows',
+  );
 
   GetIt.I.registerSingleton<BaseFavEShowsRepository>(
     FavMoviesRepository(),
