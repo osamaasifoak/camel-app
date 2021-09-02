@@ -7,18 +7,19 @@ import '/core/models/fav_entertainment_show/fav_entertainment_show.dart';
 import '/core/services/localdb_service/base_localdb_service.dart';
 
 class FavTVShowsRepository implements BaseFavEShowsRepository {
-
   static const String favTVShowsTableName = 'fav_tv';
   static const String createFavTVShowsTableQuery = 
-    'CREATE TABLE $favTVShowsTableName '
-    '(id INTEGER PRIMARY KEY, '
-    'added_on INTEGER)';
+      'CREATE TABLE $favTVShowsTableName '
+      '(id INTEGER PRIMARY KEY, '
+      'added_on INTEGER)';
 
   FavTVShowsRepository({
     BaseLocalDbService? localDbService,
     BehaviorSubject<int>? favCountController,
   })  : _localDbService = localDbService ?? GetIt.I<BaseLocalDbService>(),
-        favCountController = favCountController ?? BehaviorSubject<int>();
+        favCountController = favCountController ?? BehaviorSubject<int>() {
+    refreshFavCount();
+  }
 
   final BaseLocalDbService _localDbService;
 

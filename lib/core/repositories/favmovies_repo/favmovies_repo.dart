@@ -7,18 +7,19 @@ import '/core/models/fav_entertainment_show/fav_entertainment_show.dart';
 import '/core/services/localdb_service/base_localdb_service.dart';
 
 class FavMoviesRepository implements BaseFavEShowsRepository {
-
   static const String favMoviesTableName = 'fav_movie';
   static const String createFavMovieTableQuery = 
-    'CREATE TABLE $favMoviesTableName '
-    '(id INTEGER PRIMARY KEY, '
-    'added_on INTEGER)';
+      'CREATE TABLE $favMoviesTableName '
+      '(id INTEGER PRIMARY KEY, '
+      'added_on INTEGER)';
 
   FavMoviesRepository({
     BaseLocalDbService? localDbService,
     BehaviorSubject<int>? favCountController,
   })  : _localDbService = localDbService ?? GetIt.I<BaseLocalDbService>(),
-        favCountController = favCountController ?? BehaviorSubject<int>();
+        favCountController = favCountController ?? BehaviorSubject<int>() {
+    refreshFavCount();
+  }
 
   final BaseLocalDbService _localDbService;
 
@@ -56,7 +57,6 @@ class FavMoviesRepository implements BaseFavEShowsRepository {
 
   @override
   Future<void> insertFav(FavEShow favEShow) async {
-
     await _localDbService.insert(
       table: favMoviesTableName,
       values: favEShow.toMap(),
@@ -68,7 +68,6 @@ class FavMoviesRepository implements BaseFavEShowsRepository {
 
   @override
   Future<void> deleteFav(int id) async {
-
     await _localDbService.delete(
       table: favMoviesTableName,
       where: 'id = ?',
@@ -80,7 +79,6 @@ class FavMoviesRepository implements BaseFavEShowsRepository {
 
   @override
   Future<bool> isFav(int id) async {
-
     final List<Map<String, Object?>> findFav = await _localDbService.select(
       table: favMoviesTableName,
       where: 'id = ?',
