@@ -1,15 +1,15 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:get_it/get_it.dart';
-import 'package:postor/postor.dart' show CancelledRequestException;
 import 'package:postor/error_handler.dart' as eh show catchIt;
+import 'package:postor/postor.dart' show CancelledRequestException;
 import 'package:rxdart/streams.dart' show MergeExtension;
 import 'package:rxdart/transformers.dart' show DebounceExtensions, SwitchMapExtension;
 
+import '/core/constants/singletons_names.dart';
 import '/core/enums/state_status.dart';
 import '/core/models/entertainment_show/entertainment_show.dart';
-import '/core/repositories/movies_repo/base_movies_repo.dart';
-import '/core/repositories/tv_show_repo/base_tv_show_repo.dart';
+import '/core/repositories/base_eshows_repo.dart';
 
 part 'search_eshow_event.dart';
 part 'search_eshow_state.dart';
@@ -20,15 +20,7 @@ typedef SearchTransition = Stream<Transition<SearchEShowEvent, SearchEShowState>
 typedef SearchTransitionFn = TransitionFunction<SearchEShowEvent, SearchEShowState>;
 
 class SearchEShowBloc extends Bloc<SearchEShowEvent, SearchEShowState> {
-  SearchEShowBloc({
-    BaseMoviesRepository? moviesRepo,
-    BaseTVShowRepository? tvShowRepo,
-  })  : _moviesRepo = moviesRepo ?? GetIt.I<BaseMoviesRepository>(),
-        _tvShowRepo = tvShowRepo ?? GetIt.I<BaseTVShowRepository>(),
-        super(SearchEShowState.init());
-
-  final BaseMoviesRepository _moviesRepo;
-  final BaseTVShowRepository _tvShowRepo;
+  SearchEShowBloc() : super(SearchEShowState.init());
 
   @override
   SearchTransition transformEvents(
@@ -66,25 +58,19 @@ class SearchEShowBloc extends Bloc<SearchEShowEvent, SearchEShowState> {
 
   void _cancelLastSearchIfBusy() {
     if (state.isBusy) {
-      if (state.currentSelectedEShow == EShowType.movie) {
-        _moviesRepo.cancelLastMovieSearch();
-      } else {
-        _tvShowRepo.cancelLastTVShowSearch();
-      }
+      GetIt.I<BaseEShowsRepository>(
+        instanceName: state.currentSelectedEShow._singletonInstanceName,
+      ).cancelLastSearch();
     }
   }
 
-  Future<List<EShow>> _loadEShowList({int? page}) async {
+  Future<List<EShow>> _loadEShowList({int? page}) {
     if (state.searchKeyword.isEmpty) {
-      return const <EShow>[];
+      return Future<List<EShow>>.value(const <EShow>[]);
     }
-    if (state.currentSelectedEShow == EShowType.movie) {
-      return _moviesRepo.searchMovie(
-        keyword: state.searchKeyword,
-        page: page ?? state.page,
-      );
-    }
-    return _tvShowRepo.searchTVShow(
+    return GetIt.I<BaseEShowsRepository>(
+      instanceName: state.currentSelectedEShow._singletonInstanceName,
+    ).search(
       keyword: state.searchKeyword,
       page: page ?? state.page,
     );
@@ -187,8 +173,12 @@ class SearchEShowBloc extends Bloc<SearchEShowEvent, SearchEShowState> {
 
   @override
   Future<void> close() {
-    _moviesRepo.cancelLastMovieSearch();
-    _tvShowRepo.cancelLastTVShowSearch();
+    GetIt.I<BaseEShowsRepository>(
+      instanceName: SIName.repo.movies,
+    ).cancelLastSearch();
+    GetIt.I<BaseEShowsRepository>(
+      instanceName: SIName.repo.tvShows,
+    ).cancelLastSearch();
     return super.close();
   }
 }

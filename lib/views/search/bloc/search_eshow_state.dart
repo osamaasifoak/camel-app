@@ -5,13 +5,27 @@ enum EShowType {
   tvShow,
 }
 
-extension SelectedEShowName on EShowType {
+extension EShowTypeExtension on EShowType {
   String get name {
     switch (index) {
       case 0:
         return 'Movies';
       case 1:
         return 'TV Shows';
+      default:
+        throw IndexError(
+          index,
+          EShowType.values.length,
+        );
+    }
+  }
+
+  String get _singletonInstanceName {
+    switch (index) {
+      case 0:
+        return SIName.repo.movies;
+      case 1:
+        return SIName.repo.tvShows;
       default:
         throw IndexError(
           index,
