@@ -5,23 +5,25 @@ import 'package:equatable/equatable.dart';
 import 'package:get_it/get_it.dart';
 import 'package:postor/error_handler.dart' as eh show catchIt;
 
+import '/core/constants/singletons_names.dart';
 import '/core/models/fav_entertainment_show/fav_entertainment_show.dart';
 import '/core/models/tv_show/tv_show_detail.dart';
 import '/core/models/tv_show/tv_show_review.dart';
-import '/core/repositories/fav_tv_shows_repo/base_fav_tv_shows_repo.dart';
-import '/core/repositories/tv_show_repo/base_tv_show_repo.dart';
+import '/core/repositories/base_eshows_repo.dart';
+import '/core/repositories/base_fav_eshows_repo.dart';
 
 part 'tvshowdetail_state.dart';
 
+// TODO: Merge this into one single reusable Cubit
 class TVShowDetailCubit extends Cubit<TVShowDetailState> {
-  final BaseTVShowRepository _tvShowRepo;
-  final BaseFavTVShowsRepository _favTVShowsRepo;
+  final BaseEShowsRepository _tvShowRepo;
+  final BaseFavEShowsRepository _favTVShowsRepo;
 
   TVShowDetailCubit({
-    BaseTVShowRepository? tvShowRepo,
-    BaseFavTVShowsRepository? favTVShowsRepo,
-  })  : _tvShowRepo = tvShowRepo ?? GetIt.I<BaseTVShowRepository>(),
-        _favTVShowsRepo = favTVShowsRepo ?? GetIt.I<BaseFavTVShowsRepository>(),
+    BaseEShowsRepository? tvShowRepo,
+    BaseFavEShowsRepository? favTVShowsRepo,
+  })  : _tvShowRepo = tvShowRepo ?? GetIt.I<BaseEShowsRepository>(instanceName: SIName.repo.tvShows),
+        _favTVShowsRepo = favTVShowsRepo ?? GetIt.I<BaseFavEShowsRepository>(instanceName: SIName.repo.favTVShows),
         super(const TVShowDetailLoading());
 
   Future<void> loadTVShowDetail({
@@ -29,9 +31,9 @@ class TVShowDetailCubit extends Cubit<TVShowDetailState> {
     required FutureOr<void> Function() onFail,
   }) async {
     try {
-      final tvShowDetail = await _tvShowRepo.getTVShowDetail(tvShowId);
-      final tvShowReviews = await _tvShowRepo.getTVShowReviews(tvShowId: tvShowId);
-      final isFavTV = await _favTVShowsRepo.isFavTV(tvShowDetail.id);
+      final TVShowDetail tvShowDetail = await _tvShowRepo.getDetails(id: tvShowId) as TVShowDetail;
+      final List<TVShowReview> tvShowReviews = await _tvShowRepo.getReviews(id: tvShowId) as List<TVShowReview>;
+      final bool isFavTV = await _favTVShowsRepo.isFav(tvShowDetail.id);
 
       emit(
         TVShowDetailLoaded(
@@ -57,11 +59,11 @@ class TVShowDetailCubit extends Cubit<TVShowDetailState> {
     final currentState = state as TVShowDetailLoaded;
     try {
       if (fav) {
-        await _favTVShowsRepo.insertFavTV(
+        await _favTVShowsRepo.insertFav(
           FavEShow.addedOnToday(showId: currentState.tvShowDetail.id),
         );
       } else {
-        await _favTVShowsRepo.deleteFavTV(currentState.tvShowDetail.id);
+        await _favTVShowsRepo.deleteFav(currentState.tvShowDetail.id);
       }
 
       emit(currentState.update(isFavTV: fav));

@@ -12,6 +12,7 @@ import '/views/tv_show_detail/cubit/tvshowdetail_cubit.dart';
 part 'tvshowdetail_screen_props.dart';
 part 'tvshowdetail_screen_widgets.dart';
 
+// TODO: Merge this into one single reusable Widget
 class TVShowDetailScreen extends StatefulWidget {
   final int tvShowId;
   const TVShowDetailScreen({
