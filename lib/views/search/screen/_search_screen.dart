@@ -8,7 +8,7 @@ import '/core/services/screen_messenger/base_screen_messenger.dart';
 import '/views/_widgets/default_refresh_indicator_builder.dart';
 import '/views/_widgets/error_screen.dart';
 import '/views/_widgets/eshow_list_tile/eshow_list_loading_indicator.dart';
-import '/views/_widgets/eshow_list_view.dart';
+import '/views/_widgets/eshow_list_view/eshow_list_view.dart';
 import '/views/search/bloc/search_eshow_bloc.dart';
 
 part 'search_screen_props.dart';
