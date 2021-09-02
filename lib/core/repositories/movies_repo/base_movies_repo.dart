@@ -2,6 +2,7 @@ import '/core/models/movie/movie.dart';
 import '/core/models/movie/movie_detail.dart';
 import '/core/models/movie/movie_review.dart';
 
+@Deprecated('BaseMoviesRepository is now merged into BaseEShowsRepository, use it instead')
 abstract class BaseMoviesRepository {
   Future<List<Movie>> getMovieListById(List<int> movieIds);
   Future<MovieDetail> getMovieDetail(int id);

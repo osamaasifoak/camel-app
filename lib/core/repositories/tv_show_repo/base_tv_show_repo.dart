@@ -2,6 +2,7 @@ import '/core/models/tv_show/tv_show.dart';
 import '/core/models/tv_show/tv_show_detail.dart';
 import '/core/models/tv_show/tv_show_review.dart';
 
+@Deprecated('BaseTVShowRepository is now merged into BaseEShowsRepository, use it instead')
 abstract class BaseTVShowRepository {
   Future<List<TVShow>> getTVShowListById(List<int> tvShowIds);
   Future<TVShowDetail> getTVShowDetail(int id);
