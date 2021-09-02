@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '/core/constants/app_apis.dart';
 import '/core/constants/app_error_messages.dart';
 import '/core/constants/app_routes.dart';
+import '/core/constants/singletons_names.dart';
 import '/views/_screen_templates/eshow_list/full_eshow_list_screen.dart';
 
 class NowPlayingMoviesListScreen extends StatelessWidget {
@@ -13,7 +14,7 @@ class NowPlayingMoviesListScreen extends StatelessWidget {
     return FullEShowListScreen(
       title: const Text('Movies: Now Playing'),
       category: MovieEndpoint.nowPlaying.name,
-      eShowsRepoInstanceName: 'movies',
+      eShowsRepoInstanceName: SIName.repo.movies,
       eShowDetailsRouteName: AppRoutes.getMovieDetail,
       unknownErrorMessage: AppErrorMessages.nowPlayingMoviesUnknownError,
     );
