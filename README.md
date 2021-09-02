@@ -58,4 +58,6 @@ If you're curious of how the app looks like, here are the  quick previews of the
 
 15. Introduced a new transition animation to improve the circular page reveal transition animation. The new transition aligns the circular page reveal based on user's last interaction on the screen. This is now the new transition animation for when navigating to details screen. You can see it on preview 4 & 5 above.
 
-16. Merged repositories, widgets, and screens into single reusable components. This is intended to reduce duplications of code by creating base classes, reusable widgets and screen templates.
+16. Introduced new widgets: **NoShimmer** (a replacement to **Shimmer**) and **AppCircularProgressIndicator** (a copy of **CircularProgressIndicator** with slightly different animation curves).
+
+17. Merged repositories, widgets, and screens into single reusable components. This is intended to reduce duplications of code by creating base classes, reusable widgets and screen templates.
