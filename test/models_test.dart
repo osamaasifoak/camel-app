@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:camelmovies/core/constants/app_apis.dart';
+import 'package:camelmovies/core/constants/singletons_names.dart';
 import 'package:camelmovies/core/models/entertainment_show/entertainment_show.dart';
 import 'package:camelmovies/core/models/movie/movie.dart';
 import 'package:camelmovies/core/models/movie/movie_detail.dart';
@@ -23,9 +24,9 @@ void main() {
   );
   GetIt.I.registerSingleton<BaseEShowsRepository>(
     MoviesRepository(),
-    instanceName: 'movies',
+    instanceName: SIName.repo.movies,
   );
-  final moviesRepo = GetIt.I<BaseEShowsRepository>(instanceName: 'movies');
+  final moviesRepo = GetIt.I<BaseEShowsRepository>(instanceName: SIName.repo.movies);
 
   AppApis().loadApiKey(apiKey: apiKey);
   group('Test [Movie] model: see if [Movie] can parse response.body correctly:\n', () {
