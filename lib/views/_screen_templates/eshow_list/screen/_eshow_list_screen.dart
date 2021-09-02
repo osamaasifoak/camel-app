@@ -7,12 +7,12 @@ import '/core/services/screen_messenger/base_screen_messenger.dart';
 import '/views/_screen_templates/eshow_list/cubit/eshow_list_cubit.dart';
 import '/views/_widgets/error_screen.dart';
 import '/views/_widgets/eshow_list_tile/eshow_list_loading_indicator.dart';
-import '/views/_widgets/eshow_list_view.dart';
+import '/views/_widgets/eshow_list_view/eshow_list_view.dart';
 
 part 'eshow_list_props.dart';
 
 typedef ErrorVoidCallback = void Function(BuildContext context, String errorMessage);
-typedef EShowTappedCallback = void Function(int movieId);
+typedef EShowTappedCallback = void Function(int id);
 
 class EShowListScreen extends StatefulWidget {
   const EShowListScreen({
@@ -59,7 +59,7 @@ class _EShowListScreenState extends _EShowListScreenProps {
         if (state.hasError && state.eShows.isEmpty) {
           return Center(
             child: ErrorScreen(
-              errorMessage: 'Oops.. An error occurred, please try again.',
+              errorMessage: state.errorMessage!,
               onRetry: widget.onRetryError ?? _currentEShowListCubit.loadEShows,
             ),
           );
