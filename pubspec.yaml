@@ -3,7 +3,7 @@ description: caMel, your favourite app to discover millions of movies & tv shows
 
 publish_to: 'none'
 
-version: 1.2.0
+version: 1.2.1
 
 environment:
   sdk: '>=2.13.4 <3.0.0'
