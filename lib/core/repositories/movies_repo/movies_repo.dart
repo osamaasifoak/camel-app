@@ -2,15 +2,15 @@ import 'package:get_it/get_it.dart' show GetIt;
 import 'package:meta/meta.dart' show protected;
 import 'package:postor/postor.dart';
 
+import '../base_eshows_repo.dart';
 import '/core/constants/app_apis.dart';
 import '/core/models/movie/movie.dart';
 import '/core/models/movie/movie_detail.dart';
 import '/core/models/movie/movie_review.dart';
-import 'base_movies_repo.dart';
 
 typedef JsonMap = Map<String, dynamic>;
 
-class MoviesRepository implements BaseMoviesRepository {
+class MoviesRepository implements BaseEShowsRepository {
   MoviesRepository({
     Postor? postor,
   }) : postor = postor ?? GetIt.I<Postor>();
@@ -28,23 +28,23 @@ class MoviesRepository implements BaseMoviesRepository {
     return postor.get(endpoint, parameters: params).get<JsonMap>();
   }
 
-  @protected
-  Future<List<Movie>> getMovies({
-    required MovieEndpoint movieEndpoint,
-    required int page,
+  @override
+  Future<List<Movie>> fetch({
+    required String category,
+    int page = 1,
   }) async {
     final params = AppApis().paramsOf(page: page);
-    final rawMovies = await postor.get(movieEndpoint.name, parameters: params).get<JsonMap>();
+    final rawMovies = await postor.get(category, parameters: params).get<JsonMap>();
 
     final rawMoviesList = rawMovies['results'] as List;
     return rawMoviesList.map((r) => Movie.fromMap(r as JsonMap)).toList();
   }
 
   @override
-  Future<List<Movie>> getMovieListById(List<int> movieIds) async {
+  Future<List<Movie>> fetchByIds({required List<int> ids}) async {
     final List<Movie> movies = [];
 
-    for (final int id in movieIds) {
+    for (final int id in ids) {
       final rawMovieDetails = await getRawMovieDetails(movieId: id);
       movies.add(Movie.fromMap(rawMovieDetails));
     }
@@ -52,30 +52,15 @@ class MoviesRepository implements BaseMoviesRepository {
   }
 
   @override
-  Future<MovieDetail> getMovieDetail(int id) async {
+  Future<MovieDetail> getDetails({required int id}) async {
     final rawMovieDetails = await getRawMovieDetails(movieId: id);
     return MovieDetail.fromMap(rawMovieDetails);
   }
 
   @override
-  Future<List<Movie>> getNowPlaying({int page = 1}) {
-    return getMovies(movieEndpoint: MovieEndpoint.nowPlaying, page: page);
-  }
-
-  @override
-  Future<List<Movie>> getUpcoming({int page = 1}) {
-    return getMovies(movieEndpoint: MovieEndpoint.upcoming, page: page);
-  }
-
-  @override
-  Future<List<Movie>> getPopular({int page = 1}) {
-    return getMovies(movieEndpoint: MovieEndpoint.popular, page: page);
-  }
-
-  @override
-  Future<List<MovieReview>> getMovieReviews({required int movieId, int page = 1}) async {
+  Future<List<MovieReview>> getReviews({required int id, int page = 1}) async {
     final params = AppApis().paramsOf(page: page);
-    final movieReviewEndpoint = AppApis().movieReviewsOf(movieId: movieId);
+    final movieReviewEndpoint = AppApis().movieReviewsOf(movieId: id);
     final rawMovieReviews = await postor.get(movieReviewEndpoint, parameters: params).get<JsonMap>();
 
     final rawMovieReviewsList = rawMovieReviews['results'] as List;
@@ -83,7 +68,7 @@ class MoviesRepository implements BaseMoviesRepository {
   }
 
   @override
-  Future<List<Movie>> searchMovie({required String keyword, int page = 1}) async {
+  Future<List<Movie>> search({required String keyword, int page = 1}) async {
     final endpoint = MovieEndpoint.search.name;
     final params = AppApis().paramsOf(
       page: page,
@@ -99,7 +84,7 @@ class MoviesRepository implements BaseMoviesRepository {
   }
 
   @override
-  void cancelLastMovieSearch() {
+  void cancelLastSearch() {
     if (lastMovieSearchUrl != null) {
       postor.cancel(lastMovieSearchUrl!);
     }

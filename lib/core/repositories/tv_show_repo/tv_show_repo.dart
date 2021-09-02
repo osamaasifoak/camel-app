@@ -2,15 +2,15 @@ import 'package:get_it/get_it.dart' show GetIt;
 import 'package:meta/meta.dart' show protected;
 import 'package:postor/postor.dart';
 
+import '../base_eshows_repo.dart';
 import '/core/constants/app_apis.dart';
 import '/core/models/tv_show/tv_show.dart';
 import '/core/models/tv_show/tv_show_detail.dart';
 import '/core/models/tv_show/tv_show_review.dart';
-import '/core/repositories/tv_show_repo/base_tv_show_repo.dart';
 
 typedef JsonMap = Map<String, dynamic>;
 
-class TVShowRepository implements BaseTVShowRepository {
+class TVShowRepository implements BaseEShowsRepository {
   TVShowRepository({
     Postor? postor,
   }) : postor = postor ?? GetIt.I<Postor>();
@@ -21,13 +21,13 @@ class TVShowRepository implements BaseTVShowRepository {
   @protected
   String? lastTVShowSearchUrl;
 
-  @protected
-  Future<List<TVShow>> getTVShows({
-    required TVEndpoint tvEndpoint,
-    required int page,
+  @override
+  Future<List<TVShow>> fetch({
+    required String category,
+    int page = 1,
   }) async {
     final params = AppApis().paramsOf(page: page);
-    final rawTVShows = await postor.get(tvEndpoint.name, parameters: params).get<JsonMap>();
+    final rawTVShows = await postor.get(category, parameters: params).get<JsonMap>();
 
     final rawTVShowsList = rawTVShows['results'] as List;
     return rawTVShowsList.map((r) => TVShow.fromMap(r as JsonMap)).toList();
@@ -39,28 +39,17 @@ class TVShowRepository implements BaseTVShowRepository {
     final params = AppApis().paramsOf();
     return postor.get(endpoint, parameters: params).get<JsonMap>();
   }
-
   @override
-  Future<List<TVShow>> getOnTheAir({int page = 1}) {
-    return getTVShows(tvEndpoint: TVEndpoint.onTheAir, page: page);
-  }
-
-  @override
-  Future<List<TVShow>> getPopular({int page = 1}) async {
-    return getTVShows(tvEndpoint: TVEndpoint.popular, page: page);
-  }
-
-  @override
-  Future<TVShowDetail> getTVShowDetail(int id) async {
+  Future<TVShowDetail> getDetails({required int id}) async {
     final rawTVShowDetail = await getRawTVShowDetails(tvShowId: id);
     return TVShowDetail.fromMap(rawTVShowDetail);
   }
 
   @override
-  Future<List<TVShow>> getTVShowListById(List<int> tvShowIds) async {
+  Future<List<TVShow>> fetchByIds({required List<int> ids}) async {
     final List<TVShow> tvShows = [];
 
-    for (final id in tvShowIds) {
+    for (final id in ids) {
       final rawTVShowDetails = await getRawTVShowDetails(tvShowId: id);
       tvShows.add(TVShow.fromMap(rawTVShowDetails));
     }
@@ -68,9 +57,9 @@ class TVShowRepository implements BaseTVShowRepository {
   }
 
   @override
-  Future<List<TVShowReview>> getTVShowReviews({required int tvShowId, int page = 1}) async {
+  Future<List<TVShowReview>> getReviews({required int id, int page = 1}) async {
     final params = AppApis().paramsOf(page: page);
-    final tvShowReviewEndpoint = AppApis().tvShowReviewsOf(tvShowId: tvShowId);
+    final tvShowReviewEndpoint = AppApis().tvShowReviewsOf(tvShowId: id);
     final rawTVShowReviews = await postor.get(tvShowReviewEndpoint, parameters: params).get<JsonMap>();
 
     final rawTVShowReviewsList = rawTVShowReviews['results'] as List;
@@ -78,13 +67,13 @@ class TVShowRepository implements BaseTVShowRepository {
   }
 
   @override
-  Future<List<TVShow>> searchTVShow({required String keyword, int page = 1}) async {
+  Future<List<TVShow>> search({required String keyword, int page = 1}) async {
     final endpoint = TVEndpoint.search.name;
     final params = AppApis().paramsOf(
       page: page,
       searchKeyword: keyword,
     );
-    cancelLastTVShowSearch();
+    cancelLastSearch();
     lastTVShowSearchUrl = Uri.https(postor.baseUrl, endpoint, params).toString();
     final rawSearchResult = await postor.get(endpoint, parameters: params).get<JsonMap>().whenComplete(() {
       lastTVShowSearchUrl = null;
@@ -95,7 +84,7 @@ class TVShowRepository implements BaseTVShowRepository {
   }
 
   @override
-  void cancelLastTVShowSearch() {
+  void cancelLastSearch() {
     if (lastTVShowSearchUrl != null) {
       postor.cancel(lastTVShowSearchUrl!);
     }
