@@ -50,7 +50,11 @@ class _EShowSectionsScreenState extends State<EShowSectionsScreen> with Automati
             );
           }
           final int sectionsLength = state.eShowSections.length;
-          final List<Widget> sections = [];
+          final List<Widget> sections = [
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 32),
+            ),
+          ];
           for (int i = 0; i < sectionsLength; i++) {
             final EShowSection eShowSection = state.eShowSections[i];
             final void Function(BuildContext context) onSectionTapped = widget.providers[i].onSectionTapped;

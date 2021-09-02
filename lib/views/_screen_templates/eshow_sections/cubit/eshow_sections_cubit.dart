@@ -26,7 +26,9 @@ class EShowSectionsCubit extends Cubit<EShowSectionsState> {
   })  : _eShowRepo = eShowRepo,
         _providers = providers,
         _unknownErrorMessage = unknownErrorMessage,
-        super(EShowSectionsState.init());
+        super(EShowSectionsState.init()) {
+    loadSections();
+  }
 
   final BaseEShowsRepository _eShowRepo;
   final List<EShowSectionProvider> _providers;
@@ -35,9 +37,16 @@ class EShowSectionsCubit extends Cubit<EShowSectionsState> {
   Future<void> loadSections() async {
     if (state.isBusy) return;
 
+    final List<EShowSection> emptySections = _providers.map<EShowSection>((s) {
+      return EShowSection(
+        title: s.title,
+        eShows: const [],
+      );
+    }).toList(growable: false);
+
     emit(state.update(
       status: StateStatus.loading,
-      eShowSections: const [],
+      eShowSections: emptySections,
     ));
 
     try {
@@ -47,9 +56,18 @@ class EShowSectionsCubit extends Cubit<EShowSectionsState> {
           title: sectionProvider.title,
           eShows: eShows,
         );
+        
+        final List<EShowSection> newEShowSections = state.eShowSections.map<EShowSection>((s) {
+          if (s.title == eShowSection.title) {
+            return eShowSection;
+          }
+          return s;
+        }).toList(growable: false);
+
         emit(state.update(
-          eShowSections: [...state.eShowSections, eShowSection],
+          eShowSections: newEShowSections,
         ));
+
       }
       emit(state.update(
         status: StateStatus.loaded,
