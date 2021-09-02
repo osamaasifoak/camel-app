@@ -7,7 +7,7 @@ import '/core/services/screen_messenger/base_screen_messenger.dart';
 import '/views/_screen_templates/fav_eshow_list/cubit/fav_eshow_list_cubit.dart';
 import '/views/_widgets/error_screen.dart';
 import '/views/_widgets/eshow_list_tile/eshow_list_loading_indicator.dart';
-import '/views/_widgets/eshow_list_view.dart';
+import '/views/_widgets/eshow_list_view/eshow_list_view.dart';
 
 part 'fav_eshow_list_props.dart';
 
