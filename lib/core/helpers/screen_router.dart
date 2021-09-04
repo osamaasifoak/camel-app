@@ -1,4 +1,5 @@
 import 'dart:developer' as _dev show log;
+import 'dart:math' as math show pow;
 
 import 'package:flutter/material.dart';
 
@@ -8,156 +9,233 @@ import '/views/_widgets/circular_reveal_clipper.dart';
 
 const log = _dev.log;
 
-class ScreenRouter {
-  static final ScreenRouter _instance = ScreenRouter._internal();
+const int charCodeOf0 = 48;
+const int charCodeOf9 = 57;
 
-  factory ScreenRouter() => _instance;
+const double _defaultTweenDoubleBegin = 0.0;
+const double _defaultTweenDoubleEnd = 1.0;
+const Curve _defaultTweenDoubleCurve = Curves.fastLinearToSlowEaseIn;
 
-  ScreenRouter._internal();
+final Animatable<Offset> _defaultTweenOffset = Tween<Offset>(
+  begin: _defaultTweenOffsetBegin,
+  end: _defaultTweenOffsetEnd,
+);
 
-  PointerDownEvent? _pointerDownEvent;
+const Offset _defaultTweenOffsetBegin = Offset(1.0, 0.0);
+const Offset _defaultTweenOffsetEnd = Offset.zero;
+const Curve _defaultTweenOffsetCurve = Curves.easeIn;
 
-  void onPointerDownEvent(PointerDownEvent newPointerDownEvent) {
+final Animatable<double> _defaultTweenDouble = Tween<double>(
+  begin: _defaultTweenDoubleBegin,
+  end: _defaultTweenDoubleEnd,
+).chain(CurveTween(curve: _defaultTweenDoubleCurve));
+
+final Animatable<Offset> _defaultCurvedTweenOffset = _defaultTweenOffset.chain(
+  CurveTween(curve: _defaultTweenOffsetCurve),
+);
+
+int? _tryParseInt(final String? source) {
+  if (source == null) return null;
+
+  final int sourceLength = source.length;
+  final int indexLength = sourceLength - 1;
+
+  int result = 0;
+  for (int i = 0; i < sourceLength; i++) {
+    final int currentCharCode = source.codeUnitAt(i);
+    if (currentCharCode >= charCodeOf0 && currentCharCode <= charCodeOf9) {
+      final int currentValue = currentCharCode - charCodeOf0;
+      result += currentValue * math.pow(10, indexLength - i).toInt();
+    } else {
+      return null;
+    }
+  }
+
+  return result;
+}
+
+class ScreenRouter<T> extends PageRoute<T> {
+  static PointerDownEvent? _pointerDownEvent;
+
+  static void onPointerDownEvent(PointerDownEvent newPointerDownEvent) {
     log(newPointerDownEvent.toString());
     _pointerDownEvent = newPointerDownEvent;
   }
 
-  static const double _defaultTweenDoubleBegin = 0.0;
-  static const double _defaultTweenDoubleEnd = 1.0;
-  static const Curve _defaultTweenDoubleCurve = Curves.fastLinearToSlowEaseIn;
-
-  static final Animatable<Offset> _defaultTweenOffset = Tween<Offset>(
-    begin: _defaultTweenOffsetBegin,
-    end: _defaultTweenOffsetEnd,
-  );
-  static const Offset _defaultTweenOffsetBegin = Offset(1.0, 0.0);
-  static const Offset _defaultTweenOffsetEnd = Offset.zero;
-  static const Curve _defaultTweenOffsetCurve = Curves.easeIn;
-
-  Animatable<double> get _defaultTweenDouble {
-    return Tween<double>(
-      begin: _defaultTweenDoubleBegin,
-      end: _defaultTweenDoubleEnd,
-    ).chain(CurveTween(curve: _defaultTweenDoubleCurve));
-  }
-
-  Animatable<Offset> get _defaultCurvedTweenOffset {
-    return _defaultTweenOffset.chain(CurveTween(curve: _defaultTweenOffsetCurve));
-  }
-
-  Route onGenerateRoute(RouteSettings settings) {
+  ScreenRouter({
+    required RouteSettings settings,
+    this.transitionDuration = const Duration(milliseconds: 300),
+    this.reverseTransitionDuration = const Duration(milliseconds: 300),
+    this.opaque = true,
+    this.barrierDismissible = false,
+    this.barrierColor,
+    this.barrierLabel,
+    this.maintainState = true,
+    bool fullscreenDialog = false,
+  }) : super(settings: settings, fullscreenDialog: fullscreenDialog) {
     final String? routeName = settings.name;
     final Object? routeArgs = settings.arguments;
-    final Widget destPage;
-    Alignment? circularAlignment;
-    bool useFadeTransition = false;
+    Widget? destPage;
 
-    if (routeName == null) {
-      circularAlignment = Alignment.center;
-      destPage = const PageNotFoundScreen();
-    } else {
+    if (routeName != null) {
       final Uri routeUri = Uri.parse(routeName);
       final String routePath = routeUri.path;
 
-      if (routePath == AppRoutes.splash) {
-        circularAlignment = Alignment.center;
-        destPage = const SplashScreen();
-      } else if (routePath == AppRoutes.searchShows) {
-        circularAlignment = Alignment.topCenter;
-        destPage = const SearchScreen();
-      } else if (routePath == AppRoutes.favMovies) {
-        circularAlignment = Alignment.topRight;
-        destPage = const FavMoviesScreen();
-      } else if (routePath == AppRoutes.favTVShows) {
-        circularAlignment = Alignment.topRight;
-        destPage = const FavTVShowsScreen();
-      } else if (routePath == AppRoutes.home) {
-        destPage = const HomeScreen();
-      } else if (routePath == AppRoutes.nowPlayingMovieList) {
-        destPage = const NowPlayingMoviesListScreen();
-      } else if (routePath == AppRoutes.popularMovieList) {
-        destPage = const PopularMoviesListScreen();
-      } else if (routePath == AppRoutes.upcomingMovieList) {
-        destPage = const UpcomingMoviesListScreen();
-      } else if (routePath == AppRoutes.popularTVShowList) {
-        destPage = const PopularTVShowsListScreen();
-      } else if (routePath == AppRoutes.onTheAirTVShowList) {
-        destPage = const OnTheAirTVShowsListScreen();
-      } else if (routePath == AppRoutes.movieDetail) {
-        final movieId = int.tryParse(routeUri.queryParameters['id'] ?? '-');
-        if (movieId is int) {
-          destPage = MovieDetailScreen(movieId: movieId);
-        } else {
-          destPage = const PageNotFoundScreen();
-        }
-      } else if (routePath == AppRoutes.tvShowDetail) {
-        final tvShowId = int.tryParse(routeUri.queryParameters['id'] ?? '-');
-        if (tvShowId is int) {
-          destPage = TVShowDetailScreen(tvShowId: tvShowId);
-        } else {
-          destPage = const PageNotFoundScreen();
-        }
-      } else {
-        destPage = const PageNotFoundScreen();
+      switch (routePath) {
+        case AppRoutes.splash:
+          _circularAlignment = Alignment.center;
+          destPage = const SplashScreen();
+          break;
+
+        case AppRoutes.searchShows:
+          _circularAlignment = Alignment.topCenter;
+          destPage = const SearchScreen();
+          break;
+
+        case AppRoutes.favMovies:
+          _circularAlignment = Alignment.topRight;
+          destPage = const FavMoviesScreen();
+          break;
+
+        case AppRoutes.favTVShows:
+          _circularAlignment = Alignment.topRight;
+          destPage = const FavTVShowsScreen();
+          break;
+
+        case AppRoutes.home:
+          destPage = const HomeScreen();
+          break;
+
+        case AppRoutes.nowPlayingMovieList:
+          destPage = const NowPlayingMoviesListScreen();
+          break;
+
+        case AppRoutes.popularMovieList:
+          destPage = const PopularMoviesListScreen();
+          break;
+
+        case AppRoutes.upcomingMovieList:
+          destPage = const UpcomingMoviesListScreen();
+          break;
+
+        case AppRoutes.popularTVShowList:
+          destPage = const PopularTVShowsListScreen();
+          break;
+
+        case AppRoutes.onTheAirTVShowList:
+          destPage = const OnTheAirTVShowsListScreen();
+          break;
+
+        case AppRoutes.movieDetail:
+          final int? movieId = _tryParseInt(routeUri.queryParameters['id']);
+          if (movieId is int) {
+            destPage = MovieDetailScreen(movieId: movieId);
+          }
+          break;
+
+        case AppRoutes.tvShowDetail:
+          final int? tvShowId = _tryParseInt(routeUri.queryParameters['id']);
+          if (tvShowId is int) {
+            destPage = TVShowDetailScreen(tvShowId: tvShowId);
+          }
+          break;
       }
     }
 
-    if (circularAlignment == null && _pointerDownEvent != null && routeArgs is BuildContext) {
+    _destinationPage = destPage ?? const PageNotFoundScreen();
+
+    if (_circularAlignment == null && _pointerDownEvent != null && routeArgs is BuildContext) {
       final double dx = _pointerDownEvent!.position.dx;
       final double dy = _pointerDownEvent!.position.dy;
       final Size screenSize = MediaQuery.of(routeArgs).size;
-      circularAlignment = Alignment(
+      _circularAlignment = Alignment(
         2 * dx / screenSize.width - 1,
         2 * dy / screenSize.height - 1,
       );
-      useFadeTransition = true;
+      _useFadeTransition = true;
+    }
+  }
+
+  @override
+  final Color? barrierColor;
+
+  @override
+  final String? barrierLabel;
+
+  @override
+  final bool maintainState;
+
+  @override
+  final Duration transitionDuration;
+
+  @override
+  final Duration reverseTransitionDuration;
+
+  @override
+  final bool opaque;
+
+  @override
+  final bool barrierDismissible;
+
+  late final Widget _destinationPage;
+
+  Alignment? _circularAlignment;
+
+  bool _useFadeTransition = false;
+
+  @override
+  Widget buildPage(
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+  ) {
+    return _destinationPage;
+  }
+
+  @override
+  Widget buildTransitions(
+    BuildContext context,
+    Animation<double> primaryAnimation,
+    Animation<double> secondaryAnimation,
+    Widget page,
+  ) {
+    Widget transition;
+
+    if (_circularAlignment != null) {
+      transition = ScaleTransition(
+        alignment: _circularAlignment!,
+        scale: primaryAnimation.drive(_defaultTweenDouble),
+        child: ClipPath(
+          clipper: CircularRevealClipper(
+            centerAlignment: _circularAlignment,
+            fraction: primaryAnimation.value,
+          ),
+          child: page,
+        ),
+      );
+
+      if (_useFadeTransition) {
+        transition = FadeTransition(
+          opacity: primaryAnimation,
+          child: transition,
+        );
+      }
+    } else {
+      final Animation<Offset> primarySlideTransitionTween = CurvedAnimation(
+        parent: primaryAnimation,
+        curve: Curves.linearToEaseOut,
+        reverseCurve: Curves.easeInToLinear,
+      ).drive(_defaultCurvedTweenOffset);
+
+      transition = SlideTransition(
+        position: primarySlideTransitionTween,
+        child: FadeTransition(
+          opacity: primaryAnimation,
+          child: page,
+        ),
+      );
     }
 
-    return PageRouteBuilder(
-      pageBuilder: (_, __, ___) => destPage,
-      transitionsBuilder: (context, primaryAnimation, secondaryAnimation, page) {
-        Widget transition;
-
-        if (circularAlignment != null) {
-
-          transition = ScaleTransition(
-            alignment: circularAlignment,
-            scale: primaryAnimation.drive(_defaultTweenDouble),
-            child: ClipPath(
-              clipper: CircularRevealClipper(
-                centerAlignment: circularAlignment,
-                fraction: primaryAnimation.value,
-              ),
-              child: page,
-            ),
-          );
-
-          if (useFadeTransition) {
-            transition = FadeTransition(
-              opacity: primaryAnimation,
-              child: transition,
-            );
-          }
-
-        } else {
-          final Animation<Offset> primarySlideTransitionTween = CurvedAnimation(
-            parent: primaryAnimation,
-            curve: Curves.linearToEaseOut,
-            reverseCurve: Curves.easeInToLinear,
-          ).drive(_defaultCurvedTweenOffset);
-
-          transition = SlideTransition(
-            position: primarySlideTransitionTween,
-            child: FadeTransition(
-              opacity: primaryAnimation,
-              child: page,
-            ),
-          );
-        }
-
-        return transition;
-      },
-      settings: settings,
-    );
+    return transition;
   }
 }
