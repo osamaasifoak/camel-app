@@ -11,6 +11,8 @@ environment:
 dependencies:
   animated_text_kit: ^4.2.1
   cached_network_image: ^3.1.0
+  config:
+    path: config
   equatable: ^2.0.3
   flutter:
     sdk: flutter
