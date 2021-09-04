@@ -1,5 +1,6 @@
 import 'dart:convert' show jsonDecode;
 
+import 'package:config/config.dart' as config;
 import 'package:flutter/foundation.dart' as foundation show compute;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemChrome, SystemUiOverlayStyle;
@@ -18,6 +19,8 @@ Future<void> main() async {
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
   ));
+
+  config.configureApp();
 
   await AppApis().loadApiKey();
 
@@ -40,7 +43,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Listener(
-      onPointerDown: ScreenRouter().onPointerDownEvent,
+      onPointerDown: ScreenRouter.onPointerDownEvent,
       child: MaterialApp(
         title: 'caMel',
         debugShowCheckedModeBanner: false,
@@ -52,7 +55,7 @@ class App extends StatelessWidget {
           fontFamily: 'Nunito Sans',
         ),
         initialRoute: AppRoutes.splash,
-        onGenerateRoute: ScreenRouter().onGenerateRoute,
+        onGenerateRoute: (RouteSettings settings) => ScreenRouter<dynamic>(settings: settings),
       ),
     );
   }
