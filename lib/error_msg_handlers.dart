@@ -29,7 +29,7 @@ void initErrorMessageHandlers() {
         if (foundation.kDebugMode) {
           log('[${error.runtimeType}] Response body: \n${error.message}');
         }
-        return error.message ?? AppErrorMessages.unknownRequestError;
+        return otherErrorMessage ?? AppErrorMessages.unknownRequestError;
       }
     } else {
       return otherErrorMessage ?? AppErrorMessages.unknownError;
