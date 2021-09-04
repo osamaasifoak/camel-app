@@ -5,53 +5,52 @@ class ErrorScreen extends StatelessWidget {
     Key? key,
     required this.errorMessage,
     required this.onRetry,
+    this.buttonText,
   }) : super(key: key);
 
   final String errorMessage;
   final VoidCallback onRetry;
+  final Widget? buttonText;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          height: MediaQuery.of(context).size.height / 5,
-          width: MediaQuery.of(context).size.height / 5,
-          margin: const EdgeInsets.only(bottom: 30),
-          child: const FittedBox(
-            child: Icon(
-              Icons.sentiment_dissatisfied_rounded,
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            height: MediaQuery.of(context).size.height * 0.2,
+            width: MediaQuery.of(context).size.height * 0.2,
+            margin: const EdgeInsets.only(bottom: 30),
+            child: const FittedBox(
+              child: Icon(Icons.sentiment_dissatisfied_rounded),
             ),
           ),
-        ),
-        Text(
-          errorMessage,
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            fontFamily: 'Nunito Sans',
-            fontWeight: FontWeight.bold,
+          Text(
+            errorMessage,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-        ),
-        OutlinedButton(
-          onPressed: onRetry,
-          style: OutlinedButton.styleFrom(
-            primary: const Color(0xFF01579B),
-            backgroundColor: Colors.lightBlue[50],
-            side: const BorderSide(
-              color: Color(0xFF01579B),
-              width: 1.5,
+          const SizedBox(height: 10),
+          OutlinedButton(
+            onPressed: onRetry,
+            style: OutlinedButton.styleFrom(
+              primary: const Color(0xFF01579B),
+              backgroundColor: Colors.lightBlue[50],
+              side: const BorderSide(
+                color: Color(0xFF01579B),
+                width: 1.5,
+              ),
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20)),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 40),
             ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 40),
+            child: buttonText ?? const Text('Reload'),
           ),
-          child: const Text(
-            'Reload',
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
