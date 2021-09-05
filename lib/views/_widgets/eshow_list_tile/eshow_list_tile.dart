@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '/core/models/entertainment_show/entertainment_show.dart';
@@ -34,10 +35,9 @@ class EShowListTile extends StatelessWidget {
       child: Container(
         width: 80,
         height: 120,
-        color: Colors.white70,
+        color: const Color(0xFFEEEEEE),
         child: eShow.imgUrlPoster != null
             ? CachedNetworkImage(
-                cacheKey: eShow.id.toString(),
                 fit: BoxFit.cover,
                 imageUrl: eShow.imgUrlPosterThumb!,
                 fadeOutDuration: const Duration(milliseconds: 500),
