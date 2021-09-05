@@ -1,11 +1,11 @@
 {
-    "name": "movie_catalog1",
-    "short_name": "movie_catalog1",
+    "name": "caMel",
+    "short_name": "caMel",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "your favorite app for discovering millions of movies",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
@@ -17,6 +17,21 @@
         {
             "src": "icons/Icon-512.png",
             "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+            "src": "/favicon-16x16.png",
+            "sizes": "16x16",
+            "type": "image/png"
+        },
+        {
+            "src": "/favicon-32x32.png",
+            "sizes": "32x32",
+            "type": "image/png"
+        },
+        {
+            "src": "/favicon-96x96.png",
+            "sizes": "96x96",
             "type": "image/png"
         }
     ]
