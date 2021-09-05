@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -91,7 +92,6 @@ class EShowCard extends StatelessWidget {
                 ),
                 child: eShow.imgUrlPoster != null
                     ? CachedNetworkImage(
-                        cacheKey: eShow.id.toString(),
                         fit: BoxFit.cover,
                         imageUrl: eShow.imgUrlPosterThumb!,
                         fadeOutDuration: const Duration(milliseconds: 500),
