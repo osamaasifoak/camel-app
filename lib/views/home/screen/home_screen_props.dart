@@ -8,19 +8,6 @@ abstract class _HomeScreenProps extends State<HomeScreen> {
 
   final _pageController = PageController();
 
-  @override
-  void dispose() {
-    _bottomNavSelectedIndex.dispose();
-    _pageController.dispose();
-    _favMoviesRepo.close();
-    _favTVShowsRepo.close();
-
-    GetIt.I<Postor>().cancelAll();
-    GetIt.I<BaseLocalDbService>().closeDb();
-
-    super.dispose();
-  }
-
   void _goToSearchScreen() {
     Navigator.of(context).pushNamed(AppRoutes.searchShows);
   }

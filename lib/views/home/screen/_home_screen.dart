@@ -1,7 +1,6 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:postor/postor.dart';
 
 import '../tabs/movies_sections_screen.dart';
 import '../tabs/profile_screen.dart';
@@ -9,7 +8,6 @@ import '../tabs/tvshows_sections_screen.dart';
 import '/core/constants/app_routes.dart';
 import '/core/constants/singletons_names.dart';
 import '/core/repositories/base_fav_eshows_repo.dart';
-import '/core/services/localdb_service/base_localdb_service.dart';
 import '/views/_widgets/fav_count_icon.dart';
 
 part 'home_screen_props.dart';
