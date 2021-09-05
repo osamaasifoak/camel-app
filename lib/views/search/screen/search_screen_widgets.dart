@@ -131,7 +131,7 @@ class __SelectedEShowTypeBarState extends State<_SelectedEShowTypeBar> {
       borderRadius: const BorderRadius.all(Radius.circular(20)),
       constraints: BoxConstraints(
         minHeight: 36,
-        minWidth: MediaQuery.of(this.context).size.width * 0.5 - 21,
+        minWidth: (MediaQuery.of(this.context).size.width - ScreenSizer().currentXPadding * 2) * 0.5 - 21,
       ),
       children: _availableEShowsToSearch,
     );

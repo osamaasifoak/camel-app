@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 import '/core/constants/app_routes.dart';
+import '/core/helpers/screen_sizer.dart';
 import '/core/services/screen_messenger/base_screen_messenger.dart';
 import '/views/_widgets/default_refresh_indicator_builder.dart';
 import '/views/_widgets/error_screen.dart';
