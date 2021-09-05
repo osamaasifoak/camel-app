@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:postor/error_handler.dart' as eh show catchIt;
+import 'package:postor/postor.dart' show CancelledRequestException;
 
 import '/core/enums/state_status.dart';
 import '/core/models/entertainment_show/entertainment_show.dart';
@@ -56,7 +57,7 @@ class EShowSectionsCubit extends Cubit<EShowSectionsState> {
           title: sectionProvider.title,
           eShows: eShows,
         );
-        
+
         final List<EShowSection> newEShowSections = state.eShowSections.map<EShowSection>((s) {
           if (s.title == eShowSection.title) {
             return eShowSection;
@@ -67,18 +68,19 @@ class EShowSectionsCubit extends Cubit<EShowSectionsState> {
         emit(state.update(
           eShowSections: newEShowSections,
         ));
-
       }
       emit(state.update(
         status: StateStatus.loaded,
       ));
     } catch (error, stackTrace) {
-      eh.catchIt(
-        error: error,
-        stackTrace: stackTrace,
-        otherErrorMessage: _unknownErrorMessage,
-        onCatch: _catchError,
-      );
+      if (error is! CancelledRequestException) {
+        eh.catchIt(
+          error: error,
+          stackTrace: stackTrace,
+          otherErrorMessage: _unknownErrorMessage,
+          onCatch: _catchError,
+        );
+      }
     }
   }
 
