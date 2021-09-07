@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '/core/helpers/screen_sizer.dart';
 import '/views/_widgets/default_shimmer.dart';
 
 class EShowDetailLoadingIndicator extends StatelessWidget {
@@ -7,38 +8,33 @@ class EShowDetailLoadingIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
-
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          moviePoster(screenHeight),
-          movieTitle(screenWidth),
-          movieTags(screenWidth),
-          movieBackdropImage(screenHeight),
+          eShowPoster,
+          eShowTitle,
+          eShowTags,
+          eShowBackdropImage,
           const SizedBox(height: 20),
         ],
       ),
     );
   }
 
-  Widget movieBackdropImage(double screenHeight) {
-    return NoShimmer(
-      height: screenHeight * 0.167,
-    );
+  Widget get eShowBackdropImage {
+    return NoShimmer(height: ScreenSizer().currentHeight * 0.167);
   }
 
-  Container movieTags(double screenWidth) {
+  Widget get eShowTags {
     final Widget smallTag = NoShimmer(
       borderRadius: const BorderRadius.all(Radius.circular(25)),
-      width: screenWidth * 0.33,
+      width: ScreenSizer().currentWidth * 0.33,
     );
 
     final Widget midTag = NoShimmer(
       borderRadius: const BorderRadius.all(Radius.circular(25)),
-      width: screenWidth * 0.22,
+      width: ScreenSizer().currentWidth * 0.22,
     );
 
     return Container(
@@ -55,19 +51,21 @@ class EShowDetailLoadingIndicator extends StatelessWidget {
     );
   }
 
-  Widget movieTitle(double screenWidth) {
+  Widget get eShowTitle {
     return NoShimmer(
       borderRadius: const BorderRadius.all(Radius.circular(25)),
       height: 40,
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-      width: screenWidth * 0.5,
+      width: ScreenSizer().currentWidth * 0.5,
     );
   }
 
-  AppBar moviePoster(double screenHeight) {
+  AppBar get eShowPoster {
     return AppBar(
       elevation: 0,
-      flexibleSpace: NoShimmer(height: screenHeight * 0.67 + kToolbarHeight / 2),
+      flexibleSpace: NoShimmer(
+        height: ScreenSizer().currentHeight * 0.67 + kToolbarHeight / 2,
+      ),
     );
   }
 }
