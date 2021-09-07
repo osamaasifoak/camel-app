@@ -27,6 +27,10 @@ Done! You can run the app now!
 If you're curious of how the app looks like, here are the  quick previews of the app:  
 <img src="/images/1.gif" width="180" height="392">   <img src="/images/2.gif" width="180" height="392">   <img src="/images/3.gif" width="180" height="392">  <img src="/images/4.gif" width="180" height="392">  <img src="/images/5.gif" width="180" height="392">   <img src="/images/6.gif" width="180" height="392">   <img src="/images/7.gif" width="180" height="392">   <img src="/images/8.gif" width="180" height="392">
 
+<img src="/images/web_ss1.png">
+
+<img src="/images/web_ss2.png">
+
 ### My journeys with this project:
 1.  Initial version consisted only <ins>the app icon, a splash screen, a list of now playing and upcoming movies list, movie detail screen, and a list of favorited movies</ins>. The movies list screen was the home screen with top TabBar for navigating between now playing and upcoming. The initial version had a name of **I's Movies Catalogue** and its folder structure was **folder-by-layer**.
 
@@ -61,3 +65,5 @@ If you're curious of how the app looks like, here are the  quick previews of the
 16. Introduced new widgets: **NoShimmer** (a replacement to **Shimmer**) and **AppCircularProgressIndicator** (a copy of **CircularProgressIndicator** with slightly different animation curves).
 
 17. Merged repositories, widgets, and screens into single reusable components. This is intended to reduce duplications of code by creating base classes, reusable widgets and screen templates.
+
+18. (v1.2.1) Added implementations on web: **deferred page loading**, **responsive screen size**, and **removed implementation of favorited shows**.
