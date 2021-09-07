@@ -1,13 +1,13 @@
+export 'views/details/movie_detail_screen.dart';
+export 'views/details/tvshow_detail_screen.dart';
 export 'views/favourites/fav_movies_screen.dart';
 export 'views/favourites/fav_tvshows_screen.dart';
 export 'views/home/screen/_home_screen.dart';
 export 'views/movie_list_screens/now_playing_screen.dart';
 export 'views/movie_list_screens/popular_list_screen.dart';
 export 'views/movie_list_screens/upcoming_list_screen.dart';
-export 'views/moviedetail/screen/_moviedetail_screen.dart';
 export 'views/page_not_found_screen.dart';
 export 'views/search/screen/_search_screen.dart';
 export 'views/splash_screen.dart';
-export 'views/tv_show_detail/screen/_tvshowdetail_screen.dart';
 export 'views/tv_show_list_screens/on_the_air_screen.dart';
 export 'views/tv_show_list_screens/popular_tv_show_screen.dart';
