@@ -1,22 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-@Deprecated('Use [NoShimmer] instead')
-class DefaultShimmer extends StatelessWidget {
-  @Deprecated('Use [NoShimmer] instead')
-  const DefaultShimmer({
-    Key? key,
-    required this.child,
-  }) : super(key: key);
-
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    throw UnimplementedError();
-  }
-}
-
 class NoShimmer extends StatelessWidget {
   /// creates a [PlainRect] painted with [Colors.grey] of `200`
   ///
