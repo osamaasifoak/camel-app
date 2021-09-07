@@ -106,6 +106,8 @@ class SearchEShowBloc extends Bloc<SearchEShowEvent, SearchEShowState> {
     if (state.isBusy) {
       return;
     }
+    
+    _cancelLastSearchIfBusy();
 
     yield state.update(status: StateStatus.loading);
     yield* _reloadSearch(nextPage: 1);
@@ -147,7 +149,7 @@ class SearchEShowBloc extends Bloc<SearchEShowEvent, SearchEShowState> {
   /// so this is different than [_refresh]
   SearchState _reloadSearch({int? nextPage}) async* {
     try {
-      final eShowList = await _loadEShowList();
+      final eShowList = await _loadEShowList(page: nextPage);
       yield state.update(
         status: StateStatus.loaded,
         eShowList: eShowList,
