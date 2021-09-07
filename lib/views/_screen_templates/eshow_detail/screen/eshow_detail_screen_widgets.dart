@@ -100,6 +100,7 @@ mixin _EShowDetailScreenWidgets on _EShowDetailScreenProps {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             currentCubitState.eShowDetails!.title,
@@ -111,7 +112,7 @@ mixin _EShowDetailScreenWidgets on _EShowDetailScreenProps {
             ),
           ),
           Text(
-            currentCubitState.eShowDetails!.releaseDate,
+            _dateFormatter.format(DateTime.parse(currentCubitState.eShowDetails!.releaseDate)),
             style: const TextStyle(
               color: Color(0xFF616161),
             ),

@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:intl/intl.dart';
 
 import '/core/helpers/app_cache_manager.dart';
 import '/core/helpers/screen_sizer.dart';
@@ -15,6 +16,8 @@ import '/views/_widgets/eshow_reviews/eshow_reviews_list.dart';
 
 part 'eshow_detail_screen_props.dart';
 part 'eshow_detail_screen_widgets.dart';
+
+final _dateFormatter = DateFormat('MMMM dd, yyyy');
 
 class EShowDetailScreen extends StatefulWidget {
   const EShowDetailScreen({
