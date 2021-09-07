@@ -138,8 +138,8 @@ class AppApis {
   AppApis._internal();
 
   final String baseImageUrl = 'https://image.tmdb.org';
-  final String epThumbImage = '/t/p/w400';
-  final String epOriginalImage = '/t/p/w500';
+  final String epThumbImage = '/t/p/w300';
+  final String epOriginalImage = '/t/p/original';
 
   final String baseUrl = 'api.themoviedb.org';
 
