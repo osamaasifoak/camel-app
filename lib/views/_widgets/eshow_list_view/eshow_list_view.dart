@@ -6,17 +6,6 @@ import '../eshow_list_tile/eshow_list_loading_indicator.dart';
 import '../eshow_list_tile/eshow_list_tile.dart';
 import '/core/models/entertainment_show/entertainment_show.dart';
 
-final _eShowCardStyle = ElevatedButton.styleFrom(
-  shadowColor: Colors.grey[50]?.withOpacity(0.3),
-  elevation: 4.0,
-  primary: Colors.grey[50],
-  onPrimary: Colors.black87,
-  padding: EdgeInsets.zero,
-  shape: const RoundedRectangleBorder(
-    borderRadius: BorderRadius.all(Radius.circular(10)),
-  ),
-);
-
 class EShowListView extends StatelessWidget {
   const EShowListView({
     Key? key,
@@ -25,7 +14,7 @@ class EShowListView extends StatelessWidget {
     required this.onEShowTapped,
     required this.isLoadingMore,
     required this.listScrollController,
-    this.addAutomaticKeepAlives = false,
+    this.addAutomaticKeepAlives = true,
     this.listPadding,
     this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
   }) : super(key: key);
@@ -43,7 +32,6 @@ class EShowListView extends StatelessWidget {
     final eShow = eShows[index];
     return EShowListTile(
       eShow: eShow,
-      style: _eShowCardStyle,
       onTap: () => onEShowTapped(eShow.id),
     );
   }
@@ -74,8 +62,8 @@ class EShowListView extends StatelessWidget {
             itemExtent: 120,
             delegate: SliverChildBuilderDelegate(
               _eShowListTileBuilder,
-              childCount: eShows.length,
               addAutomaticKeepAlives: addAutomaticKeepAlives,
+              childCount: eShows.length,
             ),
           ),
         ),
