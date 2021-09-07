@@ -44,7 +44,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final BottomNavigationBarThemeData botNavBarTheme = Theme.of(context).bottomNavigationBarTheme;
-    
+
     final Widget app = MaterialApp(
       title: 'caMel',
       debugShowCheckedModeBanner: false,
@@ -82,6 +82,10 @@ class App extends StatelessWidget {
         ),
       );
     }
+    
+    final Size screenSize = MediaQuery.of(context).size;
+    ScreenSizer().currentWidth = screenSize.width;
+    ScreenSizer().currentHeight = screenSize.height;
 
     return Listener(
       onPointerDown: ScreenRouter.onPointerDownEvent,
