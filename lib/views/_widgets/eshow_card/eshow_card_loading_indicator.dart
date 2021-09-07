@@ -8,19 +8,6 @@ const _cardShape = RoundedRectangleBorder(
 
 const _itemDetaiBorderRadius = BorderRadius.all(Radius.circular(5));
 
-// const _noShimmerItemDetailDecoration = BoxDecoration(
-//   color: Colors.white,
-//   borderRadius: _itemDetaiBorderRadius,
-// );
-
-// const _noShimmerMovieImage = Expanded(
-//   flex: 2,
-//   child: ClipRRect(
-//     borderRadius: BorderRadius.all(Radius.circular(15)),
-//     child: NoShimmer(),
-//   ),
-// );
-
 class EShowCardLoadingIndicator extends StatelessWidget {
   final double listItemExtent;
   final Size? itemSize;
