@@ -206,7 +206,7 @@ class GithubAvatarFullScreen extends StatelessWidget {
       body: Center(
         child: SingleChildScrollView(
           padding: EdgeInsets.only(
-            top: ScreenSizer().currentHeight * 0.25 + kToolbarHeight / 2,
+            top: ScreenSizer().currentHeight * 0.15 + kToolbarHeight / 2,
             bottom: 20,
           ),
           child: const Hero(
