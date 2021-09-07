@@ -12,7 +12,7 @@ class ScreenSizer {
   double _currentWidth = 0;
   double get currentWidth => _currentWidth;
   set currentWidth(double newWidth) {
-    if(newWidth == _currentWidth) return;
+    if(newWidth - currentXPadding * 2 == _currentWidth) return;
 
     _currentWidth = newWidth - currentXPadding * 2;
   }
