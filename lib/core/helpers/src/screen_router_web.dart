@@ -5,17 +5,17 @@ import 'package:flutter/material.dart';
 
 import '/core/constants/app_routes.dart';
 import '/views/_widgets/circular_reveal_clipper.dart';
+import '/views/details/movie_detail_screen.dart' deferred as _details_movie show MovieDetailScreen;
+import '/views/details/tvshow_detail_screen.dart' deferred as _details_tv_show show TVShowDetailScreen;
 import '/views/favourites/fav_movies_screen.dart' deferred as _fav_movies show FavMoviesScreen;
 import '/views/favourites/fav_tvshows_screen.dart' deferred as _fav_tv_show show FavTVShowsScreen;
 import '/views/home/screen/_home_screen.dart' deferred as _home show HomeScreen;
 import '/views/movie_list_screens/now_playing_screen.dart' deferred as _list_now_playing_movie show NowPlayingMoviesListScreen;
 import '/views/movie_list_screens/popular_list_screen.dart' deferred as _list_popular_movie show PopularMoviesListScreen;
 import '/views/movie_list_screens/upcoming_list_screen.dart' deferred as _list_upcoming_movie show UpcomingMoviesListScreen;
-import '/views/moviedetail/screen/_moviedetail_screen.dart' deferred as _details_movie show MovieDetailScreen;
 import '/views/page_not_found_screen.dart' deferred as _not_found show PageNotFoundScreen;
 import '/views/search/screen/_search_screen.dart' deferred as _search show SearchScreen;
 import '/views/splash_screen.dart' deferred as _splash show SplashScreen;
-import '/views/tv_show_detail/screen/_tvshowdetail_screen.dart' deferred as _details_tv_show show TVShowDetailScreen;
 import '/views/tv_show_list_screens/on_the_air_screen.dart' deferred as _list_on_the_air_tv_show show OnTheAirTVShowsListScreen;
 import '/views/tv_show_list_screens/popular_tv_show_screen.dart' deferred as _list_popular_tv_show show PopularTVShowsListScreen;
 
