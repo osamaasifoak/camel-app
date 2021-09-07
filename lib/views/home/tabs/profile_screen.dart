@@ -2,6 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '/core/helpers/screen_sizer.dart';
+
 const _openGithub = __openGithub;
 const _iandisGithubUrl = 'https://github.com/iandis';
 
@@ -138,14 +140,20 @@ class FullName extends StatelessWidget {
 class GithubAvatar extends StatefulWidget {
   const GithubAvatar({Key? key}) : super(key: key);
 
-  static const avatarImageProvider = CachedNetworkImageProvider('$_iandisGithubUrl.png');
+  static const avatarImageProvider = CachedNetworkImageProvider(
+    '$_iandisGithubUrl.png',
+    headers: {
+      'Access-Control-Request-Method': 'GET',
+      'Access-Control-Request-Headers': 'Content-Type, x-requested-with',
+      'Origin': 'https://www.github.com'
+    },
+  );
 
   @override
   _GithubAvatarState createState() => _GithubAvatarState();
 }
 
 class _GithubAvatarState extends State<GithubAvatar> {
-
   void _showAvatarImage() {
     Navigator.of(context).push(
       PageRouteBuilder(
@@ -195,10 +203,10 @@ class GithubAvatarFullScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(elevation: 0),
       extendBodyBehindAppBar: true,
-      body: SingleChildScrollView(
-        child: Padding(
+      body: Center(
+        child: SingleChildScrollView(
           padding: EdgeInsets.only(
-            top: MediaQuery.of(context).size.height * 0.25 + kToolbarHeight / 2,
+            top: ScreenSizer().currentHeight * 0.25 + kToolbarHeight / 2,
             bottom: 20,
           ),
           child: const Hero(
