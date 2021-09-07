@@ -66,6 +66,8 @@ class App extends StatelessWidget {
         child: LayoutBuilder(
           builder: (context, constraints) {
             ScreenSizer().currentXPadding = math.max(0.0, constraints.maxWidth - 1280) / 2;
+            ScreenSizer().currentWidth = constraints.maxWidth;
+            ScreenSizer().currentHeight = constraints.maxHeight;
 
             return Padding(
               padding: EdgeInsets.symmetric(horizontal: ScreenSizer().currentXPadding),
