@@ -82,14 +82,17 @@ class App extends StatelessWidget {
         ),
       );
     }
-    
-    final Size screenSize = MediaQuery.of(context).size;
-    ScreenSizer().currentWidth = screenSize.width;
-    ScreenSizer().currentHeight = screenSize.height;
 
     return Listener(
       onPointerDown: ScreenRouter.onPointerDownEvent,
-      child: app,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          ScreenSizer().currentWidth = constraints.maxWidth;
+          ScreenSizer().currentHeight = constraints.maxHeight;
+
+          return app;
+        },
+      ),
     );
   }
 }
