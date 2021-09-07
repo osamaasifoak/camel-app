@@ -9,15 +9,15 @@ import '/views/_screen_templates/eshow_detail/screen/_eshow_detail_screen.dart';
 class TVShowDetailScreen extends StatelessWidget {
   const TVShowDetailScreen({
     Key? key,
-    required this.movieId,
+    required this.tvShowId,
   }) : super(key: key);
 
-  final int movieId;
+  final int tvShowId;
 
   @override
   Widget build(BuildContext context) {
     return EShowDetailScreen(
-      id: movieId,
+      id: tvShowId,
       eShowRepo: GetIt.I<BaseEShowsRepository>(instanceName: SIName.repo.tvShows),
       favEShowRepo: GetIt.I<BaseFavEShowsRepository>(instanceName: SIName.repo.favTVShows),
     );
