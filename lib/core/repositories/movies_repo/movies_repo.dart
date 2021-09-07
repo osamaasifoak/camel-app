@@ -22,46 +22,122 @@ class MoviesRepository implements BaseEShowsRepository {
   String? lastMovieSearchUrl;
 
   @protected
-  Future<JsonMap> getRawMovieDetails({required int movieId}) {
+  final Map<Object, List<String>> requests = {};
+
+  @protected
+  Future<JsonMap> getRawMovieDetails({required int movieId, Object? requester}) {
     final endpoint = MovieEndpoint.details.name + movieId.toString();
     final params = AppApis().paramsOf();
+    if (requester != null) {
+      final String requestUrl = Uri.https(postor.baseUrl, endpoint, params).toString();
+      addRequestUrl(
+        requester: requester,
+        requestUrl: requestUrl,
+      );
+      return postor.get(endpoint, parameters: params).get<JsonMap>().whenComplete(() {
+        removeRequestUrl(
+          requester: requester,
+          url: requestUrl,
+        );
+      });
+    }
     return postor.get(endpoint, parameters: params).get<JsonMap>();
+  }
+
+  @protected
+  void addRequestUrl({
+    required Object requester,
+    required String requestUrl,
+  }) {
+    requests.update(
+      requester,
+      (urls) => [...urls, requestUrl],
+      ifAbsent: () => [requestUrl],
+    );
+  }
+
+  @protected
+  void removeRequestUrl({
+    required Object requester,
+    required String url,
+  }) {
+    requests[requester]!.remove(url);
+    if (requests[requester]!.isEmpty) {
+      requests.remove(requester);
+    }
   }
 
   @override
   Future<List<Movie>> fetch({
     required String category,
     int page = 1,
+    Object? requester,
   }) async {
-    final params = AppApis().paramsOf(page: page);
-    final rawMovies = await postor.get(category, parameters: params).get<JsonMap>();
-
+    final Map<String, String> params = AppApis().paramsOf(page: page);
+    final JsonMap rawMovies;
+    if (requester != null) {
+      final String requestUrl = Uri.https(postor.baseUrl, category, params).toString();
+      addRequestUrl(
+        requester: requester,
+        requestUrl: requestUrl,
+      );
+      rawMovies = await postor.get(category, parameters: params).get<JsonMap>().whenComplete(() {
+        removeRequestUrl(
+          requester: requester,
+          url: requestUrl,
+        );
+      });
+    } else {
+      rawMovies = await postor.get(category, parameters: params).get<JsonMap>();
+    }
     final rawMoviesList = rawMovies['results'] as List;
     return rawMoviesList.map((r) => Movie.fromMap(r as JsonMap)).toList();
   }
 
   @override
-  Future<List<Movie>> fetchByIds({required List<int> ids}) async {
+  Future<List<Movie>> fetchByIds({required List<int> ids, Object? requester}) async {
     final List<Movie> movies = [];
 
     for (final int id in ids) {
-      final rawMovieDetails = await getRawMovieDetails(movieId: id);
+      final JsonMap rawMovieDetails = await getRawMovieDetails(
+        movieId: id,
+        requester: requester,
+      );
       movies.add(Movie.fromMap(rawMovieDetails));
     }
     return movies;
   }
 
   @override
-  Future<MovieDetail> getDetails({required int id}) async {
-    final rawMovieDetails = await getRawMovieDetails(movieId: id);
+  Future<MovieDetail> getDetails({required int id, Object? requester}) async {
+    final JsonMap rawMovieDetails = await getRawMovieDetails(
+      movieId: id,
+      requester: requester,
+    );
     return MovieDetail.fromMap(rawMovieDetails);
   }
 
   @override
-  Future<List<MovieReview>> getReviews({required int id, int page = 1}) async {
-    final params = AppApis().paramsOf(page: page);
-    final movieReviewEndpoint = AppApis().movieReviewsOf(movieId: id);
-    final rawMovieReviews = await postor.get(movieReviewEndpoint, parameters: params).get<JsonMap>();
+  Future<List<MovieReview>> getReviews({required int id, int page = 1, Object? requester}) async {
+    final Map<String, String> params = AppApis().paramsOf(page: page);
+    final String movieReviewEndpoint = AppApis().movieReviewsOf(movieId: id);
+    final JsonMap rawMovieReviews;
+
+    if (requester != null) {
+      final String requestUrl = Uri.https(postor.baseUrl, movieReviewEndpoint, params).toString();
+      addRequestUrl(
+        requester: requester,
+        requestUrl: requestUrl,
+      );
+      rawMovieReviews = await postor.get(movieReviewEndpoint, parameters: params).get<JsonMap>().whenComplete(() {
+        removeRequestUrl(
+          requester: requester,
+          url: requestUrl,
+        );
+      });
+    } else {
+      rawMovieReviews = await postor.get(movieReviewEndpoint, parameters: params).get<JsonMap>();
+    }
 
     final rawMovieReviewsList = rawMovieReviews['results'] as List;
     return rawMovieReviewsList.map((r) => MovieReview.fromMap(r as JsonMap)).toList();
@@ -87,6 +163,16 @@ class MoviesRepository implements BaseEShowsRepository {
   void cancelLastSearch() {
     if (lastMovieSearchUrl != null) {
       postor.cancel(lastMovieSearchUrl!);
+    }
+  }
+
+  @override
+  void cancelAllRequestsMadeBy(Object requester) {
+    if (requests.containsKey(requester)) {
+      for (final String requestUrl in requests[requester]!) {
+        postor.cancel(requestUrl);
+      }
+      requests.remove(requester);
     }
   }
 }
