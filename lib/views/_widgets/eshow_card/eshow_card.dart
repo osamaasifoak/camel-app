@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '/core/helpers/app_cache_manager.dart';
 import '/core/models/entertainment_show/entertainment_show.dart';
 
 final _cardStyle = ElevatedButton.styleFrom(
@@ -11,8 +11,8 @@ final _cardStyle = ElevatedButton.styleFrom(
   primary: Colors.grey[50],
   onPrimary: Colors.black87,
   padding: EdgeInsets.zero,
-  shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(15),
+  shape: const RoundedRectangleBorder(
+    borderRadius: BorderRadius.all(Radius.circular(15)),
   ),
 );
 
@@ -23,6 +23,8 @@ final _starIcon = Icon(
 );
 
 final _dateFormatter = DateFormat('MMM dd, yyyy');
+
+Widget? _errorWidget;
 
 typedef EShowCardCallback = void Function(EShow eShow);
 
@@ -52,14 +54,14 @@ class EShowCard extends StatelessWidget {
       eShow.rating.toStringAsFixed(1),
     );
 
-    final movieReleaseDate = Text(
+    final eShowReleaseDate = Text(
       _dateFormatter.format(DateTime.parse(eShow.releaseDate)),
       style: const TextStyle(
         color: Colors.black54,
       ),
     );
 
-    final movieBriefDetails = Column(
+    final eShowBriefDetails = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         showTitle,
@@ -71,9 +73,41 @@ class EShowCard extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 5),
-        movieReleaseDate,
+        eShowReleaseDate,
       ],
     );
+
+    final Widget eShowImage;
+    if (eShow.imgUrlPoster != null) {
+      eShowImage = CachedNetworkImage(
+        imageUrl: eShow.imgUrlPosterThumb!,
+        cacheManager: AppCacheManager(),
+        fit: BoxFit.cover,
+        fadeInDuration: const Duration(milliseconds: 250),
+        fadeOutDuration: const Duration(milliseconds: 250),
+        memCacheWidth: 400,
+        memCacheHeight: 600,
+        maxWidthDiskCache: 400,
+        maxHeightDiskCache: 600,
+        errorWidget: (_, __, ___) {
+          return _errorWidget ??= Center(
+            child: Icon(
+              Icons.error_outline,
+              size: 24,
+              color: Theme.of(context).errorColor,
+            ),
+          );
+        },
+      );
+    } else {
+      eShowImage = _errorWidget ??= Center(
+        child: Icon(
+          Icons.error_outline,
+          size: 24,
+          color: Theme.of(context).errorColor,
+        ),
+      );
+    }
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ElevatedButton(
@@ -86,40 +120,18 @@ class EShowCard extends StatelessWidget {
               flex: 2,
               child: Container(
                 clipBehavior: Clip.hardEdge,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  color: Colors.grey[200],
+                constraints: const BoxConstraints.expand(),
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.vertical(bottom: Radius.circular(15)),
+                  color: Color(0xFFEEEEEE),
                 ),
-                child: eShow.imgUrlPoster != null
-                    ? CachedNetworkImage(
-                        fit: BoxFit.cover,
-                        imageUrl: eShow.imgUrlPosterThumb!,
-                        fadeOutDuration: const Duration(milliseconds: 500),
-                        maxWidthDiskCache: 400,
-                        maxHeightDiskCache: 600,
-                        memCacheWidth: 400,
-                        memCacheHeight: 600,
-                        errorWidget: (_, __, ___) => Center(
-                          child: Icon(
-                            Icons.error_outline,
-                            size: 24,
-                            color: Theme.of(context).errorColor,
-                          ),
-                        ),
-                      )
-                    : Center(
-                        child: Icon(
-                          Icons.error_outline,
-                          size: 24,
-                          color: Theme.of(context).errorColor,
-                        ),
-                      ),
+                child: eShowImage,
               ),
             ),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(14),
-                child: movieBriefDetails,
+                child: eShowBriefDetails,
               ),
             ),
           ],
