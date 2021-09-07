@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import '/core/helpers/app_cache_manager.dart';
 import '/core/models/entertainment_show/entertainment_show.dart';
 import '/core/models/movie/movie.dart';
 
@@ -15,6 +15,8 @@ final _defaultEShowListTileStyle = ElevatedButton.styleFrom(
     borderRadius: BorderRadius.all(Radius.circular(10)),
   ),
 );
+
+Widget? _errorWidget;
 
 class EShowListTile extends StatelessWidget {
   final EShow eShow;
@@ -30,37 +32,42 @@ class EShowListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final leadingImage = Flexible(
-      flex: 0,
-      child: Container(
-        width: 80,
-        height: 120,
-        color: const Color(0xFFEEEEEE),
-        child: eShow.imgUrlPoster != null
-            ? CachedNetworkImage(
-                fit: BoxFit.cover,
-                imageUrl: eShow.imgUrlPosterThumb!,
-                fadeOutDuration: const Duration(milliseconds: 500),
-                maxWidthDiskCache: 200,
-                maxHeightDiskCache: 300,
-                memCacheWidth: 200,
-                memCacheHeight: 300,
-                errorWidget: (_, __, ___) => Center(
-                  child: Icon(
-                    Icons.error_outline,
-                    size: 24,
-                    color: Theme.of(context).errorColor,
-                  ),
-                ),
-              )
-            : Center(
-                child: Icon(
-                  Icons.error_outline,
-                  size: 24,
-                  color: Theme.of(context).errorColor,
-                ),
-              ),
-      ),
+    final Widget eShowImage;
+    if (eShow.imgUrlPoster != null) {
+      eShowImage = CachedNetworkImage(
+        imageUrl: eShow.imgUrlPosterThumb!,
+        cacheManager: AppCacheManager(),
+        fit: BoxFit.cover,
+        fadeInDuration: const Duration(milliseconds: 250),
+        fadeOutDuration: const Duration(milliseconds: 250),
+        memCacheWidth: 200,
+        memCacheHeight: 300,
+        maxWidthDiskCache: 200,
+        maxHeightDiskCache: 300,
+        errorWidget: (_, __, ___) {
+          return _errorWidget ??= Center(
+            child: Icon(
+              Icons.error_outline,
+              size: 24,
+              color: Theme.of(context).errorColor,
+            ),
+          );
+        },
+      );
+    } else {
+      eShowImage = _errorWidget ??= Center(
+        child: Icon(
+          Icons.error_outline,
+          size: 24,
+          color: Theme.of(context).errorColor,
+        ),
+      );
+    }
+    final leadingImage = Container(
+      width: 80,
+      height: 120,
+      color: const Color(0xFFEEEEEE),
+      child: eShowImage,
     );
 
     final cardStyle = style ?? _defaultEShowListTileStyle;
@@ -112,7 +119,7 @@ class EShowListTile extends StatelessWidget {
             text: eShow.rating.toStringAsFixed(1),
           ),
           TextSpan(
-            text: ' (${eShow.voteCount.toString()} votes)',
+            text: ' (${eShow.voteCount} votes)',
             style: const TextStyle(color: Colors.grey),
           ),
         ],
