@@ -1,11 +1,11 @@
 name: config
 
 environment:
-  sdk: ">=2.13.4 <3.0.0"
+  sdk: ">=2.14.0 <3.0.0"
 
 dependencies:
   flutter_web_plugins:
     sdk: flutter
   
 dev_dependencies:
-  lint: 1.6.0
+  lint: 1.7.2
