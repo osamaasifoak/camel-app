@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'base_screen_messenger.dart';
 
 class ScreenMessenger implements BaseScreenMessenger {
-
   @override
   Future<T?> showDialog<T extends Object?>({
     required BuildContext context,
@@ -33,7 +32,7 @@ class ScreenMessenger implements BaseScreenMessenger {
       transitionDuration: transitionDuration,
       transitionBuilder: blurFactor == null
           ? null
-          : (_, a1, __, child) {
+          : (_, Animation<double> a1, __, Widget child) {
               return BackdropFilter(
                 filter: ImageFilter.blur(
                   sigmaX: blurFactor * a1.value,
@@ -74,19 +73,23 @@ class ScreenMessenger implements BaseScreenMessenger {
       'to show a text message, provide some `String` to the [message], '
       "and don't provide a `Widget` to the [content]. And vice versa.",
     );
-    return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: message != null ? Text(message) : content!,
-      duration: duration ?? const Duration(milliseconds: 2000),
-      backgroundColor: backgroundColor ?? Theme.of(context).accentColor,
-      elevation: elevation,
-      behavior: floating != null && floating ? SnackBarBehavior.floating : SnackBarBehavior.fixed,
-      margin: margin,
-      padding: padding,
-      width: width,
-      shape: shape,
-      action: action,
-      animation: animation,
-      onVisible: onVisible,
-    ));
+    return ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: message != null ? Text(message) : content!,
+        duration: duration ?? const Duration(milliseconds: 2000),
+        backgroundColor: backgroundColor ?? Theme.of(context).accentColor,
+        elevation: elevation,
+        behavior: floating != null && floating
+            ? SnackBarBehavior.floating
+            : SnackBarBehavior.fixed,
+        margin: margin,
+        padding: padding,
+        width: width,
+        shape: shape,
+        action: action,
+        animation: animation,
+        onVisible: onVisible,
+      ),
+    );
   }
 }

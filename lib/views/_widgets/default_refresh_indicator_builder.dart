@@ -14,7 +14,8 @@ Widget defaultRefreshIndicatorBuilder(
   double refreshTriggerPullDistance,
   double refreshIndicatorExtent,
 ) {
-  final double percentageComplete = (pulledExtent / refreshTriggerPullDistance).clamp(0.0, 1.0);
+  final double percentageComplete =
+      (pulledExtent / refreshTriggerPullDistance).clamp(0.0, 1.0);
 
   return Center(
     child: Stack(
@@ -24,14 +25,16 @@ Widget defaultRefreshIndicatorBuilder(
           top: _kActivityIndicatorMargin,
           left: 0.0,
           right: 0.0,
-          child: _buildIndicatorForRefreshState(refreshState, _kMinCircularProgressIndicatorSize, percentageComplete),
+          child: _buildIndicatorForRefreshState(refreshState,
+              _kMinCircularProgressIndicatorSize, percentageComplete),
         ),
       ],
     ),
   );
 }
 
-Widget _buildIndicatorForRefreshState(RefreshIndicatorMode refreshState, double radius, double percentageComplete) {
+Widget _buildIndicatorForRefreshState(RefreshIndicatorMode refreshState,
+    double radius, double percentageComplete) {
   switch (refreshState) {
     case RefreshIndicatorMode.drag:
       const Curve opacityCurve = Interval(0.0, 0.35, curve: Curves.easeInOut);
@@ -90,10 +93,13 @@ class AppCircularProgressIndicator extends ProgressIndicator {
   }
 
   @override
-  _AppCircularProgressIndicatorState createState() => _AppCircularProgressIndicatorState();
+  _AppCircularProgressIndicatorState createState() =>
+      _AppCircularProgressIndicatorState();
 }
 
-class _AppCircularProgressIndicatorState extends State<AppCircularProgressIndicator> with SingleTickerProviderStateMixin {
+class _AppCircularProgressIndicatorState
+    extends State<AppCircularProgressIndicator>
+    with SingleTickerProviderStateMixin {
   static const int _pathCount = _kIndeterminateCircularDuration ~/ 1333;
   static const int _rotationCount = _kIndeterminateCircularDuration ~/ 2222;
 
@@ -107,8 +113,10 @@ class _AppCircularProgressIndicatorState extends State<AppCircularProgressIndica
   ).chain(CurveTween(
     curve: const SawTooth(_pathCount),
   ));
-  static final Animatable<double> _offsetTween = CurveTween(curve: const SawTooth(_pathCount));
-  static final Animatable<double> _rotationTween = CurveTween(curve: const SawTooth(_rotationCount));
+  static final Animatable<double> _offsetTween =
+      CurveTween(curve: const SawTooth(_pathCount));
+  static final Animatable<double> _rotationTween =
+      CurveTween(curve: const SawTooth(_rotationCount));
 
   late AnimationController _controller;
 
@@ -146,7 +154,6 @@ class _AppCircularProgressIndicatorState extends State<AppCircularProgressIndica
     double offsetValue,
     double rotationValue,
   ) {
-
     return Container(
       constraints: const BoxConstraints(
         minWidth: _kMinCircularProgressIndicatorSize,
@@ -157,7 +164,8 @@ class _AppCircularProgressIndicatorState extends State<AppCircularProgressIndica
           backgroundColor: widget.backgroundColor,
           valueColor: widget._getValueColor(context),
           value: widget.value, // may be null
-          headValue: headValue, // remaining arguments are ignored if widget.value is not null
+          headValue:
+              headValue, // remaining arguments are ignored if widget.value is not null
           tailValue: tailValue,
           offsetValue: offsetValue,
           rotationValue: rotationValue,
@@ -202,10 +210,14 @@ class _CircularProgressIndicatorPainter extends CustomPainter {
     required this.strokeWidth,
   })  : arcStart = value != null
             ? _startAngle
-            : _startAngle + tailValue * 3 / 2 * math.pi + rotationValue * math.pi * 2.0 + offsetValue * 0.5 * math.pi,
+            : _startAngle +
+                tailValue * 3 / 2 * math.pi +
+                rotationValue * math.pi * 2.0 +
+                offsetValue * 0.5 * math.pi,
         arcSweep = value != null
             ? value.clamp(0.0, 1.0) * _sweep
-            : math.max(headValue * 3 / 2 * math.pi - tailValue * 3 / 2 * math.pi, 0.4);
+            : math.max(
+                headValue * 3 / 2 * math.pi - tailValue * 3 / 2 * math.pi, 0.4);
 
   final Color? backgroundColor;
   final Color valueColor;

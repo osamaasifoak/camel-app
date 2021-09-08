@@ -1,7 +1,7 @@
 import 'dart:async' show FutureOr;
 
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart' show Cubit;
 import 'package:postor/error_handler.dart' as eh show catchIt;
 import 'package:postor/postor.dart';
 
@@ -39,12 +39,14 @@ class EShowDetailCubit extends Cubit<EShowDetailState> {
       );
       final bool isFav = await _favEShowRepo.isFav(id);
 
-      emit(state.update(
-        status: EShowDetailStatus.loaded,
-        eShowDetails: eShowDetails,
-        eShowReviews: eShowReviews,
-        isFav: isFav,
-      ));
+      emit(
+        state.update(
+          status: EShowDetailStatus.loaded,
+          eShowDetails: eShowDetails,
+          eShowReviews: eShowReviews,
+          isFav: isFav,
+        ),
+      );
     } catch (e, st) {
       if (e is! CancelledRequestException) {
         eh.catchIt(
@@ -82,10 +84,12 @@ class EShowDetailCubit extends Cubit<EShowDetailState> {
   }
 
   void _catchError(String message) {
-    emit(state.update(
-      status: EShowDetailStatus.error,
-      errorMessage: message,
-    ));
+    emit(
+      state.update(
+        status: EShowDetailStatus.error,
+        errorMessage: message,
+      ),
+    );
   }
 
   @override

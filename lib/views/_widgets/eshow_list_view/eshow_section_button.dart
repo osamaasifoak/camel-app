@@ -20,7 +20,7 @@ class EShowSectionButton extends StatelessWidget {
         padding: const EdgeInsets.only(left: 16),
         width: MediaQuery.of(context).size.width - 16,
         child: Row(
-          children: [
+          children: <Widget>[
             Text(
               title,
               style: const TextStyle(

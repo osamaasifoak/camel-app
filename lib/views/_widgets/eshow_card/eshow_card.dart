@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import '/core/helpers/app_cache_manager.dart';
 import '/core/models/entertainment_show/entertainment_show.dart';
 
-final _cardStyle = ElevatedButton.styleFrom(
+final ButtonStyle _cardStyle = ElevatedButton.styleFrom(
   shadowColor: Colors.transparent,
   elevation: 0.0,
   primary: Colors.grey[50],
@@ -16,14 +16,15 @@ final _cardStyle = ElevatedButton.styleFrom(
   ),
 );
 
-final _starIcon = Icon(
+const Icon _starIcon = Icon(
   Icons.star,
   size: 16,
-  color: Colors.yellow[800],
+  color: Color(0xFFF9A825), //Colors.yellow[800],
 );
 
-final _dateFormatter = DateFormat('MMM dd, yyyy');
+final DateFormat _dateFormatter = DateFormat('MMM dd, yyyy');
 
+// ignore: use_late_for_private_fields_and_variables
 Widget? _errorWidget;
 
 typedef EShowCardCallback = void Function(EShow eShow);
@@ -40,7 +41,7 @@ class EShowCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final showTitle = Text(
+    final Widget showTitle = Text(
       eShow.title,
       maxLines: 3,
       overflow: TextOverflow.ellipsis,
@@ -50,24 +51,24 @@ class EShowCard extends StatelessWidget {
       ),
     );
 
-    final showRating = Text(
+    final Widget showRating = Text(
       eShow.rating.toStringAsFixed(1),
     );
 
-    final eShowReleaseDate = Text(
+    final Widget eShowReleaseDate = Text(
       _dateFormatter.format(DateTime.parse(eShow.releaseDate)),
       style: const TextStyle(
         color: Colors.black54,
       ),
     );
 
-    final eShowBriefDetails = Column(
+    final Widget eShowBriefDetails = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+      children: <Widget>[
         showTitle,
         const SizedBox(height: 2),
         Row(
-          children: [
+          children: <Widget>[
             _starIcon,
             showRating,
           ],
@@ -115,14 +116,16 @@ class EShowCard extends StatelessWidget {
         style: _cardStyle,
         clipBehavior: Clip.hardEdge,
         child: Column(
-          children: [
+          children: <Widget>[
             Expanded(
               flex: 2,
               child: Container(
                 clipBehavior: Clip.hardEdge,
                 constraints: const BoxConstraints.expand(),
                 decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.vertical(bottom: Radius.circular(15)),
+                  borderRadius: BorderRadius.vertical(
+                    bottom: Radius.circular(15),
+                  ),
                   color: Color(0xFFEEEEEE),
                 ),
                 child: eShowImage,

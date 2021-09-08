@@ -2,18 +2,15 @@ import 'package:flutter/material.dart';
 
 import '/views/_widgets/default_shimmer.dart';
 
-const _cardShape = RoundedRectangleBorder(
+const ShapeBorder _cardShape = RoundedRectangleBorder(
   borderRadius: BorderRadius.all(Radius.circular(15)),
 );
 
-const _itemDetaiBorderRadius = BorderRadius.all(Radius.circular(5));
+const BorderRadius _itemDetaiBorderRadius = BorderRadius.all(
+  Radius.circular(5),
+);
 
 class EShowCardLoadingIndicator extends StatelessWidget {
-  final double listItemExtent;
-  final Size? itemSize;
-  final int itemCount;
-  final Axis scrollDirection;
-
   const EShowCardLoadingIndicator({
     Key? key,
     this.listItemExtent = 200,
@@ -21,6 +18,11 @@ class EShowCardLoadingIndicator extends StatelessWidget {
     this.scrollDirection = Axis.horizontal,
     this.itemSize,
   }) : super(key: key);
+
+  final double listItemExtent;
+  final Size? itemSize;
+  final int itemCount;
+  final Axis scrollDirection;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +36,8 @@ class EShowCardLoadingIndicator extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         scrollDirection: scrollDirection,
         shrinkWrap: true,
-        itemBuilder: (_, __) => shimmeringMovieCards(halfScreenWidth, quarterScreenWidth),
+        itemBuilder: (_, __) =>
+            shimmeringMovieCards(halfScreenWidth, quarterScreenWidth),
         itemCount: itemCount,
         itemExtent: listItemExtent,
       ),
@@ -42,7 +45,8 @@ class EShowCardLoadingIndicator extends StatelessWidget {
   }
 
   @protected
-  Widget shimmeringMovieCards(double halfScreenWidth, double quarterScreenWidth) {
+  Widget shimmeringMovieCards(
+      double halfScreenWidth, double quarterScreenWidth) {
     return Card(
       margin: const EdgeInsets.all(8.0),
       elevation: 0,
@@ -52,7 +56,7 @@ class EShowCardLoadingIndicator extends StatelessWidget {
       shape: _cardShape,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+        children: <Widget>[
           // movie image
           const Expanded(
             flex: 2,
@@ -65,7 +69,7 @@ class EShowCardLoadingIndicator extends StatelessWidget {
               padding: const EdgeInsets.all(14),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                children: <Widget>[
                   // title
                   NoShimmer(
                     borderRadius: _itemDetaiBorderRadius,

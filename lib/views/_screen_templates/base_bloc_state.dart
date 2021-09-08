@@ -28,7 +28,7 @@ abstract class BaseBlocState extends Equatable {
   bool get hasError => status == StateStatus.error;
 
   @override
-  List<Object?> get props => [
+  List<Object?> get props => <Object?>[
         status,
         currentPage,
         isAtEndOfPage,

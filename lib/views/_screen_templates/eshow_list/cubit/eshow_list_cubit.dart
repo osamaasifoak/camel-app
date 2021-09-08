@@ -1,4 +1,4 @@
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart' show Cubit;
 import 'package:postor/error_handler.dart' as eh show catchIt;
 
 import '/core/enums/state_status.dart';
@@ -25,10 +25,12 @@ class EShowListCubit extends Cubit<EShowListState> {
   Future<void> loadEShows({bool more = false}) async {
     if (state.isBusy || (more && state.isAtEndOfPage)) return;
 
-    emit(state.update(
-      status: more ? StateStatus.loadingMore : StateStatus.loading,
-      currentPage: more ? state.currentPage : 1,
-    ));
+    emit(
+      state.update(
+        status: more ? StateStatus.loadingMore : StateStatus.loading,
+        currentPage: more ? state.currentPage : 1,
+      ),
+    );
 
     try {
       final int nextPage = more ? state.currentPage + 1 : 1;
@@ -38,16 +40,20 @@ class EShowListCubit extends Cubit<EShowListState> {
       );
 
       if (eShows.isEmpty) {
-        emit(state.update(
-          status: StateStatus.loaded,
-          isAtEndOfPage: true,
-        ));
+        emit(
+          state.update(
+            status: StateStatus.loaded,
+            isAtEndOfPage: true,
+          ),
+        );
       } else {
-        emit(state.update(
-          eShows: more ? state.eShows + eShows : eShows,
-          status: StateStatus.loaded,
-          currentPage: nextPage,
-        ));
+        emit(
+          state.update(
+            eShows: more ? state.eShows + eShows : eShows,
+            status: StateStatus.loaded,
+            currentPage: nextPage,
+          ),
+        );
       }
     } catch (e, st) {
       eh.catchIt(
@@ -60,9 +66,11 @@ class EShowListCubit extends Cubit<EShowListState> {
   }
 
   void _catchError(String errorMessage) {
-    emit(state.update(
-      status: StateStatus.error,
-      errorMessage: errorMessage,
-    ));
+    emit(
+      state.update(
+        status: StateStatus.error,
+        errorMessage: errorMessage,
+      ),
+    );
   }
 }

@@ -18,7 +18,7 @@ class AppRoutes {
   static String getMovieDetail(int movieId) {
     return Uri(
       path: movieDetail,
-      queryParameters: {
+      queryParameters: <String, String>{
         'id': movieId.toString(),
       },
     ).toString();
@@ -27,7 +27,7 @@ class AppRoutes {
   static String getTVShowDetail(int tvShowId) {
     return Uri(
       path: tvShowDetail,
-      queryParameters: {
+      queryParameters: <String, String>{
         'id': tvShowId.toString(),
       },
     ).toString();

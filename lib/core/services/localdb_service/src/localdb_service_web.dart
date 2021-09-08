@@ -17,9 +17,10 @@ class LocalDbService implements BaseLocalDbService {
   @override
   dynamic noSuchMethod(Invocation invocation) {
     if (invocation.memberName == #select) {
-      return Future<_SQLQueryResult>.value(const []);
+      return Future<_SQLQueryResult>.value(const <Map<String, Object?>>[]);
     }
-    if (invocation.memberName == #closeDb || invocation.memberName == #clearDb) {
+    if (invocation.memberName == #closeDb ||
+        invocation.memberName == #clearDb) {
       return _dummyFutureVoid();
     }
   }

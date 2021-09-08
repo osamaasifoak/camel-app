@@ -30,11 +30,11 @@ void initSingletons() {
   );
   GetIt.I.registerSingleton<BaseLocalDbService>(
     LocalDbService(
-      createTablesQueries: const [
+      createTablesQueries: const <String>[
         FavMoviesRepository.createFavMovieTableQuery,
         FavTVShowsRepository.createFavTVShowsTableQuery,
       ],
-      tablesNames: const [
+      tablesNames: const <String>[
         FavMoviesRepository.favMoviesTableName,
         FavTVShowsRepository.favTVShowsTableName,
       ],

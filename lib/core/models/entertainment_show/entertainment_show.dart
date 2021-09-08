@@ -12,4 +12,3 @@ abstract class EShow {
   String? get imgUrlPosterThumb;
 
 }
-

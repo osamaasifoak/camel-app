@@ -1,4 +1,4 @@
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart' show Cubit;
 import 'package:postor/error_handler.dart' as eh show catchIt;
 
 import '/core/enums/state_status.dart';
@@ -26,20 +26,25 @@ class FavEShowListCubit extends Cubit<FavEShowListState> {
   Future<void> loadFavEShows({bool more = false}) async {
     if (state.isBusy || (more && state.isAtEndOfPage)) return;
 
-    emit(state.update(
-      status: more ? StateStatus.loadingMore : StateStatus.loading,
-      currentPage: more ? state.currentPage : 0,
-    ));
+    emit(
+      state.update(
+        status: more ? StateStatus.loadingMore : StateStatus.loading,
+        currentPage: more ? state.currentPage : 0,
+      ),
+    );
 
     try {
       final int nextPage = more ? state.currentPage + 1 : 0;
 
-      final List<int> localFavEShowIDs = await _favEShowRepo.getFavList(page: nextPage);
+      final List<int> localFavEShowIDs =
+          await _favEShowRepo.getFavList(page: nextPage);
       if (localFavEShowIDs.isEmpty) {
-        emit(state.update(
-          status: StateStatus.loaded,
-          isAtEndOfPage: true,
-        ));
+        emit(
+          state.update(
+            status: StateStatus.loaded,
+            isAtEndOfPage: true,
+          ),
+        );
       } else {
         // we're gonna load the list half by half
         // because loading all at once, especially more than 5
@@ -50,19 +55,25 @@ class FavEShowListCubit extends Cubit<FavEShowListState> {
         final List<EShow> firstHalfList = await _eShowsRepo.fetchByIds(
           ids: localFavEShowIDs.getRange(0, firstHalf).toList(growable: false),
         );
-        emit(state.update(
-          status: StateStatus.loadingMore,
-          favEShows: more ? state.favEShows + firstHalfList : firstHalfList,
-        ));
+        emit(
+          state.update(
+            status: StateStatus.loadingMore,
+            favEShows: more ? state.favEShows + firstHalfList : firstHalfList,
+          ),
+        );
 
         final List<EShow> secondHalfList = await _eShowsRepo.fetchByIds(
-          ids: localFavEShowIDs.getRange(firstHalf, secondHalf).toList(growable: false),
+          ids: localFavEShowIDs
+              .getRange(firstHalf, secondHalf)
+              .toList(growable: false),
         );
-        emit(state.update(
-          status: StateStatus.loaded,
-          favEShows: state.favEShows + secondHalfList,
-          currentPage: nextPage,
-        ));
+        emit(
+          state.update(
+            status: StateStatus.loaded,
+            favEShows: state.favEShows + secondHalfList,
+            currentPage: nextPage,
+          ),
+        );
       }
     } catch (e, st) {
       eh.catchIt(
@@ -75,9 +86,11 @@ class FavEShowListCubit extends Cubit<FavEShowListState> {
   }
 
   void _catchError(String errorMessage) {
-    return emit(state.update(
-      status: StateStatus.error,
-      errorMessage: errorMessage,
-    ));
+    return emit(
+      state.update(
+        status: StateStatus.error,
+        errorMessage: errorMessage,
+      ),
+    );
   }
 }

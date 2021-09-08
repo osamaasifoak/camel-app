@@ -2,7 +2,6 @@ import '/core/constants/app_apis.dart';
 import '/core/models/entertainment_show/entertainment_show.dart';
 
 class Movie implements EShow {
-
   const Movie({
     required this.id,
     required this.title,
@@ -12,6 +11,19 @@ class Movie implements EShow {
     required this.year,
     this.imgUrlPoster,
   });
+
+  factory Movie.fromMap(Map<String, dynamic> map) {
+    final String relDate = map['release_date'] as String? ?? '';
+    return Movie(
+      id: map['id'] as int,
+      title: map['title'] as String,
+      releaseDate: relDate,
+      rating: (map['vote_average'] as num).toDouble(),
+      voteCount: map['vote_count'] as int,
+      imgUrlPoster: map['poster_path'] as String?,
+      year: relDate.isNotEmpty ? DateTime.parse(relDate).year.toString() : '',
+    );
+  }
 
   @override
   final int id;
@@ -30,7 +42,7 @@ class Movie implements EShow {
 
   @override
   final String? imgUrlPoster; //poster_path
-  
+
   final String year;
 
   @override
@@ -45,24 +57,6 @@ class Movie implements EShow {
     if (imgUrlPoster != null) {
       return AppApis().baseImageUrl + AppApis().epThumbImage + imgUrlPoster!;
     }
-  }
-
-  factory Movie.fromMap(Map<String, dynamic> map) {
-    final relDate = map['release_date'] as String? ?? '';
-    return Movie(
-      id: map['id'] as int,
-      title: map['title'] as String,
-      releaseDate: relDate,
-      rating: (map['vote_average'] as num).toDouble(),
-      voteCount: map['vote_count'] as int,
-      imgUrlPoster: map['poster_path'] as String?,
-      year: relDate.isNotEmpty ? DateTime.parse(relDate).year.toString() : '',
-    );
-  }
-
-  @override
-  String toString() {
-    return 'Movie(id: $id, title: $title, releaseDate: $releaseDate, rating: $rating, voteCount: $voteCount, imgUrlPoster: $imgUrlPoster, year: $year)';
   }
 
   @override

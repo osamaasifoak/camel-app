@@ -14,7 +14,7 @@ abstract class _EShowDetailScreenProps extends State<EShowDetailScreen> {
 
     _eShowDetailCubit.loadDetail(
       id: widget.id,
-      onFail: () => Future.delayed(
+      onFail: () => Future<void>.delayed(
         const Duration(milliseconds: 250),
         () {
           if(mounted) {

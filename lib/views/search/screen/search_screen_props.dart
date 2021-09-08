@@ -16,7 +16,7 @@ abstract class _SearchScreenProps extends State<SearchScreen> {
     _searchListScrollController.dispose();
     // if [_searchBloc] was provided by [widget.searchBloc] then
     // it's not this widget's responsibility to close it
-    if(widget.searchBloc == null) _searchBloc.close();
+    if (widget.searchBloc == null) _searchBloc.close();
     super.dispose();
   }
 
@@ -25,7 +25,7 @@ abstract class _SearchScreenProps extends State<SearchScreen> {
       return;
     }
     _searchBloc.add(RefreshEShowEvent());
-    await for (final nextState in _searchBloc.stream) {
+    await for (final SearchEShowState nextState in _searchBloc.stream) {
       if (!nextState.isLoading) {
         break;
       }

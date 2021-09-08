@@ -17,9 +17,9 @@ import 'singletons.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent,
-  ));
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+  );
 
   config.configureApp();
 
@@ -43,7 +43,8 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final BottomNavigationBarThemeData botNavBarTheme = Theme.of(context).bottomNavigationBarTheme;
+    final BottomNavigationBarThemeData botNavBarTheme =
+        Theme.of(context).bottomNavigationBarTheme;
 
     final Widget app = MaterialApp(
       title: 'caMel',
@@ -57,20 +58,24 @@ class App extends StatelessWidget {
         bottomNavigationBarTheme: botNavBarTheme.copyWith(elevation: 0),
       ),
       initialRoute: AppRoutes.splash,
-      onGenerateRoute: (RouteSettings settings) => ScreenRouter<dynamic>(settings: settings),
+      onGenerateRoute: (RouteSettings settings) =>
+          ScreenRouter<dynamic>(settings: settings),
     );
 
     if (foundation.kIsWeb) {
       return Listener(
         onPointerDown: ScreenRouter.onPointerDownEvent,
         child: LayoutBuilder(
-          builder: (context, constraints) {
-            ScreenSizer().currentXPadding = math.max(0.0, constraints.maxWidth - 1280) / 2;
+          builder: (BuildContext context, BoxConstraints constraints) {
+            ScreenSizer().currentXPadding =
+                math.max(0.0, constraints.maxWidth - 1280) / 2;
             ScreenSizer().currentWidth = constraints.maxWidth;
             ScreenSizer().currentHeight = constraints.maxHeight;
 
             return Padding(
-              padding: EdgeInsets.symmetric(horizontal: ScreenSizer().currentXPadding),
+              padding: EdgeInsets.symmetric(
+                horizontal: ScreenSizer().currentXPadding,
+              ),
               child: PhysicalModel(
                 color: Colors.grey,
                 borderRadius: const BorderRadius.all(Radius.circular(40)),
@@ -86,7 +91,7 @@ class App extends StatelessWidget {
     return Listener(
       onPointerDown: ScreenRouter.onPointerDownEvent,
       child: LayoutBuilder(
-        builder: (context, constraints) {
+        builder: (BuildContext context, BoxConstraints constraints) {
           ScreenSizer().currentWidth = constraints.maxWidth;
           ScreenSizer().currentHeight = constraints.maxHeight;
 

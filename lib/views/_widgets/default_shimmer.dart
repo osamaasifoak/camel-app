@@ -79,7 +79,8 @@ class PlainRect extends LeafRenderObjectWidget {
   }
 
   @override
-  void updateRenderObject(BuildContext context, covariant RenderPlainRect renderObject) {
+  void updateRenderObject(
+      BuildContext context, covariant RenderPlainRect renderObject) {
     renderObject
       ..color = color
       ..height = height
@@ -138,9 +139,9 @@ class RenderPlainRect extends RenderBox {
 
   @override
   Size computeDryLayout(BoxConstraints constraints) {
-    final desiredWidth = width ?? constraints.maxWidth;
-    final desiredHeight = height ?? constraints.maxWidth;
-    final desiredSize = Size(desiredWidth, desiredHeight);
+    final double desiredWidth = width ?? constraints.maxWidth;
+    final double desiredHeight = height ?? constraints.maxHeight;
+    final Size desiredSize = Size(desiredWidth, desiredHeight);
     return constraints.constrain(desiredSize);
   }
 

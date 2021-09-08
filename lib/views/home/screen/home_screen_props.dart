@@ -1,12 +1,14 @@
 part of '_home_screen.dart';
 
 abstract class _HomeScreenProps extends State<HomeScreen> {
-  final _bottomNavSelectedIndex = ValueNotifier(0);
+  final ValueNotifier<int> _bottomNavSelectedIndex = ValueNotifier<int>(0);
 
-  final _favMoviesRepo = GetIt.I<BaseFavEShowsRepository>(instanceName: SIName.repo.favMovies);
-  final _favTVShowsRepo = GetIt.I<BaseFavEShowsRepository>(instanceName: SIName.repo.favTVShows);
+  final BaseFavEShowsRepository _favMoviesRepo =
+      GetIt.I<BaseFavEShowsRepository>(instanceName: SIName.repo.favMovies);
+  final BaseFavEShowsRepository _favTVShowsRepo =
+      GetIt.I<BaseFavEShowsRepository>(instanceName: SIName.repo.favTVShows);
 
-  final _pageController = PageController();
+  final PageController _pageController = PageController();
 
   void _goToSearchScreen() {
     Navigator.of(context).pushNamed(AppRoutes.searchShows);
@@ -18,9 +20,9 @@ abstract class _HomeScreenProps extends State<HomeScreen> {
   }
 
   void _loadFavorites() {
-    if(_bottomNavSelectedIndex.value == 0) {
+    if (_bottomNavSelectedIndex.value == 0) {
       Navigator.of(context).pushNamed(AppRoutes.favMovies);
-    } else if(_bottomNavSelectedIndex.value == 1) {
+    } else if (_bottomNavSelectedIndex.value == 1) {
       Navigator.of(context).pushNamed(AppRoutes.favTVShows);
     }
   }

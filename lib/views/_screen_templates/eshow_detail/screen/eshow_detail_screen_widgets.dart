@@ -3,9 +3,9 @@ part of '_eshow_detail_screen.dart';
 mixin _EShowDetailScreenWidgets on _EShowDetailScreenProps {
   Widget get eShowDetails {
     return CustomScrollView(
-      slivers: [
+      slivers: <Widget>[
         SliverAppBar(
-          actions: [
+          actions: <Widget>[
             favIcon,
           ],
           elevation: 0,
@@ -17,7 +17,7 @@ mixin _EShowDetailScreenWidgets on _EShowDetailScreenProps {
         SliverToBoxAdapter(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
+            children: <Widget>[
               eShowTitleAndReleaseDate,
               eShowTags,
               const SizedBox(height: 5),
@@ -101,7 +101,7 @@ mixin _EShowDetailScreenWidgets on _EShowDetailScreenProps {
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+        children: <Widget>[
           Text(
             currentCubitState.eShowDetails!.title,
             maxLines: 2,
@@ -144,7 +144,7 @@ mixin _EShowDetailScreenWidgets on _EShowDetailScreenProps {
             color: Colors.black87,
             fontWeight: FontWeight.bold,
           ),
-          children: [
+          children: <InlineSpan>[
             TextSpan(
               text: '${currentCubitState.eShowDetails!.runtime} min.  |  ',
             ),
@@ -227,7 +227,7 @@ mixin _EShowDetailScreenWidgets on _EShowDetailScreenProps {
         padding: const EdgeInsets.all(12),
         scrollDirection: Axis.horizontal,
         itemCount: currentCubitState.eShowDetails!.genres.length,
-        itemBuilder: (_, i) {
+        itemBuilder: (_, int i) {
           return EShowTagCard(
             tagName: currentCubitState.eShowDetails!.genres[i].name,
           );
@@ -242,7 +242,7 @@ mixin _EShowDetailScreenWidgets on _EShowDetailScreenProps {
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
+          children: <Widget>[
             Text(
               'Reviews (${currentCubitState.eShowReviews.length})',
               style: const TextStyle(

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '/core/models/entertainment_show/entertainment_show.dart';
 import '../eshow_card/eshow_card.dart';
 import '../eshow_card/eshow_card_loading_indicator.dart';
-import '/core/models/entertainment_show/entertainment_show.dart';
 
 class EShowHorizontalListView extends StatelessWidget {
   const EShowHorizontalListView({

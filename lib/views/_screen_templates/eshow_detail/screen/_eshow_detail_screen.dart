@@ -17,14 +17,15 @@ import '/views/_widgets/eshow_reviews/eshow_reviews_list.dart';
 part 'eshow_detail_screen_props.dart';
 part 'eshow_detail_screen_widgets.dart';
 
-final _dateFormatter = DateFormat('MMMM dd, yyyy');
+final DateFormat _dateFormatter = DateFormat('MMMM dd, yyyy');
 
 class EShowDetailScreen extends StatefulWidget {
   const EShowDetailScreen({
+    Key? key,
     required this.id,
     required this.eShowRepo,
     required this.favEShowRepo,
-  });
+  }): super(key: key);
 
   final int id;
   final BaseEShowsRepository eShowRepo;
@@ -40,7 +41,7 @@ class _EShowDetailScreenState extends _EShowDetailScreenProps with _EShowDetailS
     return Scaffold(
       body: BlocConsumer<EShowDetailCubit, EShowDetailState>(
         bloc: _eShowDetailCubit,
-        listener: (_, state) {
+        listener: (_, EShowDetailState state) {
           if (state.hasError) {
             GetIt.I<BaseScreenMessenger>().showSnackBar(
               context: context,
@@ -48,7 +49,7 @@ class _EShowDetailScreenState extends _EShowDetailScreenProps with _EShowDetailS
             );
           }
         },
-        builder: (_, state) {
+        builder: (_, EShowDetailState state) {
           if (state.isLoaded) {
             return eShowDetails;
           }

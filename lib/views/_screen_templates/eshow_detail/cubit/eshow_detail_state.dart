@@ -15,6 +15,15 @@ class EShowDetailState extends Equatable {
     this.errorMessage,
   });
 
+  factory EShowDetailState.init() {
+    return const EShowDetailState(
+      status: EShowDetailStatus.loading,
+      eShowDetails: null,
+      eShowReviews: <EShowReview>[],
+      isFav: false,
+    );
+  }
+
   final EShowDetailStatus status;
   final EShowDetails? eShowDetails;
   final List<EShowReview> eShowReviews;
@@ -24,15 +33,6 @@ class EShowDetailState extends Equatable {
   bool get isLoading => status == EShowDetailStatus.loading;
   bool get isLoaded => status == EShowDetailStatus.loaded;
   bool get hasError => status == EShowDetailStatus.error;
-
-  factory EShowDetailState.init() {
-    return const EShowDetailState(
-      status: EShowDetailStatus.loading,
-      eShowDetails: null,
-      eShowReviews: [],
-      isFav: false,
-    );
-  }
 
   EShowDetailState update({
     EShowDetailStatus? status,
@@ -51,5 +51,10 @@ class EShowDetailState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [status, eShowDetails, eShowReviews, isFav];
+  List<Object?> get props => <Object?>[
+        status,
+        eShowDetails,
+        eShowReviews,
+        isFav,
+      ];
 }

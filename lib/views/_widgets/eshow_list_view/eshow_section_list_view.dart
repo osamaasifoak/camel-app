@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '/core/models/eshow_section/eshow_section.dart';
 import '../eshow_card/eshow_card.dart';
 import '../eshow_list_view/eshow_horizontal_list_view.dart';
 import '../eshow_list_view/eshow_section_button.dart';
-import '/core/models/eshow_section/eshow_section.dart';
 
 class EShowSectionListView extends StatelessWidget {
   const EShowSectionListView({
@@ -22,7 +22,7 @@ class EShowSectionListView extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+      children: <Widget>[
         EShowSectionButton(
           onTap: onSectionTapped,
           title: eShowSection.title,

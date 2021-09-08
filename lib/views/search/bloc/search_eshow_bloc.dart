@@ -1,10 +1,11 @@
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:postor/error_handler.dart' as eh show catchIt;
 import 'package:postor/postor.dart' show CancelledRequestException;
 import 'package:rxdart/streams.dart' show MergeExtension;
-import 'package:rxdart/transformers.dart' show DebounceExtensions, SwitchMapExtension;
+import 'package:rxdart/transformers.dart'
+    show DebounceExtensions, SwitchMapExtension;
 
 import '/core/constants/singletons_names.dart';
 import '/core/enums/state_status.dart';
@@ -16,8 +17,10 @@ part 'search_eshow_state.dart';
 
 typedef SearchState = Stream<SearchEShowState>;
 typedef SearchEvent = Stream<SearchEShowEvent>;
-typedef SearchTransition = Stream<Transition<SearchEShowEvent, SearchEShowState>>;
-typedef SearchTransitionFn = TransitionFunction<SearchEShowEvent, SearchEShowState>;
+typedef SearchTransition
+    = Stream<Transition<SearchEShowEvent, SearchEShowState>>;
+typedef SearchTransitionFn
+    = TransitionFunction<SearchEShowEvent, SearchEShowState>;
 
 class SearchEShowBloc extends Bloc<SearchEShowEvent, SearchEShowState> {
   SearchEShowBloc() : super(SearchEShowState.init());
@@ -27,18 +30,19 @@ class SearchEShowBloc extends Bloc<SearchEShowEvent, SearchEShowState> {
     SearchEvent events,
     SearchTransitionFn transitionFn,
   ) {
-    final nonDebounceEvents = events.where(
-      (event) => event is! SearchKeywordChangedEvent,
+    final SearchEvent nonDebounceEvents = events.where(
+      (SearchEShowEvent event) => event is! SearchKeywordChangedEvent,
     );
-    final debounceEvents = events
+    final SearchEvent debounceEvents = events
         .where(
-          (event) => event is SearchKeywordChangedEvent,
+          (SearchEShowEvent event) => event is SearchKeywordChangedEvent,
         )
         .debounceTime(
           const Duration(milliseconds: 185),
         );
 
-    return nonDebounceEvents.mergeWith([debounceEvents]).switchMap(transitionFn);
+    return nonDebounceEvents
+        .mergeWith(<SearchEvent>[debounceEvents]).switchMap(transitionFn);
   }
 
   @override
@@ -86,7 +90,8 @@ class SearchEShowBloc extends Bloc<SearchEShowEvent, SearchEShowState> {
     yield* _reloadSearch(nextPage: 1);
   }
 
-  SearchState _selectedEShowChanged({required EShowType newSelectedEShow}) async* {
+  SearchState _selectedEShowChanged(
+      {required EShowType newSelectedEShow}) async* {
     if (state.currentSelectedEShow == newSelectedEShow) {
       return;
     }
@@ -95,7 +100,7 @@ class SearchEShowBloc extends Bloc<SearchEShowEvent, SearchEShowState> {
 
     yield state.update(
       status: StateStatus.loading,
-      eShowList: const [],
+      eShowList: const <EShow>[],
       currentSelectedEShow: newSelectedEShow,
       page: 1,
     );
@@ -106,7 +111,7 @@ class SearchEShowBloc extends Bloc<SearchEShowEvent, SearchEShowState> {
     if (state.isBusy) {
       return;
     }
-    
+
     _cancelLastSearchIfBusy();
 
     yield state.update(status: StateStatus.loading);
@@ -119,8 +124,8 @@ class SearchEShowBloc extends Bloc<SearchEShowEvent, SearchEShowState> {
     }
     yield state.update(status: StateStatus.loadingMore);
     try {
-      final nextPage = state.page + 1;
-      final eShowList = await _loadEShowList(page: nextPage);
+      final int nextPage = state.page + 1;
+      final List<EShow> eShowList = await _loadEShowList(page: nextPage);
       if (eShowList.isNotEmpty) {
         yield state.update(
           status: StateStatus.loaded,
@@ -149,7 +154,7 @@ class SearchEShowBloc extends Bloc<SearchEShowEvent, SearchEShowState> {
   /// so this is different than [_refresh]
   SearchState _reloadSearch({int? nextPage}) async* {
     try {
-      final eShowList = await _loadEShowList(page: nextPage);
+      final List<EShow> eShowList = await _loadEShowList(page: nextPage);
       yield state.update(
         status: StateStatus.loaded,
         eShowList: eShowList,

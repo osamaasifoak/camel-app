@@ -2,13 +2,13 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
-import '../tabs/movies_sections_screen.dart';
-import '../tabs/profile_screen.dart';
-import '../tabs/tvshows_sections_screen.dart';
 import '/core/constants/app_routes.dart';
 import '/core/constants/singletons_names.dart';
 import '/core/repositories/base_fav_eshows_repo.dart';
 import '/views/_widgets/fav_count_icon.dart';
+import '../tabs/movies_sections_screen.dart';
+import '../tabs/profile_screen.dart';
+import '../tabs/tvshows_sections_screen.dart';
 
 part 'home_screen_props.dart';
 part 'home_screen_widgets.dart';
@@ -29,7 +29,7 @@ class _HomeScreenState extends _HomeScreenProps with _HomeScreenWidgets {
           bottomNavSelectedIndex: _bottomNavSelectedIndex,
           onSearchTapped: _goToSearchScreen,
         ),
-        actions: [favIcon],
+        actions: <Widget>[favIcon],
         centerTitle: true,
         elevation: 10.0,
         shadowColor: Colors.white24,
@@ -41,7 +41,7 @@ class _HomeScreenState extends _HomeScreenProps with _HomeScreenWidgets {
       ),
       bottomNavigationBar: ValueListenableBuilder<int>(
         valueListenable: _bottomNavSelectedIndex,
-        builder: (_, index, __) => BottomNavigationBar(
+        builder: (_, int index, __) => BottomNavigationBar(
           type: BottomNavigationBarType.shifting,
           currentIndex: index,
           onTap: _onBottomNavTapped,

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import '/views/_widgets/default_shimmer.dart';
 
-final _cardShadowColor = Colors.grey[50]?.withOpacity(0.3);
+late final Color? _cardShadowColor = Colors.grey[50]?.withOpacity(0.3);
 
-const _cardShape = RoundedRectangleBorder(
+const ShapeBorder _cardShape = RoundedRectangleBorder(
   borderRadius: BorderRadius.all(Radius.circular(10)),
 );
 
@@ -42,8 +42,9 @@ class EShowListLoadingIndicator extends StatelessWidget {
 
     if (withCustomScrollView) {
       return CustomScrollView(
-        keyboardDismissBehavior: keyboardDismissBehavior ?? ScrollViewKeyboardDismissBehavior.manual,
-        slivers: [
+        keyboardDismissBehavior:
+            keyboardDismissBehavior ?? ScrollViewKeyboardDismissBehavior.manual,
+        slivers: <Widget>[
           const SliverToBoxAdapter(child: SizedBox(height: 20)),
           SliverFixedExtentList(
             itemExtent: itemExtent,
@@ -75,7 +76,7 @@ class EShowListLoadingIndicator extends StatelessWidget {
       clipBehavior: Clip.hardEdge,
       shape: _cardShape,
       child: Row(
-        children: [
+        children: <Widget>[
           // item image
           const NoShimmer(
             width: 80,
@@ -85,7 +86,7 @@ class EShowListLoadingIndicator extends StatelessWidget {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               NoShimmer(
                 borderRadius: const BorderRadius.all(Radius.circular(7.5)),
                 height: 20,

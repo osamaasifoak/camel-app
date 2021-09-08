@@ -4,8 +4,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '/core/helpers/screen_sizer.dart';
 
-const _openGithub = __openGithub;
-const _iandisGithubUrl = 'https://github.com/iandis';
+const Future<void> Function() _openGithub = __openGithub;
+const String _iandisGithubUrl = 'https://github.com/iandis';
 
 Future<void> __openGithub() async {
   if (await canLaunch(_iandisGithubUrl)) {
@@ -20,7 +20,7 @@ class ProfileSectionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
-        children: const [
+        children: const <Widget>[
           SizedBox(height: 60),
           GithubAvatar(),
           SizedBox(height: 20),
@@ -140,14 +140,8 @@ class FullName extends StatelessWidget {
 class GithubAvatar extends StatefulWidget {
   const GithubAvatar({Key? key}) : super(key: key);
 
-  static const avatarImageProvider = CachedNetworkImageProvider(
-    '$_iandisGithubUrl.png',
-    headers: {
-      'Access-Control-Request-Method': 'GET',
-      'Access-Control-Request-Headers': 'Content-Type, x-requested-with',
-      'Origin': 'https://www.github.com'
-    },
-  );
+  static const CachedNetworkImageProvider avatarImageProvider =
+      CachedNetworkImageProvider('$_iandisGithubUrl.png');
 
   @override
   _GithubAvatarState createState() => _GithubAvatarState();
@@ -156,12 +150,17 @@ class GithubAvatar extends StatefulWidget {
 class _GithubAvatarState extends State<GithubAvatar> {
   void _showAvatarImage() {
     Navigator.of(context).push(
-      PageRouteBuilder(
-        transitionsBuilder: (_, startAnimation, __, page) {
-          const begin = Offset(0, -1.0);
-          const end = Offset.zero;
-          const curve = Curves.fastLinearToSlowEaseIn;
-          final tween = Tween<Offset>(
+      PageRouteBuilder<dynamic>(
+        transitionsBuilder: (
+          _,
+          Animation<double> startAnimation,
+          __,
+          Widget page,
+        ) {
+          const Offset begin = Offset(0, -1.0);
+          const Offset end = Offset.zero;
+          const Cubic curve = Curves.fastLinearToSlowEaseIn;
+          final Animatable<Offset> tween = Tween<Offset>(
             begin: begin,
             end: end,
           ).chain(CurveTween(curve: curve));

@@ -12,7 +12,7 @@ class _SearchTextField extends StatefulWidget {
 class __SearchTextFieldState extends State<_SearchTextField> {
   late final SearchEShowBloc _searchBloc = context.read<SearchEShowBloc>();
 
-  late final _searchTextController = TextEditingController(
+  late final TextEditingController _searchTextController = TextEditingController(
     text: _searchBloc.state.searchKeyword,
   );
 
@@ -103,7 +103,7 @@ class _SelectedEShowTypeBar extends StatefulWidget {
 }
 
 class __SelectedEShowTypeBarState extends State<_SelectedEShowTypeBar> {
-  final List<Widget> _availableEShowsToSearch = EShowType.values.map<Widget>((e) {
+  final List<Widget> _availableEShowsToSearch = EShowType.values.map<Widget>((EShowType e) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: Text(e.name),
@@ -123,15 +123,17 @@ class __SelectedEShowTypeBarState extends State<_SelectedEShowTypeBar> {
   }
 
   Widget _toggleButtonBuilder(BuildContext context, SearchEShowState state) {
+    final double minWidth = ScreenSizer().currentWidth * 0.5 - 21;
+    
     return ToggleButtons(
-      isSelected: EShowType.values.map<bool>((e) {
+      isSelected: EShowType.values.map<bool>((EShowType e) {
         return e == state.currentSelectedEShow;
       }).toList(growable: false),
       onPressed: _onEShowTypeTapped,
       borderRadius: const BorderRadius.all(Radius.circular(20)),
       constraints: BoxConstraints(
         minHeight: 36,
-        minWidth: (MediaQuery.of(this.context).size.width - ScreenSizer().currentXPadding * 2) * 0.5 - 21,
+        minWidth: minWidth,
       ),
       children: _availableEShowsToSearch,
     );

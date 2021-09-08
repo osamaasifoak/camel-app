@@ -9,6 +9,16 @@ class TVShowReview implements EShowReview {
     required this.updatedAt,
   });
 
+  factory TVShowReview.fromMap(Map<String, dynamic> map) {
+    return TVShowReview(
+      id: map['id'] as String,
+      author: map['author'] as String,
+      content: map['content'] as String,
+      createdAt: DateTime.parse(map['created_at'] as String),
+      updatedAt: DateTime.parse(map['updated_at'] as String),
+    );
+  }
+
   @override
   final String id;
 
@@ -24,21 +34,6 @@ class TVShowReview implements EShowReview {
   @override
   final DateTime updatedAt;
 
-  factory TVShowReview.fromMap(Map<String, dynamic> map) {
-    return TVShowReview(
-      id: map['id'] as String,
-      author: map['author'] as String,
-      content: map['content'] as String,
-      createdAt: DateTime.parse(map['created_at'] as String),
-      updatedAt: DateTime.parse(map['updated_at'] as String),
-    );
-  }
-
-  @override
-  String toString() {
-    return 'TVShowReview(id: $id, author: $author, content: $content, createdAt: $createdAt, updatedAt: $updatedAt)';
-  }
-
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
@@ -53,6 +48,10 @@ class TVShowReview implements EShowReview {
 
   @override
   int get hashCode {
-    return id.hashCode ^ author.hashCode ^ content.hashCode ^ createdAt.hashCode ^ updatedAt.hashCode;
+    return id.hashCode ^
+        author.hashCode ^
+        content.hashCode ^
+        createdAt.hashCode ^
+        updatedAt.hashCode;
   }
 }

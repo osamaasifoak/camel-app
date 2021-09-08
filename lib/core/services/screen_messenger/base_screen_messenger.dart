@@ -53,5 +53,4 @@ abstract class BaseScreenMessenger {
     void Function()? onVisible,
   });
 
-  
 }

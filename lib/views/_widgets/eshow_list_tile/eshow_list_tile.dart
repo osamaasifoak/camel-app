@@ -5,7 +5,7 @@ import '/core/helpers/app_cache_manager.dart';
 import '/core/models/entertainment_show/entertainment_show.dart';
 import '/core/models/movie/movie.dart';
 
-final _defaultEShowListTileStyle = ElevatedButton.styleFrom(
+final ButtonStyle _defaultEShowListTileStyle = ElevatedButton.styleFrom(
   shadowColor: Colors.grey[50]?.withOpacity(0.3),
   elevation: 4.0,
   primary: Colors.grey[50],
@@ -16,19 +16,20 @@ final _defaultEShowListTileStyle = ElevatedButton.styleFrom(
   ),
 );
 
+// ignore: use_late_for_private_fields_and_variables
 Widget? _errorWidget;
 
 class EShowListTile extends StatelessWidget {
-  final EShow eShow;
-  final VoidCallback? onTap;
-  final ButtonStyle? style;
-
   const EShowListTile({
     Key? key,
     required this.eShow,
     required this.onTap,
     this.style,
   }) : super(key: key);
+
+  final EShow eShow;
+  final VoidCallback? onTap;
+  final ButtonStyle? style;
 
   @override
   Widget build(BuildContext context) {
@@ -63,18 +64,18 @@ class EShowListTile extends StatelessWidget {
         ),
       );
     }
-    final leadingImage = Container(
+    final Widget leadingImage = Container(
       width: 80,
       height: 120,
       color: const Color(0xFFEEEEEE),
       child: eShowImage,
     );
 
-    final cardStyle = style ?? _defaultEShowListTileStyle;
+    final ButtonStyle cardStyle = style ?? _defaultEShowListTileStyle;
 
     final Text eShowTitle;
     if (eShow is Movie) {
-      final movie = eShow as Movie;
+      final Movie movie = eShow as Movie;
       final String movieTitleAndYear;
       if (movie.year.isEmpty) {
         movieTitleAndYear = movie.title;
@@ -102,19 +103,19 @@ class EShowListTile extends StatelessWidget {
       );
     }
 
-    final starIcon = Icon(
+    const Icon starIcon = Icon(
       Icons.star,
       size: 16,
-      color: Colors.yellow[800],
+      color: Color(0xFFF9A825), // Colors.yellow[800],
     );
 
-    final eShowRatingAndVoteCount = RichText(
+    final Widget eShowRatingAndVoteCount = RichText(
       text: TextSpan(
         style: const TextStyle(
           color: Colors.black87,
           fontFamily: 'Nunito Sans',
         ),
-        children: [
+        children: <InlineSpan>[
           TextSpan(
             text: eShow.rating.toStringAsFixed(1),
           ),
@@ -126,15 +127,15 @@ class EShowListTile extends StatelessWidget {
       ),
     );
 
-    final eShowBriefDetails = Flexible(
+    final Widget eShowBriefDetails = Flexible(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+        children: <Widget>[
           eShowTitle,
           const SizedBox(height: 2),
           Row(
-            children: [
+            children: <Widget>[
               starIcon,
               eShowRatingAndVoteCount,
             ],
@@ -150,7 +151,7 @@ class EShowListTile extends StatelessWidget {
         onPressed: onTap,
         clipBehavior: Clip.hardEdge,
         child: Row(
-          children: [
+          children: <Widget>[
             leadingImage,
             const SizedBox(width: 10),
             eShowBriefDetails,

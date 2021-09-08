@@ -13,7 +13,7 @@ class EShowReviewsList extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
-        (_, index) => EShowReviewListTile(review: reviews[index]),
+        (_, int index) => EShowReviewListTile(review: reviews[index]),
         childCount: reviews.length,
       ),
     );
@@ -39,15 +39,18 @@ class EShowReviewListTile extends StatefulWidget {
 }
 
 class _EShowReviewListTileState extends State<EShowReviewListTile> {
-  late final ValueNotifier<EShowReviewTextState> _reviewTextState; // = (EShowReviewTextState.collapsed);
+  late final ValueNotifier<EShowReviewTextState>
+      _reviewTextState; // = (EShowReviewTextState.collapsed);
 
   @override
   void initState() {
     super.initState();
     if (widget.review.content.length <= 200) {
-      _reviewTextState = ValueNotifier<EShowReviewTextState>(EShowReviewTextState.normal);
+      _reviewTextState =
+          ValueNotifier<EShowReviewTextState>(EShowReviewTextState.normal);
     } else {
-      _reviewTextState = ValueNotifier<EShowReviewTextState>(EShowReviewTextState.collapsed);
+      _reviewTextState =
+          ValueNotifier<EShowReviewTextState>(EShowReviewTextState.collapsed);
     }
   }
 
@@ -78,12 +81,12 @@ class _EShowReviewListTileState extends State<EShowReviewListTile> {
       ),
       subtitle: ValueListenableBuilder<EShowReviewTextState>(
         valueListenable: _reviewTextState,
-        builder: (_, state, child) {
+        builder: (_, EShowReviewTextState state, Widget? child) {
           if (state == EShowReviewTextState.normal) {
             return child!;
           }
 
-          final reviewText = state == EShowReviewTextState.collapsed
+          final Widget reviewText = state == EShowReviewTextState.collapsed
               ? Text(
                   '${widget.review.content.substring(0, 197)}...',
                   style: const TextStyle(
@@ -93,12 +96,15 @@ class _EShowReviewListTileState extends State<EShowReviewListTile> {
               : child!;
 
           return Wrap(
-            children: [
+            direction: Axis.vertical,
+            children: <Widget>[
               reviewText,
               GestureDetector(
                 onTap: _changeReviewTextState,
                 child: Text(
-                  state == EShowReviewTextState.collapsed ? 'Read more' : 'Show less',
+                  state == EShowReviewTextState.collapsed
+                      ? 'Read more'
+                      : 'Show less',
                   style: const TextStyle(
                     color: Colors.grey,
                   ),

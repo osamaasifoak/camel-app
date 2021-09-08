@@ -1,13 +1,12 @@
-
 import 'package:flutter/material.dart';
 
-class EShowTagCard extends StatelessWidget{
-  final String tagName;
-
+class EShowTagCard extends StatelessWidget {
   const EShowTagCard({
-    Key? key, 
+    Key? key,
     required this.tagName,
   }) : super(key: key);
+
+  final String tagName;
 
   @override
   Widget build(BuildContext context) {
@@ -31,5 +30,4 @@ class EShowTagCard extends StatelessWidget{
       ),
     );
   }
-
 }

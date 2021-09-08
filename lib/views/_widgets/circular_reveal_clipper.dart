@@ -1,4 +1,4 @@
-import 'dart:math' show max, sqrt ;
+import 'dart:math' show max, sqrt;
 
 import 'package:flutter/material.dart';
 
@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 /// Licensed under the Apache License, Version 2.0 (the "License");
 @immutable
 class CircularRevealClipper extends CustomClipper<Path> {
-  
   const CircularRevealClipper({
     required this.fraction,
     this.centerAlignment,
@@ -25,9 +24,11 @@ class CircularRevealClipper extends CustomClipper<Path> {
 
   @override
   Path getClip(Size size) {
-    final Offset center = centerAlignment?.alongSize(size) ?? centerOffset ?? Offset(size.width / 2, size.height / 2);
-    final minRadius = this.minRadius ?? 0;
-    final maxRadius = this.maxRadius ?? calcMaxRadius(size, center);
+    final Offset center = centerAlignment?.alongSize(size) ??
+        centerOffset ??
+        Offset(size.width / 2, size.height / 2);
+    final double minRadius = this.minRadius ?? 0;
+    final double maxRadius = this.maxRadius ?? calcMaxRadius(size, center);
 
     return Path()
       ..addOval(
@@ -42,8 +43,8 @@ class CircularRevealClipper extends CustomClipper<Path> {
   bool shouldReclip(CustomClipper<Path> oldClipper) => true;
 
   static double calcMaxRadius(Size size, Offset center) {
-    final w = max(center.dx, size.width - center.dx);
-    final h = max(center.dy, size.height - center.dy);
+    final double w = max(center.dx, size.width - center.dx);
+    final double h = max(center.dy, size.height - center.dy);
     return sqrt(w * w + h * h);
   }
 

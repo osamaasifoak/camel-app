@@ -1,11 +1,9 @@
-
 import 'dart:convert' show json;
 
 import '/core/constants/app_apis.dart';
 import '/core/models/entertainment_show/entertainment_show.dart';
 
 class TVShow implements EShow {
-
   const TVShow({
     required this.id,
     required this.imgUrlPoster,
@@ -14,6 +12,21 @@ class TVShow implements EShow {
     required this.title,
     required this.voteCount,
   });
+
+  factory TVShow.fromMap(Map<String, dynamic> map) {
+    return TVShow(
+      id: map['id'] as int,
+      title: map['name'] as String,
+      releaseDate: map['first_air_date'] as String? ?? '--',
+      rating: (map['vote_average'] as num).toDouble(),
+      voteCount: map['vote_count'] as int,
+      imgUrlPoster: map['poster_path'] as String?,
+    );
+  }
+
+  factory TVShow.fromJson(String source) {
+    return TVShow.fromMap(json.decode(source) as Map<String, dynamic>);
+  }
 
   @override
   final int id;
@@ -47,44 +60,26 @@ class TVShow implements EShow {
     }
   }
 
-  factory TVShow.fromMap(Map<String, dynamic> map) {
-    return TVShow(
-      id: map['id'] as int,
-      title: map['name'] as String,
-      releaseDate: map['first_air_date'] as String? ?? '--',
-      rating: (map['vote_average'] as num).toDouble(),
-      voteCount: map['vote_count'] as int,
-      imgUrlPoster: map['poster_path'] as String?,
-    );
-  }
-
-  factory TVShow.fromJson(String source) => TVShow.fromMap(json.decode(source) as Map<String, dynamic>);
-
-  @override
-  String toString() {
-    return 'TVShow(id: $id, imgUrlPoster: $imgUrlPoster, rating: $rating, releaseDate: $releaseDate, title: $title, voteCount: $voteCount)';
-  }
-
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-  
+
     return other is TVShow &&
-      other.id == id &&
-      other.imgUrlPoster == imgUrlPoster &&
-      other.rating == rating &&
-      other.releaseDate == releaseDate &&
-      other.title == title &&
-      other.voteCount == voteCount;
+        other.id == id &&
+        other.imgUrlPoster == imgUrlPoster &&
+        other.rating == rating &&
+        other.releaseDate == releaseDate &&
+        other.title == title &&
+        other.voteCount == voteCount;
   }
 
   @override
   int get hashCode {
     return id.hashCode ^
-      imgUrlPoster.hashCode ^
-      rating.hashCode ^
-      releaseDate.hashCode ^
-      title.hashCode ^
-      voteCount.hashCode;
+        imgUrlPoster.hashCode ^
+        rating.hashCode ^
+        releaseDate.hashCode ^
+        title.hashCode ^
+        voteCount.hashCode;
   }
 }

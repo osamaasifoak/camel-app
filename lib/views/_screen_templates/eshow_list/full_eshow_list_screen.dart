@@ -30,7 +30,7 @@ class FullEShowListScreen extends StatefulWidget {
 }
 
 class _FullEShowListScreenState extends State<FullEShowListScreen> {
-  final _eShowsListController = ScrollController();
+  final ScrollController _eShowsListController = ScrollController();
 
   late final BaseEShowsRepository _eShowsRepo = GetIt.I<BaseEShowsRepository>(
     instanceName: widget.eShowsRepoInstanceName,
@@ -78,7 +78,7 @@ class _FullEShowListScreenState extends State<FullEShowListScreen> {
           elevation: 0.7,
           shadowColor: Colors.grey[100],
         ),
-        body: BlocProvider(
+        body: BlocProvider<EShowListCubit>(
           create: (_) => EShowListCubit(
             category: widget.category,
             eShowsRepo: _eShowsRepo,

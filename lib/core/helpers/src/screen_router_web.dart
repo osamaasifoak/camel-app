@@ -19,7 +19,7 @@ import '/views/splash_screen.dart' deferred as _splash show SplashScreen;
 import '/views/tv_show_list_screens/on_the_air_screen.dart' deferred as _list_on_the_air_tv_show show OnTheAirTVShowsListScreen;
 import '/views/tv_show_list_screens/popular_tv_show_screen.dart' deferred as _list_popular_tv_show show PopularTVShowsListScreen;
 
-const _log = _dev.log;
+const void Function(String message) _log = _dev.log;
 
 const int _charCodeOf0 = 48;
 const int _charCodeOf9 = 57;
@@ -67,13 +67,6 @@ int? _tryParseInt(final String? source) {
 }
 
 class ScreenRouter<T> extends PageRoute<T> {
-  static PointerDownEvent? _pointerDownEvent;
-
-  static void onPointerDownEvent(PointerDownEvent newPointerDownEvent) {
-    _log(newPointerDownEvent.toString());
-    _pointerDownEvent = newPointerDownEvent;
-  }
-
   ScreenRouter({
     required RouteSettings settings,
     this.transitionDuration = const Duration(milliseconds: 300),
@@ -223,6 +216,13 @@ class ScreenRouter<T> extends PageRoute<T> {
     }
   }
 
+  static PointerDownEvent? _pointerDownEvent;
+
+  static void onPointerDownEvent(PointerDownEvent newPointerDownEvent) {
+    _log(newPointerDownEvent.toString());
+    _pointerDownEvent = newPointerDownEvent;
+  }
+
   @override
   final Color? barrierColor;
 
@@ -262,34 +262,34 @@ class ScreenRouter<T> extends PageRoute<T> {
   @override
   Widget buildTransitions(
     BuildContext context,
-    Animation<double> primaryAnimation,
+    Animation<double> animation,
     Animation<double> secondaryAnimation,
-    Widget page,
+    Widget child,
   ) {
     Widget transition;
 
     if (_circularAlignment != null) {
       transition = ScaleTransition(
         alignment: _circularAlignment!,
-        scale: primaryAnimation.drive(_defaultTweenDouble),
+        scale: animation.drive(_defaultTweenDouble),
         child: ClipPath(
           clipper: CircularRevealClipper(
             centerAlignment: _circularAlignment,
-            fraction: primaryAnimation.value,
+            fraction: animation.value,
           ),
-          child: page,
+          child: child,
         ),
       );
 
       if (_useFadeTransition) {
         transition = FadeTransition(
-          opacity: primaryAnimation,
+          opacity: animation,
           child: transition,
         );
       }
     } else {
       final Animation<Offset> primarySlideTransitionTween = CurvedAnimation(
-        parent: primaryAnimation,
+        parent: animation,
         curve: Curves.linearToEaseOut,
         reverseCurve: Curves.easeInToLinear,
       ).drive(_defaultCurvedTweenOffset);
@@ -297,8 +297,8 @@ class ScreenRouter<T> extends PageRoute<T> {
       transition = SlideTransition(
         position: primarySlideTransitionTween,
         child: FadeTransition(
-          opacity: primaryAnimation,
-          child: page,
+          opacity: animation,
+          child: child,
         ),
       );
     }
@@ -357,9 +357,9 @@ class _DeferredWidgetState extends State<_DeferredWidget> {
       );
     }
 
-    return FutureBuilder(
+    return FutureBuilder<dynamic>(
       future: widget.loadLibraryFunc(),
-      builder: (context, snapshot) {
+      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           _destinationPage = widget.destinationPageFunc();
           return _destinationPage!;

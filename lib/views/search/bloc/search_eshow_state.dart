@@ -46,6 +46,17 @@ class SearchEShowState extends Equatable {
     this.errorMessage,
   });
 
+  factory SearchEShowState.init() {
+    return const SearchEShowState(
+      status: StateStatus.init,
+      currentSelectedEShow: EShowType.movie,
+      eShowList: <EShow>[],
+      searchKeyword: '',
+      page: 1,
+      isAtEndOfPage: false,
+    );
+  }
+
   final StateStatus status;
   final EShowType currentSelectedEShow;
   final List<EShow> eShowList;
@@ -59,17 +70,6 @@ class SearchEShowState extends Equatable {
   bool get isBusy => isLoading || isLoadingMore;
 
   bool get hasError => status == StateStatus.error;
-
-  factory SearchEShowState.init() {
-    return const SearchEShowState(
-      status: StateStatus.init,
-      currentSelectedEShow: EShowType.movie,
-      eShowList: [],
-      searchKeyword: '',
-      page: 1,
-      isAtEndOfPage: false,
-    );
-  }
 
   SearchEShowState update({
     StateStatus? status,
@@ -92,7 +92,7 @@ class SearchEShowState extends Equatable {
   }
 
   @override
-  List<Object> get props => [
+  List<Object> get props => <Object>[
         status,
         currentSelectedEShow,
         eShowList,

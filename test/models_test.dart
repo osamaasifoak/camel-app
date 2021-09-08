@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:camelmovies/core/constants/app_apis.dart';
 import 'package:camelmovies/core/constants/singletons_names.dart';
 import 'package:camelmovies/core/models/entertainment_show/entertainment_show.dart';
+import 'package:camelmovies/core/models/entertainment_show/entertainment_show_details.dart';
 import 'package:camelmovies/core/models/movie/movie.dart';
 import 'package:camelmovies/core/models/movie/movie_detail.dart';
 import 'package:camelmovies/core/repositories/base_eshows_repo.dart';
@@ -12,7 +13,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:postor/postor.dart';
 
-const apiKey = '';
+const String apiKey = '';
 
 void main() {
   // prepare network service & movie repository
@@ -26,7 +27,9 @@ void main() {
     MoviesRepository(),
     instanceName: SIName.repo.movies,
   );
-  final moviesRepo = GetIt.I<BaseEShowsRepository>(instanceName: SIName.repo.movies);
+  final BaseEShowsRepository moviesRepo = GetIt.I<BaseEShowsRepository>(
+    instanceName: SIName.repo.movies,
+  );
 
   AppApis().loadApiKey(apiKey: apiKey);
   group('Test [Movie] model: see if [Movie] can parse response.body correctly:\n', () {
@@ -36,10 +39,12 @@ void main() {
         'then return an instance of `List<Movie>` consists of '
         '20 items.', () {
       expectLater(
-        moviesRepo.fetch(category: MovieEndpoint.nowPlaying.name).then((movieList) {
-          expect(movieList, isA<List<Movie>>());
-          expect(movieList.length, equals(20));
-        }),
+        moviesRepo.fetch(category: MovieEndpoint.nowPlaying.name).then(
+          (List<EShow> movieList) {
+            expect(movieList, isA<List<Movie>>());
+            expect(movieList.length, equals(20));
+          },
+        ),
         completes,
       );
     });
@@ -49,10 +54,12 @@ void main() {
         'then return an instance of `List<Movie>` consists of '
         '20 items.', () {
       expectLater(
-        moviesRepo.fetch(category: MovieEndpoint.upcoming.name).then((movieList) {
-          expect(movieList, isA<List<Movie>>());
-          expect(movieList.length, equals(20));
-        }),
+        moviesRepo.fetch(category: MovieEndpoint.upcoming.name).then(
+          (List<EShow> movieList) {
+            expect(movieList, isA<List<Movie>>());
+            expect(movieList.length, equals(20));
+          },
+        ),
         completes,
       );
     });
@@ -62,10 +69,12 @@ void main() {
         'then return an instance of `List<Movie>` consists of '
         '20 items.', () {
       expectLater(
-        moviesRepo.fetch(category: MovieEndpoint.popular.name).then((movieList) {
-          expect(movieList, isA<List<Movie>>());
-          expect(movieList.length, equals(20));
-        }),
+        moviesRepo.fetch(category: MovieEndpoint.popular.name).then(
+          (List<EShow> movieList) {
+            expect(movieList, isA<List<Movie>>());
+            expect(movieList.length, equals(20));
+          },
+        ),
         completes,
       );
     });
@@ -73,17 +82,21 @@ void main() {
   test('Test [MovieDetail] & [MovieGenre] models: see if both can parse response.body correctly.', () async {
     late final EShow randomMovie;
     await expectLater(
-      moviesRepo.fetch(category: MovieEndpoint.nowPlaying.name).then((movieList) {
-        expect(movieList, isA<List<Movie>>());
-        expect(movieList.length, equals(20));
-        randomMovie = movieList[Random().nextInt(19)];
-      }),
+      moviesRepo.fetch(category: MovieEndpoint.nowPlaying.name).then(
+        (List<EShow> movieList) {
+          expect(movieList, isA<List<Movie>>());
+          expect(movieList.length, equals(20));
+          randomMovie = movieList[Random().nextInt(19)];
+        },
+      ),
       completes,
     );
     expectLater(
-      moviesRepo.getDetails(id: randomMovie.id).then((movieDetail) {
-        expect(movieDetail, isA<MovieDetail>());
-      }),
+      moviesRepo.getDetails(id: randomMovie.id).then(
+        (EShowDetails movieDetail) {
+          expect(movieDetail, isA<MovieDetail>());
+        },
+      ),
       completes,
     );
   });

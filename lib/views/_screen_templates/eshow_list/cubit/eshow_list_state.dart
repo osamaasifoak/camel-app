@@ -14,16 +14,16 @@ class EShowListState extends BaseBlocState {
           errorMessage: errorMessage,
         );
 
-  final List<EShow> eShows;
-
   factory EShowListState.init() {
     return const EShowListState(
       status: StateStatus.init,
-      eShows: [],
+      eShows: <EShow>[],
       currentPage: 0,
       isAtEndOfPage: false,
     );
   }
+
+  final List<EShow> eShows;
 
   EShowListState update({
     List<EShow>? eShows,
@@ -42,5 +42,5 @@ class EShowListState extends BaseBlocState {
   }
 
   @override
-  List<Object?> get props => [...super.props, eShows];
+  List<Object?> get props => <Object?>[...super.props, eShows];
 }

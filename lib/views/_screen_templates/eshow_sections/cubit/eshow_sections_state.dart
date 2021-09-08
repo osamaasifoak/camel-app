@@ -7,6 +7,13 @@ class EShowSectionsState extends Equatable {
     this.errorMessage,
   });
 
+  factory EShowSectionsState.init() {
+    return const EShowSectionsState(
+      status: StateStatus.init,
+      eShowSections: <EShowSection>[],
+    );
+  }
+
   final StateStatus status;
   final List<EShowSection> eShowSections;
   final String? errorMessage;
@@ -16,13 +23,6 @@ class EShowSectionsState extends Equatable {
   bool get isBusy => isLoading || isLoadingMore;
 
   bool get hasError => status == StateStatus.error;
-
-  factory EShowSectionsState.init() {
-    return const EShowSectionsState(
-      status: StateStatus.init,
-      eShowSections: [],
-    );
-  }
 
   EShowSectionsState update({
     StateStatus? status,
@@ -37,5 +37,5 @@ class EShowSectionsState extends Equatable {
   }
 
   @override
-  List<Object> get props => [status, eShowSections];
+  List<Object?> get props => <Object?>[status, eShowSections];
 }

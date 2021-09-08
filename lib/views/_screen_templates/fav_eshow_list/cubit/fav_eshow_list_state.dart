@@ -14,16 +14,16 @@ class FavEShowListState extends BaseBlocState {
           errorMessage: errorMessage,
         );
 
-  final List<EShow> favEShows;
-
   factory FavEShowListState.init() {
     return const FavEShowListState(
       status: StateStatus.init,
       currentPage: 0,
-      favEShows: [],
+      favEShows: <EShow>[],
       isAtEndOfPage: false,
     );
   }
+
+  final List<EShow> favEShows;
 
   FavEShowListState update({
     StateStatus? status,
@@ -42,7 +42,5 @@ class FavEShowListState extends BaseBlocState {
   }
 
   @override
-  List<Object?> get props => [...super.props, favEShows];
-
-
+  List<Object?> get props => <Object?>[...super.props, favEShows];
 }

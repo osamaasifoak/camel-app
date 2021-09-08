@@ -1,8 +1,6 @@
-
 import '/core/models/entertainment_show/entertainment_show_reviews.dart';
 
 class MovieReview implements EShowReview {
-
   const MovieReview({
     required this.id,
     required this.author,
@@ -10,21 +8,6 @@ class MovieReview implements EShowReview {
     required this.createdAt,
     required this.updatedAt,
   });
-  
-  @override
-  final String id;
-
-  @override
-  final String  author;
-
-  @override
-  final String content;
-
-  @override
-  final DateTime createdAt;
-
-  @override
-  final DateTime updatedAt;
 
   factory MovieReview.fromMap(Map<String, dynamic> map) {
     return MovieReview(
@@ -37,28 +20,38 @@ class MovieReview implements EShowReview {
   }
 
   @override
-  String toString() {
-    return 'MovieReview(id: $id, author: $author, content: $content, createdAt: $createdAt, updatedAt: $updatedAt)';
-  }
+  final String id;
+
+  @override
+  final String author;
+
+  @override
+  final String content;
+
+  @override
+  final DateTime createdAt;
+
+  @override
+  final DateTime updatedAt;
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-  
+
     return other is MovieReview &&
-      other.id == id &&
-      other.author == author &&
-      other.content == content &&
-      other.createdAt == createdAt &&
-      other.updatedAt == updatedAt;
+        other.id == id &&
+        other.author == author &&
+        other.content == content &&
+        other.createdAt == createdAt &&
+        other.updatedAt == updatedAt;
   }
 
   @override
   int get hashCode {
     return id.hashCode ^
-      author.hashCode ^
-      content.hashCode ^
-      createdAt.hashCode ^
-      updatedAt.hashCode;
+        author.hashCode ^
+        content.hashCode ^
+        createdAt.hashCode ^
+        updatedAt.hashCode;
   }
 }

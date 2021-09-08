@@ -7,7 +7,7 @@ import '/core/constants/app_routes.dart';
 import '/screens.dart';
 import '/views/_widgets/circular_reveal_clipper.dart';
 
-const log = _dev.log;
+const void Function(String message) log = _dev.log;
 
 const int charCodeOf0 = 48;
 const int charCodeOf9 = 57;
@@ -55,13 +55,6 @@ int? _tryParseInt(final String? source) {
 }
 
 class ScreenRouter<T> extends PageRoute<T> {
-  static PointerDownEvent? _pointerDownEvent;
-
-  static void onPointerDownEvent(PointerDownEvent newPointerDownEvent) {
-    log(newPointerDownEvent.toString());
-    _pointerDownEvent = newPointerDownEvent;
-  }
-
   ScreenRouter({
     required RouteSettings settings,
     this.transitionDuration = const Duration(milliseconds: 300),
@@ -157,6 +150,13 @@ class ScreenRouter<T> extends PageRoute<T> {
     }
   }
 
+  static PointerDownEvent? _pointerDownEvent;
+
+  static void onPointerDownEvent(PointerDownEvent newPointerDownEvent) {
+    log(newPointerDownEvent.toString());
+    _pointerDownEvent = newPointerDownEvent;
+  }
+
   @override
   final Color? barrierColor;
 
@@ -196,34 +196,34 @@ class ScreenRouter<T> extends PageRoute<T> {
   @override
   Widget buildTransitions(
     BuildContext context,
-    Animation<double> primaryAnimation,
+    Animation<double> animation,
     Animation<double> secondaryAnimation,
-    Widget page,
+    Widget child,
   ) {
     Widget transition;
 
     if (_circularAlignment != null) {
       transition = ScaleTransition(
         alignment: _circularAlignment!,
-        scale: primaryAnimation.drive(_defaultTweenDouble),
+        scale: animation.drive(_defaultTweenDouble),
         child: ClipPath(
           clipper: CircularRevealClipper(
             centerAlignment: _circularAlignment,
-            fraction: primaryAnimation.value,
+            fraction: animation.value,
           ),
-          child: page,
+          child: child,
         ),
       );
 
       if (_useFadeTransition) {
         transition = FadeTransition(
-          opacity: primaryAnimation,
+          opacity: animation,
           child: transition,
         );
       }
     } else {
       final Animation<Offset> primarySlideTransitionTween = CurvedAnimation(
-        parent: primaryAnimation,
+        parent: animation,
         curve: Curves.linearToEaseOut,
         reverseCurve: Curves.easeInToLinear,
       ).drive(_defaultCurvedTweenOffset);
@@ -231,8 +231,8 @@ class ScreenRouter<T> extends PageRoute<T> {
       transition = SlideTransition(
         position: primarySlideTransitionTween,
         child: FadeTransition(
-          opacity: primaryAnimation,
-          child: page,
+          opacity: animation,
+          child: child,
         ),
       );
     }

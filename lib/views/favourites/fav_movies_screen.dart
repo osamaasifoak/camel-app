@@ -22,10 +22,14 @@ class FavMoviesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
+    return BlocProvider<FavEShowListCubit>(
       create: (_) => FavEShowListCubit(
-        eShowsRepo: GetIt.I<BaseEShowsRepository>(instanceName: SIName.repo.movies),
-        favEShowRepo: GetIt.I<BaseFavEShowsRepository>(instanceName: SIName.repo.favMovies),
+        eShowsRepo: GetIt.I<BaseEShowsRepository>(
+          instanceName: SIName.repo.movies,
+        ),
+        favEShowRepo: GetIt.I<BaseFavEShowsRepository>(
+          instanceName: SIName.repo.favMovies,
+        ),
         unknownErrorMessage: AppErrorMessages.favMoviesUnknownError,
       ),
       child: FavEShowListScreen(

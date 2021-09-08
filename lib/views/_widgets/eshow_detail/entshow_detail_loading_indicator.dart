@@ -11,7 +11,7 @@ class EShowDetailLoadingIndicator extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
+        children: <Widget>[
           eShowPoster,
           eShowTitle,
           eShowTags,
@@ -42,7 +42,7 @@ class EShowDetailLoadingIndicator extends StatelessWidget {
       margin: const EdgeInsets.fromLTRB(16, 15, 16, 15),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
+        children: <Widget>[
           smallTag,
           midTag,
           smallTag,

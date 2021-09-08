@@ -36,7 +36,7 @@ class _EShowListScreenState extends _EShowListScreenProps {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<EShowListCubit, EShowListState>(
-      listener: (_, state) {
+      listener: (_, EShowListState state) {
         if (state.hasError && state.eShows.isNotEmpty) {
           if (widget.onPopupError != null) {
             widget.onPopupError!(context, state.errorMessage!);
@@ -48,7 +48,7 @@ class _EShowListScreenState extends _EShowListScreenProps {
           }
         }
       },
-      builder: (_, state) {
+      builder: (_, EShowListState state) {
         if (state.isInit || state.isLoading && state.eShows.isEmpty) {
           return const EShowListLoadingIndicator(
             withCustomScrollView: true,

@@ -1,8 +1,6 @@
-
 import 'package:flutter/material.dart';
 
 class FavCountIcon extends StatelessWidget {
-  
   const FavCountIcon({
     Key? key,
     required this.countStream,
@@ -18,7 +16,6 @@ class FavCountIcon extends StatelessWidget {
   final double favCountTextRadius;
   final TextStyle? favCountTextStyle;
 
-
   @override
   Widget build(BuildContext context) {
     return IconButton(
@@ -27,12 +24,12 @@ class FavCountIcon extends StatelessWidget {
       iconSize: favIconSize,
       padding: const EdgeInsets.all(4),
       icon: Stack(
-        children: [
+        children: <Widget>[
           const Icon(Icons.favorite_border),
           StreamBuilder<int>(
             initialData: 0,
             stream: countStream,
-            builder: (_, countSnapshot) {
+            builder: (_, AsyncSnapshot<int> countSnapshot) {
               return _countNumber(countSnapshot.data);
             },
           ),
@@ -58,11 +55,12 @@ class FavCountIcon extends StatelessWidget {
         child: Text(
           (count ?? 0).toString(),
           textAlign: TextAlign.center,
-          style: favCountTextStyle ?? const TextStyle(
-            color: Colors.white,
-            fontSize: 8,
-            fontWeight: FontWeight.bold,
-          ),
+          style: favCountTextStyle ??
+              const TextStyle(
+                color: Colors.white,
+                fontSize: 8,
+                fontWeight: FontWeight.bold,
+              ),
         ),
       ),
     );

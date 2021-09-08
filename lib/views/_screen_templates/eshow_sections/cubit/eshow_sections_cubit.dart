@@ -1,5 +1,5 @@
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart' show Cubit;
 import 'package:postor/error_handler.dart' as eh show catchIt;
 import 'package:postor/postor.dart' show CancelledRequestException;
 
@@ -38,40 +38,42 @@ class EShowSectionsCubit extends Cubit<EShowSectionsState> {
   Future<void> loadSections() async {
     if (state.isBusy) return;
 
-    final List<EShowSection> emptySections = _providers.map<EShowSection>((s) {
+    final List<EShowSection> emptySections =
+        _providers.map<EShowSection>((EShowSectionProvider s) {
       return EShowSection(
         title: s.title,
-        eShows: const [],
+        eShows: const <EShow>[],
       );
     }).toList(growable: false);
 
-    emit(state.update(
-      status: StateStatus.loading,
-      eShowSections: emptySections,
-    ));
+    emit(
+      state.update(
+        status: StateStatus.loading,
+        eShowSections: emptySections,
+      ),
+    );
 
     try {
       for (final EShowSectionProvider sectionProvider in _providers) {
-        final List<EShow> eShows = await _eShowRepo.fetch(category: sectionProvider.category);
+        final List<EShow> eShows =
+            await _eShowRepo.fetch(category: sectionProvider.category);
         final EShowSection eShowSection = EShowSection(
           title: sectionProvider.title,
           eShows: eShows,
         );
 
-        final List<EShowSection> newEShowSections = state.eShowSections.map<EShowSection>((s) {
+        final List<EShowSection> newEShowSections =
+            state.eShowSections.map<EShowSection>((EShowSection s) {
           if (s.title == eShowSection.title) {
             return eShowSection;
           }
           return s;
         }).toList(growable: false);
 
-        emit(state.update(
-          eShowSections: newEShowSections,
-        ));
+        emit(state.update(eShowSections: newEShowSections));
       }
-      emit(state.update(
-        status: StateStatus.loaded,
-      ));
+
+      emit(state.update(status: StateStatus.loaded));
     } catch (error, stackTrace) {
       if (error is! CancelledRequestException) {
         eh.catchIt(
@@ -85,9 +87,11 @@ class EShowSectionsCubit extends Cubit<EShowSectionsState> {
   }
 
   void _catchError(String errorMessage) {
-    emit(state.update(
-      status: StateStatus.error,
-      errorMessage: errorMessage,
-    ));
+    emit(
+      state.update(
+        status: StateStatus.error,
+        errorMessage: errorMessage,
+      ),
+    );
   }
 }

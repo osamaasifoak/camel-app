@@ -2,8 +2,8 @@ import 'dart:async' show Completer;
 import 'dart:developer' as dev show log;
 
 import 'package:flutter/foundation.dart' show kDebugMode;
-import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as path show join;
+import 'package:sqflite/sqflite.dart';
 
 import '../base_localdb_service.dart';
 
@@ -32,11 +32,11 @@ class LocalDbService implements BaseLocalDbService {
       return;
     }
     try {
-      final dbPath = path.join(
+      final String dbPath = path.join(
         await getDatabasesPath(),
         _dbFileName,
       );
-      final openedDb = await openDatabase(
+      final Database openedDb = await openDatabase(
         dbPath,
         onCreate: _createTables,
         version: 1,
@@ -56,7 +56,7 @@ class LocalDbService implements BaseLocalDbService {
   }
 
   Future<void> _createTables(Database db, int version) async {
-    final batch = db.batch();
+    final Batch batch = db.batch();
     _createTablesQueries.forEach(batch.execute);
     await batch.commit(noResult: true);
   }
@@ -69,7 +69,7 @@ class LocalDbService implements BaseLocalDbService {
     bool? continueOnError,
     Transaction? txn,
   }) async {
-    final batch = (txn ?? await _database.future).batch();
+    final Batch batch = (txn ?? await _database.future).batch();
 
     batchesFn(batch);
 
@@ -91,13 +91,13 @@ class LocalDbService implements BaseLocalDbService {
 
   @override
   Future<void> clearDb() async {
-    final batch = (await _database.future).batch();
+    final Batch batch = (await _database.future).batch();
     _tablesNames.forEach(batch.delete);
     await batch.commit(noResult: true);
   }
 
   @override
-  Future<void> closeDb() => _database.future.then((db) => db.close());
+  Future<void> closeDb() => _database.future.then((Database db) => db.close());
 
   @override
   Future<int> delete({

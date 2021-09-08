@@ -51,7 +51,7 @@ class _SearchScreenState extends _SearchScreenProps {
         ),
         body: BlocConsumer<SearchEShowBloc, SearchEShowState>(
           bloc: _searchBloc,
-          listener: (_, state) {
+          listener: (_, SearchEShowState state) {
             if (state.hasError && state.eShowList.isNotEmpty) {
               GetIt.I<BaseScreenMessenger>().showSnackBar(
                 context: context,
@@ -59,11 +59,12 @@ class _SearchScreenState extends _SearchScreenProps {
               );
             }
           },
-          builder: (_, state) {
+          builder: (_, SearchEShowState state) {
             if (state.isBusy && state.eShowList.isEmpty) {
               return const EShowListLoadingIndicator(
                 itemCount: 10,
-                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
                 withCustomScrollView: true,
               );
             }

@@ -1,7 +1,4 @@
 class FavEShow {
-  final int showId;
-  final DateTime addedOn;
-
   const FavEShow({
     required this.showId,
     required this.addedOn,
@@ -13,6 +10,17 @@ class FavEShow {
       addedOn: DateTime.now(),
     );
   }
+
+  final int showId;
+  final DateTime addedOn;
+
+  Map<String, int> toMap() {
+    return <String, int>{
+      'id': showId,
+      'added_on': addedOn.millisecondsSinceEpoch,
+    };
+  }
+
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
@@ -22,12 +30,4 @@ class FavEShow {
 
   @override
   int get hashCode => showId.hashCode ^ addedOn.hashCode;
-
-  Map<String, dynamic> toMap() {
-    return {
-      'id': showId,
-      'added_on': addedOn.millisecondsSinceEpoch,
-    };
-  }
-
 }

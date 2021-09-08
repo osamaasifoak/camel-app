@@ -9,15 +9,6 @@ typedef ESG = EShowGenre;
 typedef JsonMap = Map<String, dynamic>;
 
 class MovieDetail extends Movie implements EShowDetails {
-  @override
-  final String overview; //overview
-  @override
-  final String? imgUrlBackdrop; //backdrop_path
-  @override
-  final int runtime;
-  @override
-  final List<ESG> genres;
-
   const MovieDetail({
     required int id,
     required String title,
@@ -41,23 +32,13 @@ class MovieDetail extends Movie implements EShowDetails {
         );
 
   @override
-  String? get imgUrlBackdropOriginal {
-    if (imgUrlBackdrop != null) {
-      return AppApis().baseImageUrl + AppApis().epOriginalImage + imgUrlBackdrop!;
-    }
-  }
-
-  @override
-  String? get imgUrlBackdropThumb {
-    if (imgUrlBackdrop != null) {
-      return AppApis().baseImageUrl + AppApis().epThumbImage + imgUrlBackdrop!;
-    }
-  }
-
-  @override
   factory MovieDetail.fromMap(JsonMap map) {
-    final genres = (map['genres'] as List).map((g) => ESG.fromMap(g as JsonMap)).toList(growable: false);
-    final relDate = map['release_date'] as String? ?? '';
+    final List<EShowGenre> genres = (map['genres'] as List<dynamic>).map(
+      (dynamic g) {
+        return ESG.fromMap(g as JsonMap);
+      },
+    ).toList(growable: false);
+    final String relDate = map['release_date'] as String? ?? '';
     return MovieDetail(
       id: map['id'] as int,
       title: map['title'] as String,
@@ -73,11 +54,31 @@ class MovieDetail extends Movie implements EShowDetails {
     );
   }
 
-    factory MovieDetail.fromJson(String source) => MovieDetail.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory MovieDetail.fromJson(String source) {
+    return MovieDetail.fromMap(json.decode(source) as Map<String, dynamic>);
+  }
 
   @override
-  String toString() {
-    return 'MovieDetail(id: $id, title: $title, releaseDate: $releaseDate, overview: $overview, rating: $rating, voteCount: $voteCount, imgUrlPoster: $imgUrlPoster, imgUrlBackdrop: $imgUrlBackdrop, runtime: $runtime, year: $year, genres: $genres)';
+  final String overview; //overview
+  @override
+  final String? imgUrlBackdrop; //backdrop_path
+  @override
+  final int runtime;
+  @override
+  final List<ESG> genres;
+
+  @override
+  String? get imgUrlBackdropOriginal {
+    if (imgUrlBackdrop != null) {
+      return AppApis().baseImageUrl + AppApis().epOriginalImage + imgUrlBackdrop!;
+    }
+  }
+
+  @override
+  String? get imgUrlBackdropThumb {
+    if (imgUrlBackdrop != null) {
+      return AppApis().baseImageUrl + AppApis().epThumbImage + imgUrlBackdrop!;
+    }
   }
 
   @override

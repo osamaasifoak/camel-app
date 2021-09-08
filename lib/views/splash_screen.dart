@@ -49,28 +49,26 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
           padding: EdgeInsets.zero,
           child: ValueListenableBuilder<double>(
             valueListenable: _animation,
-            builder: (_, animationValue, child) {
+            builder: (_, double animationValue, Widget? child) {
               return ShaderMask(
-                shaderCallback: (rect) {
-                  return RadialGradient(
-                    center: Alignment.topLeft,
-                    radius: 3,
-                    stops: [
-                      animationValue - 4.5,
-                      animationValue - 3.5,
-                      animationValue - 2.5,
-                      animationValue - 1.25,
-                      animationValue - 0.15,
-                    ],
-                    colors: const [
-                      Color(0xFF0D47A1),
-                      Color(0xFF311B92),
-                      Color(0xFFB388FF),
-                      Color(0xFF80D8FF),
-                      Color(0xFF0D47A1),
-                    ],
-                  ).createShader(rect);
-                },
+                shaderCallback: RadialGradient(
+                  center: Alignment.topLeft,
+                  radius: 3,
+                  stops: <double>[
+                    animationValue - 4.5,
+                    animationValue - 3.5,
+                    animationValue - 2.5,
+                    animationValue - 1.25,
+                    animationValue - 0.15,
+                  ],
+                  colors: const <Color>[
+                    Color(0xFF0D47A1),
+                    Color(0xFF311B92),
+                    Color(0xFFB388FF),
+                    Color(0xFF80D8FF),
+                    Color(0xFF0D47A1),
+                  ],
+                ).createShader,
                 child: child,
               );
             },

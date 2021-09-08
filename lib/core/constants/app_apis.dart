@@ -133,9 +133,9 @@ extension TVEndpointName on TVEndpoint {
 class AppApis {
   factory AppApis() => _singleton;
 
-  static final AppApis _singleton = AppApis._internal();
-
   AppApis._internal();
+
+  static final AppApis _singleton = AppApis._internal();
 
   final String baseImageUrl = 'https://image.tmdb.org';
   final String epThumbImage = '/t/p/w300';
@@ -150,7 +150,7 @@ class AppApis {
   final String _paramPage = 'page';
   final String _paramSearchKeyword = 'query';
 
-  final Map<String, String> defaultHeader = const {
+  final Map<String, String> defaultHeader = const <String, String>{
     'Content-Type': 'application/json',
   };
 
@@ -182,7 +182,7 @@ class AppApis {
     final String language = kDefaultLanguage,
     final String region = kDefaultRegion,
   }) {
-    final Map<String, String> params = {
+    final Map<String, String> params = <String, String>{
       _paramApiKey: _cachedApiKey,
       _paramLanguage: language,
       _paramRegion: region,

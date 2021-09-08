@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '/core/models/entertainment_show/entertainment_show.dart';
 import '../default_refresh_indicator_builder.dart';
 import '../eshow_list_tile/eshow_list_loading_indicator.dart';
 import '../eshow_list_tile/eshow_list_tile.dart';
-import '/core/models/entertainment_show/entertainment_show.dart';
 
 class EShowListView extends StatelessWidget {
   const EShowListView({
@@ -29,7 +29,7 @@ class EShowListView extends StatelessWidget {
   final ScrollController listScrollController;
 
   Widget _eShowListTileBuilder(BuildContext context, int index) {
-    final eShow = eShows[index];
+    final EShow eShow = eShows[index];
     return EShowListTile(
       eShow: eShow,
       onTap: () => onEShowTapped(eShow.id),
@@ -51,7 +51,7 @@ class EShowListView extends StatelessWidget {
       keyboardDismissBehavior: keyboardDismissBehavior,
       controller: listScrollController,
       cacheExtent: 200,
-      slivers: [
+      slivers: <Widget>[
         CupertinoSliverRefreshControl(
           onRefresh: onRefresh,
           builder: defaultRefreshIndicatorBuilder,

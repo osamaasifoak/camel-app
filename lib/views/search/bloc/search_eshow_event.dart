@@ -4,7 +4,7 @@ abstract class SearchEShowEvent extends Equatable {
   const SearchEShowEvent();
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => <Object>[];
 }
 
 class RefreshEShowEvent extends SearchEShowEvent {}
@@ -18,7 +18,7 @@ class SelectedEShowChangedEvent extends SearchEShowEvent {
   final EShowType newSelectedEShow;
 
   @override
-  List<Object> get props => [newSelectedEShow];
+  List<Object> get props => <Object>[newSelectedEShow];
 }
 
 class SearchKeywordChangedEvent extends SearchEShowEvent {
@@ -28,5 +28,5 @@ class SearchKeywordChangedEvent extends SearchEShowEvent {
   final String searchKeyword;
 
   @override
-  List<Object> get props => [searchKeyword];
+  List<Object> get props => <Object>[searchKeyword];
 }

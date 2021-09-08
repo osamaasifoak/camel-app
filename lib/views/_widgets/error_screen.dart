@@ -18,7 +18,7 @@ class ErrorScreen extends StatelessWidget {
       padding: const EdgeInsets.all(10),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [
+        children: <Widget>[
           Container(
             height: MediaQuery.of(context).size.height * 0.2,
             width: MediaQuery.of(context).size.height * 0.2,

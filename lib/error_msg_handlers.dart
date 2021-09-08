@@ -8,10 +8,14 @@ import 'package:postor/postor.dart' show CancelledRequestException, PException;
 
 import 'core/constants/app_error_messages.dart';
 
-const log = _dev.log;
+const void Function(String message, {StackTrace? stackTrace}) log = _dev.log;
 
 void initErrorMessageHandlers() {
-  return eh.initErrorMessages((error, stackTrace, otherErrorMessage) {
+  return eh.initErrorMessages((
+    Object error,
+    StackTrace? stackTrace,
+    String? otherErrorMessage,
+  ) {
     if (foundation.kDebugMode) {
       log(
         '[ErrorHandler] caught an error:\n$error\ncaused by the following:',

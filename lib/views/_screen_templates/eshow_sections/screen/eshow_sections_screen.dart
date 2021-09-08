@@ -26,7 +26,8 @@ class EShowSectionsScreen extends StatefulWidget {
   _EShowSectionsScreenState createState() => _EShowSectionsScreenState();
 }
 
-class _EShowSectionsScreenState extends State<EShowSectionsScreen> with AutomaticKeepAliveClientMixin {
+class _EShowSectionsScreenState extends State<EShowSectionsScreen>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
@@ -34,13 +35,13 @@ class _EShowSectionsScreenState extends State<EShowSectionsScreen> with Automati
   Widget build(BuildContext context) {
     super.build(context);
     return BlocProvider<EShowSectionsCubit>(
-      create: (context) => EShowSectionsCubit(
+      create: (BuildContext context) => EShowSectionsCubit(
         eShowRepo: widget.eShowRepo,
         providers: widget.providers,
         unknownErrorMessage: widget.unknownErrorMessage,
       ),
       child: BlocBuilder<EShowSectionsCubit, EShowSectionsState>(
-        builder: (context, state) {
+        builder: (BuildContext context, EShowSectionsState state) {
           if (state.hasError) {
             return Center(
               child: ErrorScreen(
@@ -50,19 +51,22 @@ class _EShowSectionsScreenState extends State<EShowSectionsScreen> with Automati
             );
           }
           final int sectionsLength = state.eShowSections.length;
-          final List<Widget> sections = [
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 32),
-            ),
+          final List<Widget> sections = <Widget>[
+            const SliverToBoxAdapter(child: SizedBox(height: 32)),
           ];
           for (int i = 0; i < sectionsLength; i++) {
             final EShowSection eShowSection = state.eShowSections[i];
-            final void Function(BuildContext context) onSectionTapped = widget.providers[i].onSectionTapped;
+            final void Function(BuildContext context) onSectionTapped =
+                widget.providers[i].onSectionTapped;
+
             final Widget section = SliverToBoxAdapter(
               child: EShowSectionListView(
                 eShowSection: eShowSection,
                 onSectionTapped: () => onSectionTapped(this.context),
-                onEShowTapped: (eShow) => widget.onEShowTapped(this.context, eShow),
+                onEShowTapped: (EShow eShow) => widget.onEShowTapped(
+                  this.context,
+                  eShow,
+                ),
               ),
             );
             sections.add(section);

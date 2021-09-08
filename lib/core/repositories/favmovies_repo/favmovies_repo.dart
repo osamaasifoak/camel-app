@@ -2,17 +2,11 @@ import 'package:get_it/get_it.dart';
 import 'package:rxdart/rxdart.dart' show BehaviorSubject;
 import 'package:sqflite/sqflite.dart' show Sqflite, ConflictAlgorithm;
 
-import '../base_fav_eshows_repo.dart';
 import '/core/models/fav_entertainment_show/fav_entertainment_show.dart';
 import '/core/services/localdb_service/base_localdb_service.dart';
+import '../base_fav_eshows_repo.dart';
 
 class FavMoviesRepository implements BaseFavEShowsRepository {
-  static const String favMoviesTableName = 'fav_movie';
-  static const String createFavMovieTableQuery = 
-      'CREATE TABLE $favMoviesTableName '
-      '(id INTEGER PRIMARY KEY, '
-      'added_on INTEGER)';
-
   FavMoviesRepository({
     BaseLocalDbService? localDbService,
     BehaviorSubject<int>? favCountController,
@@ -21,6 +15,12 @@ class FavMoviesRepository implements BaseFavEShowsRepository {
     refreshFavCount();
   }
 
+  static const String favMoviesTableName = 'fav_movie';
+  static const String createFavMovieTableQuery =
+      'CREATE TABLE $favMoviesTableName '
+      '(id INTEGER PRIMARY KEY, '
+      'added_on INTEGER)';
+
   final BaseLocalDbService _localDbService;
 
   @override
@@ -28,9 +28,9 @@ class FavMoviesRepository implements BaseFavEShowsRepository {
 
   @override
   Future<int> getFavCount() async {
-    final favCount = await _localDbService.select(
+    final List<Map<String, Object?>> favCount = await _localDbService.select(
       table: favMoviesTableName,
-      columns: ['COUNT(*)'],
+      columns: <String>['COUNT(*)'],
     );
     return Sqflite.firstIntValue(favCount) ?? 0;
   }
@@ -48,11 +48,11 @@ class FavMoviesRepository implements BaseFavEShowsRepository {
       table: favMoviesTableName,
       offset: page * perPage,
       limit: perPage,
-      columns: ['id'],
+      columns: <String>['id'],
       orderBy: 'added_on DESC',
     );
 
-    return favList.map<int>((fav) => fav['id']! as int).toList();
+    return favList.map<int>((Map<String, Object?> fav) => fav['id']! as int).toList();
   }
 
   @override
@@ -71,7 +71,7 @@ class FavMoviesRepository implements BaseFavEShowsRepository {
     await _localDbService.delete(
       table: favMoviesTableName,
       where: 'id = ?',
-      whereArgs: [id],
+      whereArgs: <Object?>[id],
     );
 
     refreshFavCount();
@@ -82,7 +82,7 @@ class FavMoviesRepository implements BaseFavEShowsRepository {
     final List<Map<String, Object?>> findFav = await _localDbService.select(
       table: favMoviesTableName,
       where: 'id = ?',
-      whereArgs: [id],
+      whereArgs: <Object?>[id],
       limit: 1,
     );
 

@@ -35,7 +35,7 @@ class _FavEShowListScreenState extends _FavEShowListProps {
         shadowColor: Colors.grey[100],
       ),
       body: BlocConsumer<FavEShowListCubit, FavEShowListState>(
-        listener: (_, state) {
+        listener: (_, FavEShowListState state) {
           if (state.hasError && state.favEShows.isNotEmpty) {
             GetIt.I<BaseScreenMessenger>().showSnackBar(
               context: context,
@@ -43,7 +43,7 @@ class _FavEShowListScreenState extends _FavEShowListProps {
             );
           }
         },
-        builder: (_, state) {
+        builder: (_, FavEShowListState state) {
           if(state.isInit || state.isLoading && state.favEShows.isEmpty) {
             return const EShowListLoadingIndicator(
             withCustomScrollView: true,
