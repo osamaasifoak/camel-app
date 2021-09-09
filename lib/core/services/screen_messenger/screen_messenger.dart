@@ -77,7 +77,7 @@ class ScreenMessenger implements BaseScreenMessenger {
       SnackBar(
         content: message != null ? Text(message) : content!,
         duration: duration ?? const Duration(milliseconds: 2000),
-        backgroundColor: backgroundColor ?? Theme.of(context).accentColor,
+        backgroundColor: backgroundColor ?? Theme.of(context).colorScheme.secondary,
         elevation: elevation,
         behavior: floating != null && floating
             ? SnackBarBehavior.floating
