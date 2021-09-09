@@ -39,12 +39,18 @@ class __SearchTextFieldState extends State<_SearchTextField> {
         minWidth: 24,
       ),
       padding: EdgeInsets.zero,
-      icon: const Icon(Icons.clear),
+      icon: Icon(
+        Icons.clear,
+        color: AppColors.of(context).secondaryColor,
+      ),
     );
   }
 
   Widget get _searchIcon {
-    return const Icon(Icons.search);
+    return Icon(
+      Icons.search,
+      color: AppColors.of(context).secondaryColor,
+    );
   }
 
   bool _suffixIconBuilderPredicate(SearchEShowState prev, SearchEShowState current) {
@@ -123,19 +129,24 @@ class __SelectedEShowTypeBarState extends State<_SelectedEShowTypeBar> {
   }
 
   Widget _toggleButtonBuilder(BuildContext context, SearchEShowState state) {
-    final double minWidth = ScreenSizer().currentWidth * 0.5 - 21;
-    
-    return ToggleButtons(
-      isSelected: EShowType.values.map<bool>((EShowType e) {
-        return e == state.currentSelectedEShow;
-      }).toList(growable: false),
-      onPressed: _onEShowTypeTapped,
-      borderRadius: const BorderRadius.all(Radius.circular(20)),
-      constraints: BoxConstraints(
-        minHeight: 36,
-        minWidth: minWidth,
-      ),
-      children: _availableEShowsToSearch,
+    return ListenableBuilder<ScreenSizer>(
+      listenable: ScreenSizer(),
+      builder: (BuildContext context, ScreenSizer size) {
+        final double minWidth = size.currentWidth * 0.5 - 18;
+
+        return ToggleButtons(
+          isSelected: EShowType.values.map<bool>((EShowType e) {
+            return e == state.currentSelectedEShow;
+          }).toList(growable: false),
+          onPressed: _onEShowTypeTapped,
+          borderRadius: const BorderRadius.all(Radius.circular(20)),
+          constraints: BoxConstraints(
+            minHeight: 36,
+            minWidth: minWidth,
+          ),
+          children: _availableEShowsToSearch,
+        );
+      },
     );
   }
 

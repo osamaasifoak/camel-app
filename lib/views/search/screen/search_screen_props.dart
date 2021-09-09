@@ -59,7 +59,7 @@ abstract class _SearchScreenProps extends State<SearchScreen> {
   }
 
   bool _onBackPressed() {
-    if (_searchListScrollController.offset > 100) {
+    if (_searchListScrollController.offset > 100 && !kIsWeb) {
       _scrollSearchList();
       return false;
     }
