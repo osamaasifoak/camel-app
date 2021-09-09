@@ -1,4 +1,4 @@
-package app.iandis.camelmovies
+package app.iandis.camelapp
 
 import io.flutter.embedding.android.FlutterActivity
 

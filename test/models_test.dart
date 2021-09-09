@@ -1,13 +1,13 @@
 import 'dart:math';
 
-import 'package:camelmovies/core/constants/app_apis.dart';
-import 'package:camelmovies/core/constants/singletons_names.dart';
-import 'package:camelmovies/core/models/entertainment_show/entertainment_show.dart';
-import 'package:camelmovies/core/models/entertainment_show/entertainment_show_details.dart';
-import 'package:camelmovies/core/models/movie/movie.dart';
-import 'package:camelmovies/core/models/movie/movie_detail.dart';
-import 'package:camelmovies/core/repositories/base_eshows_repo.dart';
-import 'package:camelmovies/core/repositories/movies_repo/movies_repo.dart';
+import 'package:camelapp/core/constants/app_apis.dart';
+import 'package:camelapp/core/constants/singletons_names.dart';
+import 'package:camelapp/core/models/entertainment_show/entertainment_show.dart';
+import 'package:camelapp/core/models/entertainment_show/entertainment_show_details.dart';
+import 'package:camelapp/core/models/movie/movie.dart';
+import 'package:camelapp/core/models/movie/movie_detail.dart';
+import 'package:camelapp/core/repositories/base_eshows_repo.dart';
+import 'package:camelapp/core/repositories/movies_repo/movies_repo.dart';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
