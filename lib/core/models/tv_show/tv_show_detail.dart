@@ -38,6 +38,13 @@ class TVShowDetail extends TVShow implements EShowDetails {
         return ESG.fromMap(g as JsonMap);
       },
     ).toList(growable: false);
+    final List<int> rawRunTime = (map['episode_run_time'] as List<dynamic>).cast<int>();
+    final int _runTime;
+    if(rawRunTime.isNotEmpty) {
+      _runTime = rawRunTime.first;
+    }else{
+      _runTime = 0;
+    }
     return TVShowDetail(
       id: map['id'] as int,
       title: map['name'] as String,
@@ -47,7 +54,7 @@ class TVShowDetail extends TVShow implements EShowDetails {
       overview: map['overview'] as String,
       imgUrlPoster: map['poster_path'] as String?,
       imgUrlBackdrop: map['backdrop_path'] as String?,
-      runtime: (map['episode_run_time'] as List<dynamic>).cast<int>(),
+      runtime: _runTime,
       genres: genres,
     );
   }
@@ -62,7 +69,7 @@ class TVShowDetail extends TVShow implements EShowDetails {
   @override
   final String? imgUrlBackdrop; //backdrop_path
   @override
-  final List<int> runtime; //episode_runtime
+  final int runtime; //episode_runtime
   @override
   final List<ESG> genres;
 
@@ -87,7 +94,7 @@ class TVShowDetail extends TVShow implements EShowDetails {
     return other is TVShowDetail &&
         other.overview == overview &&
         other.imgUrlBackdrop == imgUrlBackdrop &&
-        listEquals(other.runtime, runtime) &&
+        other.runtime == runtime &&
         listEquals(other.genres, genres);
   }
 
