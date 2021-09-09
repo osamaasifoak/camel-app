@@ -23,56 +23,50 @@ import '/core/services/screen_messenger/screen_messenger.dart' deferred as _scr_
 Future<void> initSingletons() async {
   await _get_it.loadLibrary();
   // initialize services
-  _postor.loadLibrary().then((_) {
-    return _get_it.GetIt.I.registerSingleton(
-      _postor.Postor(
-        AppApis().baseUrl,
-        defaultHeaders: AppApis().defaultHeader,
-      ),
-    );
-  });
+  await _postor.loadLibrary();
+  _get_it.GetIt.I.registerSingleton(
+    _postor.Postor(
+      AppApis().baseUrl,
+      defaultHeaders: AppApis().defaultHeader,
+    ),
+  );
 
-  _localdb_svc.loadLibrary().then((_) {
-    return _get_it.GetIt.I.registerSingleton<BaseLocalDbService>(
-      _localdb_svc.LocalDbService(
-        createTablesQueries: const <String>[],
-        tablesNames: const <String>[],
-      ),
-    );
-  });
+  await _localdb_svc.loadLibrary();
+  _get_it.GetIt.I.registerSingleton<BaseLocalDbService>(
+    _localdb_svc.LocalDbService(
+      createTablesQueries: const <String>[],
+      tablesNames: const <String>[],
+    ),
+  );
 
-  _scr_msgr.loadLibrary().then((_) {
-    return _get_it.GetIt.I.registerLazySingleton<BaseScreenMessenger>(
-      () => _scr_msgr.ScreenMessenger(),
-    );
-  });
+  await _scr_msgr.loadLibrary();
+  _get_it.GetIt.I.registerLazySingleton<BaseScreenMessenger>(
+    () => _scr_msgr.ScreenMessenger(),
+  );
 
   // initialize repositories
-  _movies_repo.loadLibrary().then((_) {
-    return _get_it.GetIt.I.registerSingleton<BaseEShowsRepository>(
-      _movies_repo.MoviesRepository(),
-      instanceName: SIName.repo.movies,
-    );
-  });
+  await _movies_repo.loadLibrary();
+  _get_it.GetIt.I.registerSingleton<BaseEShowsRepository>(
+    _movies_repo.MoviesRepository(),
+    instanceName: SIName.repo.movies,
+  );
 
-  _tv_show_repo.loadLibrary().then((_) {
-    return _get_it.GetIt.I.registerSingleton<BaseEShowsRepository>(
-      _tv_show_repo.TVShowRepository(),
-      instanceName: SIName.repo.tvShows,
-    );
-  });
+  await _tv_show_repo.loadLibrary();
+  _get_it.GetIt.I.registerSingleton<BaseEShowsRepository>(
+    _tv_show_repo.TVShowRepository(),
+    instanceName: SIName.repo.tvShows,
+  );
 
-  _fav_movies_repo.loadLibrary().then((_) {
-    return _get_it.GetIt.I.registerSingleton<BaseFavEShowsRepository>(
-      _fav_movies_repo.FavMoviesRepository(),
-      instanceName: SIName.repo.favMovies,
-    );
-  });
+  await _fav_movies_repo.loadLibrary();
+  _get_it.GetIt.I.registerSingleton<BaseFavEShowsRepository>(
+    _fav_movies_repo.FavMoviesRepository(),
+    instanceName: SIName.repo.favMovies,
+  );
 
-  _fav_tv_shows_repo.loadLibrary().then((_) {
-    return _get_it.GetIt.I.registerSingleton<BaseFavEShowsRepository>(
-      _fav_tv_shows_repo.FavTVShowsRepository(),
-      instanceName: SIName.repo.favTVShows,
-    );
-  });
+  await _fav_tv_shows_repo.loadLibrary();
+
+  _get_it.GetIt.I.registerSingleton<BaseFavEShowsRepository>(
+    _fav_tv_shows_repo.FavTVShowsRepository(),
+    instanceName: SIName.repo.favTVShows,
+  );
 }
