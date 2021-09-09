@@ -16,7 +16,6 @@ import '/views/movie_list_screens/popular_list_screen.dart' deferred as _list_po
 import '/views/movie_list_screens/upcoming_list_screen.dart' deferred as _list_upcoming_movie show UpcomingMoviesListScreen;
 import '/views/page_not_found_screen.dart' deferred as _not_found show PageNotFoundScreen;
 import '/views/search/screen/_search_screen.dart' deferred as _search show SearchScreen;
-import '/views/splash_screen.dart' deferred as _splash show SplashScreen;
 import '/views/tv_show_list_screens/on_the_air_screen.dart' deferred as _list_on_the_air_tv_show show OnTheAirTVShowsListScreen;
 import '/views/tv_show_list_screens/popular_tv_show_screen.dart' deferred as _list_popular_tv_show show PopularTVShowsListScreen;
 
@@ -88,14 +87,6 @@ class ScreenRouter<T> extends PageRoute<T> {
       final String routePath = routeUri.path;
 
       switch (routePath) {
-        case AppRoutes.splash:
-          _circularAlignment = Alignment.center;
-          destPage = _DeferredWidget(
-            loadLibraryFunc: _splash.loadLibrary,
-            // ignore: prefer_const_constructors
-            destinationPageFunc: () => _splash.SplashScreen(),
-          );
-          break;
 
         case AppRoutes.searchShows:
           _circularAlignment = Alignment.topCenter;
