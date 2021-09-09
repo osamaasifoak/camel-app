@@ -73,7 +73,7 @@ class EShowListTile extends StatelessWidget {
 
     final ButtonStyle cardStyle = style ?? _defaultEShowListTileStyle;
 
-    final Text eShowTitle;
+    final Widget eShowTitle;
     if (eShow is Movie) {
       final Movie movie = eShow as Movie;
       final String movieTitleAndYear;
@@ -149,7 +149,7 @@ class EShowListTile extends StatelessWidget {
       child: ElevatedButton(
         style: cardStyle,
         onPressed: onTap,
-        clipBehavior: Clip.hardEdge,
+        clipBehavior: Clip.antiAlias,
         child: Row(
           children: <Widget>[
             leadingImage,
