@@ -1,8 +1,9 @@
-import 'package:camelmovies/core/repositories/base_eshows_repo.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
+import '/core/repositories/base_eshows_repo.dart';
 import 'cubit/eshow_list_cubit.dart';
 import 'screen/_eshow_list_screen.dart';
 
@@ -50,7 +51,7 @@ class _FullEShowListScreenState extends State<FullEShowListScreen> {
   }
 
   bool _onBackPressed() {
-    if (!_eShowsListController.hasClients) {
+    if (!_eShowsListController.hasClients || kIsWeb) {
       return true;
     }
     if (_eShowsListController.offset > 100) {
