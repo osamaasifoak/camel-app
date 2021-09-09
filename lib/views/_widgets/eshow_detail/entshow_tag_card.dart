@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '/core/constants/app_colors.dart';
+
 class EShowTagCard extends StatelessWidget {
   const EShowTagCard({
     Key? key,
@@ -11,10 +13,10 @@ class EShowTagCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.amberAccent[400],
+      color: AppColors.of(context).secondaryColor,
       elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(20)),
       ),
       child: Container(
         alignment: Alignment.center,
@@ -24,7 +26,7 @@ class EShowTagCard extends StatelessWidget {
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 18,
-            color: Colors.grey[900],
+            color: AppColors.of(context).whiteColor,
           ),
         ),
       ),
