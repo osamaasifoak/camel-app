@@ -4,6 +4,7 @@ import 'dart:math' as math show pow;
 import 'package:flutter/material.dart';
 
 import '/core/constants/app_routes.dart';
+import '/core/helpers/screen_sizer.dart';
 import '/views/_widgets/circular_reveal_clipper.dart';
 import '/views/details/movie_detail_screen.dart' deferred as _details_movie show MovieDetailScreen;
 import '/views/details/tvshow_detail_screen.dart' deferred as _details_tv_show show TVShowDetailScreen;
@@ -312,14 +313,11 @@ class _DeferredWidget extends StatefulWidget {
     Key? key,
     required this.loadLibraryFunc,
     required this.destinationPageFunc,
-    this.pageLoadingIndicator,
   }) : super(key: key);
 
   final Future<dynamic> Function() loadLibraryFunc;
 
   final Widget Function() destinationPageFunc;
-
-  final Widget? pageLoadingIndicator;
 
   @override
   _DeferredWidgetState createState() => _DeferredWidgetState();
@@ -340,23 +338,6 @@ class _DeferredWidgetState extends State<_DeferredWidget> {
       return _destinationPage!;
     }
 
-    final Widget loadingIndicator;
-
-    if (widget.pageLoadingIndicator != null) {
-      loadingIndicator = widget.pageLoadingIndicator!;
-    } else {
-      loadingIndicator = Scaffold(
-        body: Center(
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width * 0.3,
-            ),
-            child: const LinearProgressIndicator(),
-          ),
-        ),
-      );
-    }
-
     return FutureBuilder<dynamic>(
       future: widget.loadLibraryFunc(),
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
@@ -364,7 +345,15 @@ class _DeferredWidgetState extends State<_DeferredWidget> {
           _destinationPage = widget.destinationPageFunc();
           return _destinationPage!;
         }
-        return loadingIndicator;
+        return Scaffold(
+          body: Container(
+            alignment: Alignment.center,
+            margin: EdgeInsets.symmetric(
+              horizontal: ScreenSizer().currentWidth * 0.25,
+            ),
+            child: const LinearProgressIndicator(),
+          ),
+        );
       },
     );
   }
