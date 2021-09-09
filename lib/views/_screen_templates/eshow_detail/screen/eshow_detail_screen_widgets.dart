@@ -138,28 +138,30 @@ mixin _EShowDetailScreenWidgets on _EShowDetailScreenProps {
   Widget get eShowRuntimeAndRating {
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: RichText(
-        text: TextSpan(
-          style: const TextStyle(
-            color: Colors.black87,
-            fontWeight: FontWeight.bold,
+      child: Row(
+        children: <Widget>[
+          SelectableText(
+            '${currentCubitState.eShowDetails!.runtime} min.  |  ',
+            style: const TextStyle(
+              color: Colors.black87,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-          children: <InlineSpan>[
-            TextSpan(
-              text: '${currentCubitState.eShowDetails!.runtime} min.  |  ',
+          SelectableText(
+            '${currentCubitState.eShowDetails!.rating}/10',
+            style: const TextStyle(
+              color: Colors.black87,
+              fontWeight: FontWeight.bold,
             ),
-            TextSpan(
-              text: '${currentCubitState.eShowDetails!.rating}/10',
+          ),
+          SelectableText(
+            ' (${currentCubitState.eShowDetails!.voteCount} votes)',
+            style: const TextStyle(
+              color: Colors.grey,
+              fontWeight: FontWeight.normal,
             ),
-            TextSpan(
-              text: ' (${currentCubitState.eShowDetails!.voteCount} votes)',
-              style: const TextStyle(
-                color: Colors.grey,
-                fontWeight: FontWeight.normal,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -198,10 +200,10 @@ mixin _EShowDetailScreenWidgets on _EShowDetailScreenProps {
 
       if (currentAspectRatio > 1.0) {
         image = Container(
-          clipBehavior: Clip.hardEdge,
+          clipBehavior: Clip.antiAlias,
           margin: const EdgeInsets.symmetric(horizontal: 20),
           width: ScreenSizer().currentWidth,
-          height: ScreenSizer().currentHeight * 0.45,
+          height: ScreenSizer().currentHeight * 0.5,
           decoration: const BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(20)),
           ),
