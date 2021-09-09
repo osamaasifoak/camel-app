@@ -73,7 +73,7 @@ class EShowListLoadingIndicator extends StatelessWidget {
       elevation: 4.0,
       shadowColor: _cardShadowColor,
       color: Colors.grey[50],
-      clipBehavior: Clip.hardEdge,
+      clipBehavior: Clip.antiAlias,
       shape: _cardShape,
       child: Row(
         children: <Widget>[
