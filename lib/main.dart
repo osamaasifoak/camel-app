@@ -52,8 +52,15 @@ class App extends StatelessWidget {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final IconThemeData iconTheme = Theme.of(context).iconTheme;
     final InputDecorationTheme inputDecorationTheme = Theme.of(context).inputDecorationTheme;
+    final ScrollBehavior scrollBehavior;
     final TextSelectionThemeData textSelectionTheme = Theme.of(context).textSelectionTheme;
     final ToggleButtonsThemeData toggleButtonsTheme = Theme.of(context).toggleButtonsTheme;
+
+    if (!foundation.kIsWeb) {
+      scrollBehavior = ScrollConfiguration.of(context).copyWith(scrollbars: false);
+    } else {
+      scrollBehavior = ScrollConfiguration.of(context);
+    }
 
     final Widget app = AppColors(
       child: Builder(builder: (BuildContext context) {
@@ -86,10 +93,7 @@ class App extends StatelessWidget {
             ),
             visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
-          scrollBehavior: ScrollConfiguration.of(context).copyWith(
-            // ignore: avoid_redundant_argument_values
-            scrollbars: foundation.kIsWeb,
-          ),
+          scrollBehavior: scrollBehavior,
           initialRoute: AppRoutes.splash,
           onGenerateRoute: (RouteSettings settings) => ScreenRouter<dynamic>(settings: settings),
         );
