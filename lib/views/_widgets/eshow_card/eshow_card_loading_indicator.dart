@@ -52,7 +52,7 @@ class EShowCardLoadingIndicator extends StatelessWidget {
       elevation: 0,
       shadowColor: Colors.transparent,
       color: Colors.grey[50],
-      clipBehavior: Clip.hardEdge,
+      clipBehavior: Clip.antiAlias,
       shape: _cardShape,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
