@@ -8,6 +8,7 @@ import 'package:flutter/services.dart' show SystemChrome, SystemUiOverlayStyle;
 import 'package:postor/postor.dart' as postor show defaultJsonDecoder;
 
 import 'core/constants/app_apis.dart';
+import 'core/constants/app_colors.dart';
 import 'core/constants/app_routes.dart';
 import 'core/helpers/screen_router.dart';
 import 'core/helpers/screen_sizer.dart';
@@ -27,14 +28,18 @@ Future<void> main() async {
 
   initSingletons();
 
-  postor.defaultJsonDecoder = appDefaultJsonDecoder;
+  if (!foundation.kIsWeb) {
+    postor.defaultJsonDecoder = appDefaultJsonDecoder;
+  }
 
   initErrorMessageHandlers();
 
   runApp(const App());
 }
 
-Future<dynamic> appDefaultJsonDecoder(String source) {
+const Future<dynamic> Function(String source) appDefaultJsonDecoder = _appDefaultJsonDecoder;
+
+Future<dynamic> _appDefaultJsonDecoder(String source) {
   return foundation.compute(jsonDecode, source);
 }
 
@@ -43,23 +48,52 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final BottomNavigationBarThemeData botNavBarTheme =
-        Theme.of(context).bottomNavigationBarTheme;
+    final BottomNavigationBarThemeData botNavBarTheme = Theme.of(context).bottomNavigationBarTheme;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final IconThemeData iconTheme = Theme.of(context).iconTheme;
+    final InputDecorationTheme inputDecorationTheme = Theme.of(context).inputDecorationTheme;
+    final TextSelectionThemeData textSelectionTheme = Theme.of(context).textSelectionTheme;
+    final ToggleButtonsThemeData toggleButtonsTheme = Theme.of(context).toggleButtonsTheme;
 
-    final Widget app = MaterialApp(
-      title: 'caMel',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primaryColor: Colors.white,
-        accentColor: const Color(0xFF01579B),
-        errorColor: const Color(0xFFD50000),
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        fontFamily: 'Nunito Sans',
-        bottomNavigationBarTheme: botNavBarTheme.copyWith(elevation: 0),
-      ),
-      initialRoute: AppRoutes.splash,
-      onGenerateRoute: (RouteSettings settings) =>
-          ScreenRouter<dynamic>(settings: settings),
+    final Widget app = AppColors(
+      child: Builder(builder: (BuildContext context) {
+        return MaterialApp(
+          title: 'caMel',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            bottomNavigationBarTheme: botNavBarTheme.copyWith(elevation: 0),
+            brightness: Brightness.light,
+            colorScheme: colorScheme.copyWith(
+              primary: AppColors.of(context).primaryColor,
+              onPrimary: AppColors.of(context).blackColor,
+              secondary: AppColors.of(context).secondaryColor,
+            ),
+            errorColor: AppColors.of(context).errorColor,
+            fontFamily: 'Nunito Sans',
+            textSelectionTheme: textSelectionTheme.copyWith(
+              cursorColor: AppColors.of(context).secondaryColor,
+              selectionColor: AppColors.of(context).alphaSecondaryColor,
+            ),
+            iconTheme: iconTheme.copyWith(
+              color: AppColors.of(context).secondaryColor,
+            ),
+            inputDecorationTheme: inputDecorationTheme.copyWith(
+              focusColor: AppColors.of(context).secondaryColor,
+            ),
+            toggleButtonsTheme: toggleButtonsTheme.copyWith(
+              fillColor: AppColors.of(context).alphaSecondaryColor,
+              selectedColor: AppColors.of(context).secondaryColor,
+            ),
+            visualDensity: VisualDensity.adaptivePlatformDensity,
+          ),
+          scrollBehavior: ScrollConfiguration.of(context).copyWith(
+            // ignore: avoid_redundant_argument_values
+            scrollbars: foundation.kIsWeb,
+          ),
+          initialRoute: AppRoutes.splash,
+          onGenerateRoute: (RouteSettings settings) => ScreenRouter<dynamic>(settings: settings),
+        );
+      }),
     );
 
     if (foundation.kIsWeb) {
@@ -67,8 +101,7 @@ class App extends StatelessWidget {
         onPointerDown: ScreenRouter.onPointerDownEvent,
         child: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
-            ScreenSizer().currentXPadding =
-                math.max(0.0, constraints.maxWidth - 1280) / 2;
+            ScreenSizer().currentXPadding = math.max(0.0, constraints.maxWidth - 1280) / 2;
             ScreenSizer().currentWidth = constraints.maxWidth;
             ScreenSizer().currentHeight = constraints.maxHeight;
 
