@@ -4,10 +4,22 @@ import 'dart:math' as math show pow;
 import 'package:flutter/material.dart';
 
 import '/core/constants/app_routes.dart';
-import '/screens.dart';
 import '/views/_widgets/circular_reveal_clipper.dart';
+import '/views/details/movie_detail_screen.dart';
+import '/views/details/tvshow_detail_screen.dart';
+import '/views/favourites/fav_movies_screen.dart';
+import '/views/favourites/fav_tvshows_screen.dart';
+import '/views/home/screen/_home_screen.dart';
+import '/views/movie_list_screens/now_playing_screen.dart';
+import '/views/movie_list_screens/popular_list_screen.dart';
+import '/views/movie_list_screens/upcoming_list_screen.dart';
+import '/views/page_not_found_screen.dart';
+import '/views/search/screen/_search_screen.dart';
+import '/views/splash_screen.dart';
+import '/views/tv_show_list_screens/on_the_air_screen.dart';
+import '/views/tv_show_list_screens/popular_tv_show_screen.dart';
 
-const void Function(String message) log = _dev.log;
+const void Function(String message) _log = _dev.log;
 
 const int charCodeOf0 = 48;
 const int charCodeOf9 = 57;
@@ -153,7 +165,7 @@ class ScreenRouter<T> extends PageRoute<T> {
   static PointerDownEvent? _pointerDownEvent;
 
   static void onPointerDownEvent(PointerDownEvent newPointerDownEvent) {
-    log(newPointerDownEvent.toString());
+    _log(newPointerDownEvent.toString());
     _pointerDownEvent = newPointerDownEvent;
   }
 
