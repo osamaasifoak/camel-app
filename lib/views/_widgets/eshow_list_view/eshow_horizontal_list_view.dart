@@ -36,26 +36,37 @@ class _EShowHorizontalListViewState extends State<EShowHorizontalListView> {
       return const EShowCardLoadingIndicator(itemCount: 8);
     }
 
-    ScrollPhysics? scrollPhysics;
-
+    Widget eShowList;
     if (kIsWeb) {
-      scrollPhysics = const PageScrollPhysics();
+      eShowList = ListView.builder(
+        controller: _eShowListController,
+        padding: const EdgeInsets.all(8.0),
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (BuildContext context, int index) {
+          return EShowCard(
+            eShow: widget.eShows[index],
+            onTap: widget.onEShowTapped,
+          );
+        },
+        itemExtent: widget.itemExtent,
+        itemCount: widget.eShows.length,
+      );
+    } else {
+      eShowList = ListView.builder(
+        controller: _eShowListController,
+        physics: const PageScrollPhysics(),
+        padding: const EdgeInsets.all(8.0),
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (BuildContext context, int index) {
+          return EShowCard(
+            eShow: widget.eShows[index],
+            onTap: widget.onEShowTapped,
+          );
+        },
+        itemExtent: widget.itemExtent,
+        itemCount: widget.eShows.length,
+      );
     }
-
-    Widget eShowList = ListView.builder(
-      controller: _eShowListController,
-      physics: scrollPhysics,
-      padding: const EdgeInsets.all(8.0),
-      scrollDirection: Axis.horizontal,
-      itemBuilder: (BuildContext context, int index) {
-        return EShowCard(
-          eShow: widget.eShows[index],
-          onTap: widget.onEShowTapped,
-        );
-      },
-      itemExtent: widget.itemExtent,
-      itemCount: widget.eShows.length,
-    );
 
     if (kIsWeb) {
       eShowList = Scrollbar(
