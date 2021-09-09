@@ -41,13 +41,12 @@ class EShowCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Widget showTitle = Text(
+    final Widget showTitle = SelectableText(
       eShow.title,
-      maxLines: 3,
-      overflow: TextOverflow.ellipsis,
       style: const TextStyle(
         fontWeight: FontWeight.bold,
         fontSize: 16,
+        overflow: TextOverflow.ellipsis,
       ),
     );
 
@@ -114,13 +113,13 @@ class EShowCard extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onTap != null ? () => onTap!(eShow) : null,
         style: _cardStyle,
-        clipBehavior: Clip.hardEdge,
+        clipBehavior: Clip.antiAlias,
         child: Column(
           children: <Widget>[
             Expanded(
               flex: 2,
               child: Container(
-                clipBehavior: Clip.hardEdge,
+                clipBehavior: Clip.antiAlias,
                 constraints: const BoxConstraints.expand(),
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.vertical(
