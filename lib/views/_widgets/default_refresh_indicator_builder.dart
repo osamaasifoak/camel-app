@@ -83,13 +83,10 @@ class AppCircularProgressIndicator extends ProgressIndicator {
         );
 
   /// The width of the line used to draw the circle.
-  ///
-  /// This property is ignored if used in an adaptive constructor inside an iOS
-  /// environment.
   final double strokeWidth;
 
   Color _getValueColor(BuildContext context) {
-    return valueColor?.value ?? color ?? Theme.of(context).accentColor;
+    return valueColor?.value ?? color ?? Theme.of(context).colorScheme.secondary;
   }
 
   @override
