@@ -26,10 +26,17 @@ class EShowSectionsScreen extends StatefulWidget {
   _EShowSectionsScreenState createState() => _EShowSectionsScreenState();
 }
 
-class _EShowSectionsScreenState extends State<EShowSectionsScreen>
-    with AutomaticKeepAliveClientMixin {
+class _EShowSectionsScreenState extends State<EShowSectionsScreen> with AutomaticKeepAliveClientMixin {
+  final ScrollController _eShowSectionsController = ScrollController();
+
   @override
   bool get wantKeepAlive => true;
+
+  @override
+  void dispose() {
+    _eShowSectionsController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,8 +63,7 @@ class _EShowSectionsScreenState extends State<EShowSectionsScreen>
           ];
           for (int i = 0; i < sectionsLength; i++) {
             final EShowSection eShowSection = state.eShowSections[i];
-            final void Function(BuildContext context) onSectionTapped =
-                widget.providers[i].onSectionTapped;
+            final void Function(BuildContext context) onSectionTapped = widget.providers[i].onSectionTapped;
 
             final Widget section = SliverToBoxAdapter(
               child: EShowSectionListView(
@@ -71,7 +77,10 @@ class _EShowSectionsScreenState extends State<EShowSectionsScreen>
             );
             sections.add(section);
           }
-          return CustomScrollView(slivers: sections);
+          return CustomScrollView(
+            controller: _eShowSectionsController,
+            slivers: sections,
+          );
         },
       ),
     );
